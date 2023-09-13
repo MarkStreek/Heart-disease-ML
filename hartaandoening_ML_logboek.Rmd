@@ -1,0 +1,30 @@
+---
+title: "Thema 09 - ML logboek"
+author: "Mark van de Streek"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Praktijkopdracht machine learning - diabetes voorspellen
+
+```{r}
+# Copyright (c) 2023 <Mark van de Streek>. 
+# Licensed under GPLv3. See gpl.md
+```
+
+Nog in te vullen...
+
+## Introductie
+
+## Inladen van de data
+
+Onderstaand wordt de dataset ingeladen. 
+
+```{r}
+data <- read.csv("Heart_Disease_Prediction.csv", header = T, sep = ",")
+```
+
