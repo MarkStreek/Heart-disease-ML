@@ -3,6 +3,9 @@ title: "Thema 09 - ML logboek"
 author: "Mark van de Streek"
 date: "`r Sys.Date()`"
 output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -20,11 +23,42 @@ Nog in te vullen...
 
 ## Introductie
 
+Het artikel: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8943493/>
+
+Dataset: https://www.kaggle.com/datasets/thedevastator/predicting-heart-disease-risk-using-clinical-var
+
 ## Inladen van de data
 
-Onderstaand wordt de dataset ingeladen. 
+Onderstaand wordt de dataset ingeladen.
 
 ```{r}
 data <- read.csv("Heart_Disease_Prediction.csv", header = T, sep = ",")
+
+print(colnames(data))
 ```
 
+Overzicht kolommen:
+
+Index Age Sex Chest.pain.type BP Cholesterol FBS.over.120 EKG.results
+Max.HR Exercise.agina ST.depression Slope.of.ST Number.of.vessels.fluro
+Thallium Heart.Disease
+
+| Col1                         | Col2                                  |
+|------------------------------|---------------------------------------|
+| Index                        |                                       |
+| Age                          |                                       |
+| Sex                          |                                       |
+| Chest.pain.type              |                                       |
+| BP                           | Bloeddruk                             |
+| Cholesterol levels           | Cholesterol niveau                    |
+| FBS over 120                 | fasting blood sugar                   |
+| EKG results                  | electrocardiogram                     |
+| Max HR                       | maximale hartslag                     |
+| Exercise Angina status       |                                       |
+| ST Depression                | depressie van ST-segment op ECG       |
+| Slope of ST                  | Helling van het ST-segment op het ECG |
+| Number of Vessels Fluroscopy | Aantal vaten gezien bij fluoroscopie  |
+| Thallium Stress              | Thallium Stress test resultaten       |
+| Heart Disease                | Hartaandoening aanwezig/afwezig       |
+
+: betekenis kolommen
