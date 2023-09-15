@@ -1,5 +1,5 @@
 ---
-title: "Thema 09 - ML logboek"
+title: "Thema 09 - ML log"
 author: "Mark van de Streek"
 date: "`r Sys.Date()`"
 output: pdf_document
@@ -12,53 +12,112 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Praktijkopdracht machine learning - diabetes voorspellen
+# Practical assignment bioinformatics - predicting heart diseases
 
 ```{r}
 # Copyright (c) 2023 <Mark van de Streek>. 
 # Licensed under GPLv3. See gpl.md
 ```
 
-Nog in te vullen...
-
-## Introductie
-
-Het artikel: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8943493/>
+## Introduction
 
 Dataset: https://www.kaggle.com/datasets/thedevastator/predicting-heart-disease-risk-using-clinical-var
 
-## Inladen van de data
+In this research, there will be looked at a dataset about predicting a heart disease from clinical variables. 
 
-Onderstaand wordt de dataset ingeladen.
+...
+
+## Reading the data
+
+First, the data is going to be loaded in R. This is done below. The pander library is being used for a good but simple overview of the data.
 
 ```{r}
 data <- read.csv("Heart_Disease_Prediction.csv", header = T, sep = ",")
+data <- data.frame(data)
 
-print(colnames(data))
+# Loading the pander package for a nice overvieuw of the data
+library(pander)
+pander(head(data[1:5, c(2:ncol(data))]))
 ```
 
-Overzicht kolommen:
+As you can see, the data contains fourteen columns. This data needs to be stored inside a codebook, so it's easy to change/translate. After that's done, it's easier to show all the columns' datatypes and description.
 
-Index Age Sex Chest.pain.type BP Cholesterol FBS.over.120 EKG.results
-Max.HR Exercise.agina ST.depression Slope.of.ST Number.of.vessels.fluro
-Thallium Heart.Disease
+```{r}
+codebook <- data.frame(
+  attributes = c("index", "Age", "Sex", "Chest.pain.type", 
+                 "BP", "Cholesterol", "FBS.over.120", 
+                 "EKG.results","Max.HR", "Exercise.angina", 
+                 "ST.depression", "Slope.of.ST", "Number.of.vessels.fluro", 
+                 "Thallium", "Heart.Disease"),
+  unit = c("-", "years", "-", "-", "mm/Hg", "mg/dl","-", "-", "Beats/minute", "-", "-", "-", "-", "-", "-"),
+  dtype = c("int", "int", "factor", "factor", "int", "int", "int", "factor", "int", "factor", "dbl", "factor", "int", "int", "factor"),
+  description = c("Patient number", "The age of the patient", "The gender of the patient", "The type of chest pain experienced by the patient", "The blood pressure level of the patient", "The cholesterol level of the patient", "The fasting blood sugar test results over 120 mg/dl", "The electrocardiogram results of the patient", "The maximum heart rate levels achieved during exercise testing", "The angina experienced during exercise testing", "The ST depression on a Electrocardiogram", "The slope of ST segment electrocardiogram readings", "The amount vessels seen in Fluoroscopy images", "Thallium Stress test findings", "Whether or not the patient has been diagnosed with Heart Disease"))
+```
 
-| Col1                         | Col2                                  |
-|------------------------------|---------------------------------------|
-| Index                        |                                       |
-| Age                          |                                       |
-| Sex                          |                                       |
-| Chest.pain.type              |                                       |
-| BP                           | Bloeddruk                             |
-| Cholesterol levels           | Cholesterol niveau                    |
-| FBS over 120                 | fasting blood sugar                   |
-| EKG results                  | electrocardiogram                     |
-| Max HR                       | maximale hartslag                     |
-| Exercise Angina status       |                                       |
-| ST Depression                | depressie van ST-segment op ECG       |
-| Slope of ST                  | Helling van het ST-segment op het ECG |
-| Number of Vessels Fluroscopy | Aantal vaten gezien bij fluoroscopie  |
-| Thallium Stress              | Thallium Stress test resultaten       |
-| Heart Disease                | Hartaandoening aanwezig/afwezig       |
+```{r}
+# Print an overview of the columns with right datatypes and description
+pander(codebook)
+```
 
-: betekenis kolommen
+With all the right datatypes given, it is possible to change all the columns to the right one. R does a good job by automatically choosing the right datatype for the int/dbl columns. For that reason, you only have to change the nominal datatypes. This is done below. 
+
+```{r}
+for (i in 1:ncol(data)) {
+  if (codebook[,3][i] == "factor") {
+    data[, codebook[,1][i]] <- sapply(data[, codebook[,1][i]], as.factor)
+  }
+}
+```
+
+Now the data is all in the right datatypes, we can look at the dimensions of the data.
+
+```{r}
+dims <- dim(data)
+sprintf("Amount of rows: %.f, amount of columns: %.f", dims[1], dims[2])
+```
+
+The data contains 270 rows. That means there is data from 270 patients. And for all these patients there are 14 values that say something about that pearson. Not 15 because the first column is the index. 
+
+## Explorative Data Analysis
+
+### Missing values
+
+To make sure there aren't a lot of missing values in the dataset, we will check this with a simple loop. 
+
+```{r}
+for (columns in colnames(data)) {
+  cat("Column: ", columns,  "Amount of missing values: ", 
+      sum(is.na(data[columns])), "\n")
+}
+```
+
+As you can see above, there are no missing values in the dataset. This means we could use all data for this research.
+
+### Distribution of the data
+
+There are a lot of numeric columns in the dataset. This means that the distribution shows us a good first impression of the data. 
+
+The nominal variables are being filtered out of this section. You will simply do this by only giving the right (numeric) columns to the functions.
+
+```{r}
+numeric.columns <- c(1,4,5,6,8,10,12)
+
+summary(data[numeric.columns+1])
+```
+
+And of course plotting the distribution.
+
+```{r}
+par(mfrow = c(3,3))
+for (graphs in numeric.columns+1) {
+  hist(data[,graphs], main = colnames(data[graphs]))
+}
+```
+
+```{r}
+barplot(sum(data[15] == "Presence"))
+barplot(sum(data[15] == "Absence"), col = "blue")
+```
+
+As you can see....
+
