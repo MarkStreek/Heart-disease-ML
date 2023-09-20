@@ -21,6 +21,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
+Vraag: Welke medische eigenschappen zijn belangrijk om zo nauwkeurig mogelijk een hart aandoening/afwijking te voorspellen?
+
 Dataset: https://www.kaggle.com/datasets/thedevastator/predicting-heart-disease-risk-using-clinical-var
 
 This study examines a dataset on predicting heart disease based on clinical variables. 
@@ -120,13 +122,30 @@ And of course plotting the distribution.
 ```{r}
 par(mfrow = c(3,3))
 for (graphs in numeric.columns+1) {
-  hist(data[,graphs], main = colnames(data[graphs]))
+  hist(log2(data[,graphs]), main = colnames(data[graphs]))
 }
 ```
 
-The above graphs tells us that age is quite well distributed. BP and Cholesterol appear to be split more towards the left. And Max.HR more to the right.
+The above graphs tells us that Cholesterol is quite well distributed. The same can be said for BP. Max.HR and Age appears to be split more towards the right.
 
 The variables FBS.over.120 and Number.of.vessels.fluro are behaving quiet differently. These variables will need to be treated slightly differently.
+
+Perhaps the most global characteristic to look at first is age. Let's take a closer look at the patients and perhaps spot some initial differences. Maybe a conclusion can already be drawn with this attribute. You would think that patients are more likely to develop a disease as they get older.
+
+```{r}
+library(ggplot2)
+
+age.frame <- data.frame(
+  Patient = c(rep("Presence", length(data$Age[data$Heart.Disease == "Presence"])
+), rep("Absence", length(data$Age[data$Heart.Disease == "Absence"])
+)),
+  values = c(data$Age[data$Heart.Disease == "Presence"], data$Age[data$Heart.Disease == "Absence"])
+)
+
+ggplot(age.frame, aes(x = Patient, y = values, color=Patient)) + geom_boxplot() + labs(title = "Boxplot from patients age", subtitle = "Ages between presence and Absence") + theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), plot.subtitle = element_text(hjust = 0.5)) + scale_color_manual(values=c( "#949398FF", "#F4DF4EFF"))
+```
+
+The results show that the age is slightly higher in the presence group. It can be concluded that patients with a presence-condition are often slightly older.
 
 ### Class distribution
 
@@ -142,7 +161,7 @@ ggplot(df, aes(x = "", y = value, fill = group)) +
   geom_col(color = "black") +
   geom_text(aes(label = value),
             position = position_stack(vjust = 0.5)) +
-  coord_polar(theta = "y") + labs(title = "Pie chart of class distribution", subtitle = "The number of people per group") + theme_void() + theme(legend.position = "bottom", plot.title = element_text(face = "bold", size = 18, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+  coord_polar(theta = "y") + labs(title = "Pie chart of class distribution", subtitle = "The number of people per group") + theme_void() + theme(legend.position = "bottom", plot.title = element_text(face = "bold", size = 18, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) 
 ```
 
 As you can see, the classes are not exactly evenly represented. But it certainly has no major deviation. There are also more people with than without. This *may* be more useful for the model, because then there are more patients to look at.
@@ -156,21 +175,28 @@ As mentioned earlier, the main goal of this research was to develop a machine le
 library(ggplot2)
 library(GGally)
 
-ggpairs( data[c(1,4,5,6,8,10,12)+1], ggplot2::aes(colour=data$Heart.Disease))
-
+ggpairs( data[c(1,4,5,8,10,13)+1], ggplot2::aes(colour=data$Heart.Disease), progress = F, upper = "blank")
 ```
+
 
 ```{r}
 colMA <- function(n = 3) {
-  colorRampPalette(c("red", "lightgreen"), space = "rgb")(n)
+  colorRampPalette(c("#F4DF4EFF", "#949398FF"), space = "rgb")(n)
 }
+
+# + scale_color_manual(values=c( "#949398FF", "#F4DF4EFF"))
 
 library(ggcorrplot)
  
 # plotting corr heatmap
-ggcorrplot(cor(data[c(1,4,5,6,8,10,12)+1]), colors = colMA(), 
+ggcorrplot(cor(data[c(1,4,5,8,10,12)+1]), colors = colMA(), 
            lab = T, lab_col = "white", lab_size = 3)
 
 ```
+
+
+# ToDo:
+
+De Ordinale waarden moeten uit het correlation plot worden gehaald en bijvoorbeeld worden bekeken in een boxplot/annova
 
 
