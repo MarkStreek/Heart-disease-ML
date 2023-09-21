@@ -2,9 +2,11 @@
 title: "Thema 09 - ML log"
 author: "Mark van de Streek"
 date: "`r Sys.Date()`"
-output: pdf_document
-editor_options: 
-  markdown: 
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -18,6 +20,16 @@ knitr::opts_chunk$set(echo = TRUE)
 # Copyright (c) 2023 <Mark van de Streek>. 
 # Licensed under GPLv3. See gpl.md
 ```
+
+```{r}
+# Loading the packages
+library(pander)
+library(ggplot2)
+library(GGally)
+library(ggcorrplot)
+```
+
+\newpage
 
 ## Introduction
 
@@ -38,6 +50,8 @@ The last column shows whether the patient has heart disease (presence)
 or not (absence).
 
 ### Distribution of the groups...
+
+\newpage
 
 ## Exploration of the data
 
@@ -71,16 +85,38 @@ codebook <- data.frame(
                  "EKG.results","Max.HR", "Exercise.angina", 
                  "ST.depression", "Slope.of.ST", "Number.of.vessels.fluro", 
                  "Thallium", "Heart.Disease"),
-  unit = c("-", "years", "-", "-", "mm/Hg", "mg/dl","-", "-", "Beats/minute", "-", "-", "-", "-", "-", "-"),
-  dtype = c("int","int","factor","factor","int","int","factor","factor","int","factor","int","factor","factor","factor","factor"),
-  description = c("Patient number", "The age of the patient", "The gender of the patient", "The type of chest pain experienced by the patient", "The blood pressure level of the patient", "The cholesterol level of the patient", "The fasting blood sugar test results over 120 mg/dl", "The electrocardiogram results of the patient", "The maximum heart rate levels achieved during exercise testing", "The angina experienced during exercise testing", "The ST depression on a Electrocardiogram", "The slope of ST segment electrocardiogram readings", "The amount vessels seen in Fluoroscopy images", "Thallium Stress test findings", "Whether or not the patient has been diagnosed with Heart Disease"))
+  unit = c("-", "years", "-", "-", "mm/Hg", "mg/dl","-", "-", "Beats/minute", 
+           "-", "-", "-", "-", "-", "-"),
+  dtype = c("int","int","factor","factor","int","int","factor","factor",
+            "int","factor","int","factor","factor","factor","factor"),
+  description = c("Patient number", "The age of the patient", 
+                  "The gender of the patient", 
+                  "The type of chest pain experienced by the patient", 
+                  "The blood pressure level of the patient", 
+                  "The cholesterol level of the patient", 
+                  "The fasting blood sugar test results over 120 mg/dl", 
+                  "The electrocardiogram results of the patient", 
+                  "The maximum heart rate levels achieved during exercise testing", 
+                  "The angina experienced during exercise testing", 
+                  "The ST depression on a Electrocardiogram", 
+                  "The slope of ST segment electrocardiogram readings", 
+                  "The amount vessels seen in Fluoroscopy images", 
+                  "Thallium Stress test findings", 
+                  "Whether or not the patient has been diagnosed with Heart Disease"))
 ```
 
+\newpage
+
+### Description of the attributes
+
+With the codebook we can print a overview of all the variables.
+
 ```{r}
-library(pander)
 # Print an overview of the columns with right datatypes and description
 pander(codebook)
 ```
+
+As shown above, the dataset contains some 'factor' attributes. These columns need some extra declaration to understand.
 
 Additional description of nomial attriutes in the dataset:
 
@@ -127,6 +163,8 @@ Additional description of nomial attriutes in the dataset:
     -   Value 6: Fixed defect
 
     -   Value 7: Reversible defect
+    
+\newpage
 
 With all the right datatypes given, it is possible to change all the
 columns to the right one. R does a good job by automatically choosing
@@ -159,6 +197,8 @@ that can say something about our patient and most important, the data
 has a classification column. With classification column will allow to
 train our model later on. However, we have not yet looked at all
 research topics to draw this conclusion.
+
+\newpage
 
 ### Missing values
 
@@ -204,18 +244,29 @@ for (graphs in numeric.columns) {
 
 The above graphs tells us that Cholesterol is quite well distributed. The same can be said for BP. Max.HR, Age and ST.depression appears to be split more towards the right.
 
-Identifying possible outliers with a boxplot
+Let's look at possible outliers and identify them. This will be done with a boxplot.
 
 ```{r}
-boxplot(data[numeric.columns[1:4]], horizontal = T, las = 2)
-```
+numeric.frame <- data.frame(
+  labs = c(
+  rep("Age", length(data$Age)),
+  rep("BP", length(data$BP)),
+  rep("Cholesterol", length(data$Cholesterol)),
+  rep("Max.HR", length(data$Max.HR))),
+  values = c(data$Age, data$BP, data$Cholesterol, data$Max.HR))
 
+ggplot(numeric.frame, aes(x=labs, y=values, colour = labs)) + 
+  geom_boxplot() + theme(legend.position = "top") + coord_flip() +
+  geom_jitter(position=position_jitter(0.2), alpha = 0.15)
+```
+The data contains few outliers. Only the cholesterol value has a number of points that differ slightly. We can conclude that:
+
+- There are no major deviations in the distribution of the data
+- The numerical data contain no notable outliers
 
 Perhaps the most global characteristic to look at first is age. Let's take a closer look at the patients and perhaps spot some initial differences. Maybe a conclusion can already be drawn with this attribute. You would think that patients are more likely to develop a disease as they get older.
 
 ```{r}
-library(ggplot2)
-
 age.frame <- data.frame(
   Patient = c(rep("Presence", length(data$Age[data$Heart.Disease == "Presence"])
 ), rep("Absence", length(data$Age[data$Heart.Disease == "Absence"])
@@ -261,22 +312,16 @@ machine learning model. For this model, it is useful to see which
 attributes may be important.
 
 ```{r}
-# load libraries ggplot2 and ggally
-library(ggplot2)
-library(GGally)
-
 ggpairs( data[numeric.columns], ggplot2::aes(colour=data$Heart.Disease), progress = F, upper = "blank")
 ```
+
+The figure above shows a number of things. It shows the similarities between all variables. By looking at the points you can see how much correlation they have. However, it is of course much clearer to simply attach a number to the correlation. This happens below.
 
 ```{r}
 colMA <- function(n = 3) {
   colorRampPalette(c("#F4DF4EFF", "#949398FF"), space = "rgb")(n)
 }
 
-# + scale_color_manual(values=c( "#949398FF", "#F4DF4EFF"))
-
-library(ggcorrplot)
- 
 # plotting corr heatmap
 ggcorrplot(cor(data[numeric.columns]), colors = colMA(), 
            lab = T, lab_col = "white", lab_size = 3)
