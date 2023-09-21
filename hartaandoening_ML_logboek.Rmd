@@ -21,38 +21,48 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Vraag: Welke medische eigenschappen zijn belangrijk om zo nauwkeurig mogelijk een hart aandoening/afwijking te voorspellen?
+Vraag: Welke medische eigenschappen zijn belangrijk om zo nauwkeurig
+mogelijk een hart aandoening/afwijking te voorspellen?
 
-Dataset: https://www.kaggle.com/datasets/thedevastator/predicting-heart-disease-risk-using-clinical-var
+Dataset:
+<https://www.kaggle.com/datasets/thedevastator/predicting-heart-disease-risk-using-clinical-var>
 
-This study examines a dataset on predicting heart disease based on clinical variables. 
+This study examines a dataset on predicting heart disease based on
+clinical variables.
 
-The ultimate goal of this research is to create a machine learning model that predicts whether a patient has heart disease.
+The ultimate goal of this research is to create a machine learning model
+that predicts whether a patient has heart disease.
 
-The dataset contains data from people with and without a heart disease. The last column shows whether the patient has heart disease (presence) or not (absence).
+The dataset contains data from people with and without a heart disease.
+The last column shows whether the patient has heart disease (presence)
+or not (absence).
 
 ### Distribution of the groups...
 
 ## Exploration of the data
 
-This study examines a dataset on predicting heart disease based on clinical variables. This means that distribution will be inspected, among other important subjects.
+This study examines a dataset on predicting heart disease based on
+clinical variables. This means that distribution will be inspected,
+among other important subjects.
 
 ### Reading the data
 
-First, the data is going to be loaded in R. This is done below. The pander library is being used for a good but simple overview of the data. And lastly, the data will be put in the right datatype.
+First, the data is going to be loaded in R. This is done below. The
+pander library is being used for a good but simple overview of the data.
+And lastly, the data will be put in the right datatype.
 
-It's important to have the variables in the right datatype, because this is very important for our machine learning model. More on that, later in the research.
+It's important to have the variables in the right datatype, because this
+is very important for our machine learning model. More on that, later in
+the research.
 
 ```{r}
 data <- read.csv("Heart_Disease_Prediction.csv", header = T, sep = ",")
 data <- data.frame(data)
-
-# Loading the pander package for a nice overvieuw of the data
-library(pander)
-pander(head(data[1:5, c(2:ncol(data))]))
 ```
 
-As you can see, the data contains fourteen columns. An overview of the data will be stored inside a codebook, so it's easy to change/translate. After that's done, it's easier to show all the columns' datatypes and description.
+An overview of the data will be stored inside a codebook, so it's easy to change/translate.
+After that's done, it's easier to show all the columns' datatypes and
+description.
 
 ```{r}
 codebook <- data.frame(
@@ -62,16 +72,66 @@ codebook <- data.frame(
                  "ST.depression", "Slope.of.ST", "Number.of.vessels.fluro", 
                  "Thallium", "Heart.Disease"),
   unit = c("-", "years", "-", "-", "mm/Hg", "mg/dl","-", "-", "Beats/minute", "-", "-", "-", "-", "-", "-"),
-  dtype = c("int", "int", "factor", "factor", "int", "int", "int", "factor", "int", "factor", "dbl", "factor", "int", "int", "factor"),
+  dtype = c("int","int","factor","factor","int","int","factor","factor","int","factor","int","factor","factor","factor","factor"),
   description = c("Patient number", "The age of the patient", "The gender of the patient", "The type of chest pain experienced by the patient", "The blood pressure level of the patient", "The cholesterol level of the patient", "The fasting blood sugar test results over 120 mg/dl", "The electrocardiogram results of the patient", "The maximum heart rate levels achieved during exercise testing", "The angina experienced during exercise testing", "The ST depression on a Electrocardiogram", "The slope of ST segment electrocardiogram readings", "The amount vessels seen in Fluoroscopy images", "Thallium Stress test findings", "Whether or not the patient has been diagnosed with Heart Disease"))
 ```
 
 ```{r}
+library(pander)
 # Print an overview of the columns with right datatypes and description
 pander(codebook)
 ```
 
-With all the right datatypes given, it is possible to change all the columns to the right one. R does a good job by automatically choosing the right datatype for the int/dbl columns. For that reason, you only have to change the nominal datatypes. This is done below. 
+Additional description of nomial attriutes in the dataset:
+
+1.  sex
+    -   1 = Male
+
+    -   0 = Female
+2.  Chest pain type
+    -   Value 1: Typical angina
+
+    -   Value 2: Atypical angina
+
+    -   Value 3: Non-anginal pain (pain without disease)
+
+    -   Value 4: Asymptomatic
+3.  EKG results
+    -   Value 0: Normal
+
+    -   Value 1: ST-T wave abnormality
+
+    -   Value 2: Probable or definite LVH (thickening of the walls of
+        the left ventricle, main chamber)
+4.  FBS over 120 (Blood glucose level measured after fasting for at
+    least 8 hours)
+    -   Value 1: True
+
+    -   Value 0: False
+5.  ST Depression (Segment in EKG that may indicates a disease)
+    -   Value 1: Up sloping
+
+    -   Value 2: Flat
+
+    -   Value 3: Down sloping
+6.  Exercise induced angina (Narrowed blood vessels that deliver
+    oxygen/nutrients to heart)
+    -   Value 1 = Yes
+
+    -   Value 0 = No
+7.  Number of major vessels coloured by fluoroscopy
+    -   range from 1 to 3
+8.  Thallium
+    -   Value 3: Normal
+
+    -   Value 6: Fixed defect
+
+    -   Value 7: Reversible defect
+
+With all the right datatypes given, it is possible to change all the
+columns to the right one. R does a good job by automatically choosing
+the right datatype for the int/dbl columns. For that reason, you only
+have to change the nominal datatypes. This is done below.
 
 ```{r}
 for (i in 1:ncol(data)) {
@@ -81,20 +141,31 @@ for (i in 1:ncol(data)) {
 }
 ```
 
-Now the data is all in the right datatypes, we can look at the dimensions of the data.
+Now the data is all in the right datatypes, we can look at the
+dimensions of the data.
 
 ```{r}
 dims <- dim(data)
 sprintf("Amount of rows: %.f, amount of columns: %.f", dims[1], dims[2])
 ```
 
-The data contains 270 rows. That means there is data from 270 patients. And for all these patients there are 14 values that say something about that pearson. Not 15 because the first column is the index. 
+The data contains 270 rows. That means there is data from 270 patients.
+And for all these patients there are 14 values that say something about
+that pearson. Not 15 because the first column is the index.
 
-It can be concluded that this dataset is fits well for the goal we want to achieve. This because it contains a couple of important variables that can say something about our patient and most important, the data has a classification column. With classification column will allow to train our model later on. However, we have not yet looked at all research topics to draw this conclusion.
+It can be concluded that this dataset is fits well for the goal we want
+to achieve. This because it contains a couple of important variables
+that can say something about our patient and most important, the data
+has a classification column. With classification column will allow to
+train our model later on. However, we have not yet looked at all
+research topics to draw this conclusion.
 
 ### Missing values
 
-As the name says, this section will look at the missing values in the dataset. Missing values can have major influence on the model. To make sure there aren't a lot of missing values in the dataset, we will check this with a simple loop. 
+As the name says, this section will look at the missing values in the
+dataset. Missing values can have major influence on the model. To make
+sure there aren't a lot of missing values in the dataset, we will check
+this with a simple loop.
 
 ```{r}
 for (columns in colnames(data)) {
@@ -103,32 +174,42 @@ for (columns in colnames(data)) {
 }
 ```
 
-As you can see above, there are no missing values in the dataset. beyond that, there is little to say about it
+As you can see above, there are no missing values in the dataset. beyond
+that, there is little to say about it
 
 ### Variation of the data
 
-There are a lot of numeric columns in the dataset. This means that the distribution shows us a good first impression of the data. 
+There are a lot of numeric columns in the dataset. This means that the
+distribution shows us a good first impression of the data.
 
-The nominal variables are being filtered out of this section. You will simply do this by only giving the right (numeric) columns to the functions.
+The nominal variables are being filtered out of this section. You will
+simply do this by only giving the right (numeric) columns to the
+functions.
 
 ```{r}
-numeric.columns <- c(1,4,5,6,8,10,12)
+numeric.columns <- c(2,5,6,9,11)
+nominal.columns <- c(3,4,7,8,10,12,13,14,15)
 
-summary(data[numeric.columns+1])
+summary(data[numeric.columns])
 ```
 
-And of course plotting the distribution.
+Plotting the distributions of the attributes.
 
 ```{r}
 par(mfrow = c(3,3))
-for (graphs in numeric.columns+1) {
+for (graphs in numeric.columns) {
   hist(log2(data[,graphs]), main = colnames(data[graphs]))
 }
 ```
 
-The above graphs tells us that Cholesterol is quite well distributed. The same can be said for BP. Max.HR and Age appears to be split more towards the right.
+The above graphs tells us that Cholesterol is quite well distributed. The same can be said for BP. Max.HR, Age and ST.depression appears to be split more towards the right.
 
-The variables FBS.over.120 and Number.of.vessels.fluro are behaving quiet differently. These variables will need to be treated slightly differently.
+Identifying possible outliers with a boxplot
+
+```{r}
+boxplot(data[numeric.columns[1:4]], horizontal = T, las = 2)
+```
+
 
 Perhaps the most global characteristic to look at first is age. Let's take a closer look at the patients and perhaps spot some initial differences. Maybe a conclusion can already be drawn with this attribute. You would think that patients are more likely to develop a disease as they get older.
 
@@ -145,11 +226,15 @@ age.frame <- data.frame(
 ggplot(age.frame, aes(x = Patient, y = values, color=Patient)) + geom_boxplot() + labs(title = "Boxplot from patients age", subtitle = "Ages between presence and Absence") + theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), plot.subtitle = element_text(hjust = 0.5)) + scale_color_manual(values=c( "#949398FF", "#F4DF4EFF"))
 ```
 
-The results show that the age is slightly higher in the presence group. It can be concluded that patients with a presence-condition are often slightly older.
+The results show that the age is slightly higher in the presence group.
+It can be concluded that patients with a presence-condition are often
+slightly older.
 
 ### Class distribution
 
-For our model it's important to know how the classes are distributed. We can have a big dataset, but if it's only "absence" people, we can't say much about it. 
+For our model it's important to know how the classes are distributed. We
+can have a big dataset, but if it's only "absence" people, we can't say
+much about it.
 
 ```{r}
 df <- data.frame(
@@ -164,20 +249,24 @@ ggplot(df, aes(x = "", y = value, fill = group)) +
   coord_polar(theta = "y") + labs(title = "Pie chart of class distribution", subtitle = "The number of people per group") + theme_void() + theme(legend.position = "bottom", plot.title = element_text(face = "bold", size = 18, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) 
 ```
 
-As you can see, the classes are not exactly evenly represented. But it certainly has no major deviation. There are also more people with than without. This *may* be more useful for the model, because then there are more patients to look at.
+As you can see, the classes are not exactly evenly represented. But it
+certainly has no major deviation. There are also more people with than
+without. This *may* be more useful for the model, because then there are
+more patients to look at.
 
 ### Corrolation between attributes
 
-As mentioned earlier, the main goal of this research was to develop a machine learning model. For this model, it is useful to see which attributes may be important.
+As mentioned earlier, the main goal of this research was to develop a
+machine learning model. For this model, it is useful to see which
+attributes may be important.
 
 ```{r}
 # load libraries ggplot2 and ggally
 library(ggplot2)
 library(GGally)
 
-ggpairs( data[c(1,4,5,8,10,13)+1], ggplot2::aes(colour=data$Heart.Disease), progress = F, upper = "blank")
+ggpairs( data[numeric.columns], ggplot2::aes(colour=data$Heart.Disease), progress = F, upper = "blank")
 ```
-
 
 ```{r}
 colMA <- function(n = 3) {
@@ -189,14 +278,13 @@ colMA <- function(n = 3) {
 library(ggcorrplot)
  
 # plotting corr heatmap
-ggcorrplot(cor(data[c(1,4,5,8,10,12)+1]), colors = colMA(), 
+ggcorrplot(cor(data[numeric.columns]), colors = colMA(), 
            lab = T, lab_col = "white", lab_size = 3)
 
 ```
 
-
 # ToDo:
 
-De Ordinale waarden moeten uit het correlation plot worden gehaald en bijvoorbeeld worden bekeken in een boxplot/annova
-
+De Ordinale waarden moeten uit het correlation plot worden gehaald en
+bijvoorbeeld worden bekeken in een boxplot/annova
 
