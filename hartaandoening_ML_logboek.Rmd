@@ -313,7 +313,7 @@ slightly older.
 
 there are a few values that relate to each other. Take, for example, the ECG results and the ST depression. These both have to do with the ECG results. Attributes can now be examined to see whether they show any notable differences.
 
-First, let's have a look at the cholesterol and the Exercise angina. As told earlier, exercise angina is a narrowed blood vessels that deliver oxygen/nutrients to heart. It can be examined whether there may be a relationship between these two. Because a narrowed blood vessel can be caused by high cholesterol.
+First, let's have a look at the cholesterol and the Exercise angina. As told earlier, exercise angina is a narrowed blood vessels that deliver oxygen/nutrients to heart. It can be examined whether there may be a relationship between these two. Because a narrowed blood vessel can be caused by high cholesterol, according to ... 
 
 ```{r}
 boxplot(data$Cholesterol ~ data$Exercise.angina)
@@ -370,10 +370,19 @@ ggcorrplot(cor(data[numeric.columns]), colors = colMA(),
 # ToDo:
 
 - Translate boxplots to GGPLOT2
-- Add some proper english/conclusions
+- Add some proper english/conclusions -> link: https://www.health.harvard.edu/heart-health/angina-symptoms-diagnosis-and-treatments
 - Tussen twee nominale waardes: kruistabel en/of Chi^2 toets
 
+```{=tex}
+\begin{thebibliography}{9}
 
+\bibitem{exercise_induced_angina}
+Cancer Statistics (2020, 25 september).: \textit{National Cancer Institute}.
+
+\end{thebibliography}
+```
+
+cite: apa bron generator.
 
 
 
