@@ -3,6 +3,7 @@ title: "Thema 09 - ML log"
 author: "Mark van de Streek"
 date: "`r Sys.Date()`"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
 editor_options:
@@ -11,7 +12,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 ```
 
 # Practical assignment bioinformatics - predicting heart diseases
@@ -27,11 +28,12 @@ library(pander)
 library(ggplot2)
 library(GGally)
 library(ggcorrplot)
+library(gridExtra)
 ```
 
 \newpage
 
-## Introduction
+## 1. Introduction
 
 Vraag: Welke medische eigenschappen zijn belangrijk om zo nauwkeurig
 mogelijk een hart aandoening/afwijking te voorspellen?
@@ -49,17 +51,20 @@ The dataset contains data from people with and without a heart disease.
 The last column shows whether the patient has heart disease (presence)
 or not (absence).
 
-### Distribution of the groups...
+### 1.1 Details of the data
+
+Where did the data came from?
+what the dependent / class variable is?
 
 \newpage
 
-## Exploration of the data
+## 2. Exploration of the data
 
 This study examines a dataset on predicting heart disease based on
 clinical variables. This means that distribution will be inspected,
 among other important subjects.
 
-### Reading the data
+### 2.1 Reading the data
 
 First, the data is going to be loaded in R. This is done below. The
 pander library is being used for a good but simple overview of the data.
@@ -107,7 +112,7 @@ codebook <- data.frame(
 
 \newpage
 
-### Description of the attributes
+### 2.2 Description of the attributes
 
 With the codebook we can print a overview of all the variables.
 
@@ -144,7 +149,7 @@ Additional description of nomial attriutes in the dataset:
     -   Value 1: True
 
     -   Value 0: False
-5.  ST Depression (Segment in EKG that may indicates a disease)
+5.  Slope of ST Depression (Segment in EKG that may indicates a disease)
     -   Value 1: Up sloping
 
     -   Value 2: Flat
@@ -157,7 +162,7 @@ Additional description of nomial attriutes in the dataset:
     -   Value 0 = No
 7.  Number of major vessels coloured by fluoroscopy
     -   range from 1 to 3
-8.  Thallium
+8.  Thallium (how much blood is reaching different parts of your heart)
     -   Value 3: Normal
 
     -   Value 6: Fixed defect
@@ -200,7 +205,7 @@ research topics to draw this conclusion.
 
 \newpage
 
-### Missing values
+### 2.3 Missing values
 
 As the name says, this section will look at the missing values in the
 dataset. Missing values can have major influence on the model. To make
@@ -208,43 +213,48 @@ sure there aren't a lot of missing values in the dataset, we will check
 this with a simple loop.
 
 ```{r}
-for (columns in colnames(data)) {
-  cat("Column: ", columns,  "Amount of missing values: ", 
-      sum(is.na(data[columns])), "\n")
-}
+cat("Missing values:", any(is.na(data)))
 ```
 
 As you can see above, there are no missing values in the dataset. beyond
-that, there is little to say about it
+that, there is little to say about it.
 
-### Variation of the data
+### 2.4 Variation of the data
 
-There are a lot of numeric columns in the dataset. This means that the
-distribution shows us a good first impression of the data.
+There are a lot of numeric columns in the dataset. This means that the distribution shows us a good first impression of the data.
 
-The nominal variables are being filtered out of this section. You will
-simply do this by only giving the right (numeric) columns to the
-functions.
+We will look at the nominal/ordinal values as well, so we're going to filter these first.
 
 ```{r}
 numeric.columns <- c(2,5,6,9,11)
 nominal.columns <- c(3,4,7,8,10,12,13,14,15)
-
-summary(data[numeric.columns])
 ```
 
-Plotting the distributions of the attributes.
+#### 2.4.1 Variation of numeric attributes
+
+We made sure there aren't missing values in the dataset. Let's look at the range of columns.
 
 ```{r}
-par(mfrow = c(3,3))
-for (graphs in numeric.columns) {
-  hist(log2(data[,graphs]), main = colnames(data[graphs]))
-}
+pander(summary(data[numeric.columns]))
+```
+
+Looking at the ST.depression, thit column has a wide range between minimum and maximum. The median and mean value is also far from the maximum. These could be outlier values, but it could also just be how the value is constructed.
+
+Now let's look at the distribution. This may give us a slightly clearer picture
+
+```{r}
+c1 <- ggplot(data, aes(x=log10(Age))) + geom_histogram(bins = 15)
+c2 <- ggplot(data, aes(x=log10(BP))) + geom_histogram(bins = 10)
+c3 <- ggplot(data, aes(x=log10(Cholesterol))) + geom_histogram(bins = 40)
+c4 <- ggplot(data, aes(x=log10(Max.HR))) + geom_histogram(bins = 30)
+c5 <- ggplot(data, aes(x=log10(ST.depression))) + geom_histogram(bins = 30)
+
+grid.arrange(c1,c2,c3,c4,c5, ncol = 2)
 ```
 
 The above graphs tells us that Cholesterol is quite well distributed. The same can be said for BP. Max.HR, Age and ST.depression appears to be split more towards the right.
 
-Let's look at possible outliers and identify them. This will be done with a boxplot.
+With the distributions displayed, we can then begin to identify *possible* outliers.
 
 ```{r}
 numeric.frame <- data.frame(
@@ -255,14 +265,32 @@ numeric.frame <- data.frame(
   rep("Max.HR", length(data$Max.HR))),
   values = c(data$Age, data$BP, data$Cholesterol, data$Max.HR))
 
-ggplot(numeric.frame, aes(x=labs, y=values, colour = labs)) + 
-  geom_boxplot() + theme(legend.position = "top") + coord_flip() +
-  geom_jitter(position=position_jitter(0.2), alpha = 0.15)
+ggplot(numeric.frame, aes(x=labs, y=values, colour = labs)) + theme(legend.position = "top") + coord_flip() + geom_violin(trim = F, alpha = 1) + geom_jitter(position=position_jitter(0.2), alpha = 0.2)
 ```
-The data contains few outliers. Only the cholesterol value has a number of points that differ slightly. We can conclude that:
+The data contains few outliers. Only the cholesterol value has a number of points that differ slightly. But looking at the distribution, it still looks normal. We can conclude that:
 
 - There are no major deviations in the distribution of the data
 - The numerical data contain no notable outliers
+
+#### 2.4.2 Variation of nominal/ordinal attributes
+
+Let's look at the nominal values new. We are going to plot how often these occur.
+
+```{r}
+p1 <- ggplot(data, aes(x = Sex, colour = Sex)) + geom_bar()
+p2 <- ggplot(data, aes(x = Chest.pain.type, colour = Chest.pain.type)) + geom_bar()
+p3 <- ggplot(data, aes(x = FBS.over.120, colour = FBS.over.120)) + geom_bar()
+p4 <- ggplot(data, aes(x = EKG.results, colour = EKG.results)) + geom_bar()
+p5 <- ggplot(data, aes(x = Exercise.angina, colour = Exercise.angina)) + geom_bar()
+p6 <- ggplot(data, aes(x = Slope.of.ST, colour = Slope.of.ST)) + geom_bar()
+p7 <- ggplot(data, aes(x = Number.of.vessels.fluro)) + geom_bar()
+p8 <- ggplot(data, aes(x = Thallium, colour = Thallium)) + geom_bar()
+p9 <- ggplot(data, aes(x = Heart.Disease, colour = Heart.Disease)) + geom_bar()
+
+grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9, ncol = 3)
+```
+
+The dataset contains more man than women. Most values lean towards 'healthy' people. There are also more people who do not have a condition than do. So this difference partly comes from here. However, there are also many people who do have a condition, but have few or no complaints, for example, see figure Chest.pain.type. 
 
 Perhaps the most global characteristic to look at first is age. Let's take a closer look at the patients and perhaps spot some initial differences. Maybe a conclusion can already be drawn with this attribute. You would think that patients are more likely to develop a disease as they get older.
 
@@ -281,7 +309,20 @@ The results show that the age is slightly higher in the presence group.
 It can be concluded that patients with a presence-condition are often
 slightly older.
 
-### Class distribution
+### 2.5 Comparison between values
+
+there are a few values that relate to each other. Take, for example, the ECG results and the ST depression. These both have to do with the ECG results. Attributes can now be examined to see whether they show any notable differences.
+
+First, let's have a look at the cholesterol and the Exercise angina. As told earlier, exercise angina is a narrowed blood vessels that deliver oxygen/nutrients to heart. It can be examined whether there may be a relationship between these two. Because a narrowed blood vessel can be caused by high cholesterol.
+
+```{r}
+boxplot(data$Cholesterol ~ data$Exercise.angina)
+boxplot(data$Max.HR ~ data$Thallium)
+```
+
+...
+
+### 2.5 Class distribution
 
 For our model it's important to know how the classes are distributed. We
 can have a big dataset, but if it's only "absence" people, we can't say
@@ -301,11 +342,9 @@ ggplot(df, aes(x = "", y = value, fill = group)) +
 ```
 
 As you can see, the classes are not exactly evenly represented. But it
-certainly has no major deviation. There are also more people with than
-without. This *may* be more useful for the model, because then there are
-more patients to look at.
+certainly has no major deviation.
 
-### Corrolation between attributes
+### 2.6 Corrolation between attributes
 
 As mentioned earlier, the main goal of this research was to develop a
 machine learning model. For this model, it is useful to see which
@@ -330,6 +369,12 @@ ggcorrplot(cor(data[numeric.columns]), colors = colMA(),
 
 # ToDo:
 
-De Ordinale waarden moeten uit het correlation plot worden gehaald en
-bijvoorbeeld worden bekeken in een boxplot/annova
+- Translate boxplots to GGPLOT2
+- Add some proper english/conclusions
+- Tussen twee nominale waardes: kruistabel en/of Chi^2 toets
+
+
+
+
+
 
