@@ -3,9 +3,8 @@ title: "Thema 09 - ML log"
 author: "Mark van de Streek"
 date: "`r Sys.Date()`"
 output:
-  pdf_document: default
-  html_document:
-    df_print: paged
+    pdf_document:
+      number_sections: yes
 editor_options:
   markdown:
     wrap: 72
@@ -22,7 +21,9 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 # Licensed under GPLv3. See gpl.md
 ```
 
-```{r}
+Loading all the packages that are necessary for this research.
+
+```{r, echo=TRUE, error=FALSE, message=FALSE, warning=FALSE}
 # Loading the packages
 library(pander)
 library(ggplot2)
@@ -33,7 +34,7 @@ library(gridExtra)
 
 \newpage
 
-## 1. Introduction
+# Introduction
 
 Vraag: Welke medische eigenschappen zijn belangrijk om zo nauwkeurig
 mogelijk een hart aandoening/afwijking te voorspellen?
@@ -51,20 +52,24 @@ The dataset contains data from people with and without a heart disease.
 The last column shows whether the patient has heart disease (presence)
 or not (absence).
 
-### 1.1 Details of the data
+## Details of the data
 
 Where did the data came from?
 what the dependent / class variable is?
 
 \newpage
 
-## 2. Exploration of the data
+# Exploration of the data
 
 This study examines a dataset on predicting heart disease based on
 clinical variables. This means that distribution will be inspected,
 among other important subjects.
 
-### 2.1 Reading the data
+## Data structure and Codebook
+
+...
+
+### Reading the data
 
 First, the data is going to be loaded in R. This is done below. The
 pander library is being used for a good but simple overview of the data.
@@ -112,7 +117,7 @@ codebook <- data.frame(
 
 \newpage
 
-### 2.2 Description of the attributes
+### Description of the attributes
 
 With the codebook we can print a overview of all the variables.
 
@@ -203,9 +208,7 @@ has a classification column. With classification column will allow to
 train our model later on. However, we have not yet looked at all
 research topics to draw this conclusion.
 
-\newpage
-
-### 2.3 Missing values
+### Missing values
 
 As the name says, this section will look at the missing values in the
 dataset. Missing values can have major influence on the model. To make
@@ -219,7 +222,13 @@ cat("Missing values:", any(is.na(data)))
 As you can see above, there are no missing values in the dataset. beyond
 that, there is little to say about it.
 
-### 2.4 Variation of the data
+\newpage
+
+## Univariate analysis
+
+This section examines each variable in the dataset separately. The distribution of numerical values, outliers of numerical values and variation of ordinal values will be examined
+
+### Variation of the data
 
 There are a lot of numeric columns in the dataset. This means that the distribution shows us a good first impression of the data.
 
@@ -230,7 +239,7 @@ numeric.columns <- c(2,5,6,9,11)
 nominal.columns <- c(3,4,7,8,10,12,13,14,15)
 ```
 
-#### 2.4.1 Variation of numeric attributes
+#### Variation of numeric attributes
 
 We made sure there aren't missing values in the dataset. Let's look at the range of columns.
 
@@ -239,6 +248,8 @@ pander(summary(data[numeric.columns]))
 ```
 
 Looking at the ST.depression, thit column has a wide range between minimum and maximum. The median and mean value is also far from the maximum. These could be outlier values, but it could also just be how the value is constructed.
+
+\newpage
 
 Now let's look at the distribution. This may give us a slightly clearer picture
 
@@ -253,6 +264,8 @@ grid.arrange(c1,c2,c3,c4,c5, ncol = 2)
 ```
 
 The above graphs tells us that Cholesterol is quite well distributed. The same can be said for BP. Max.HR, Age and ST.depression appears to be split more towards the right.
+
+\newpage
 
 With the distributions displayed, we can then begin to identify *possible* outliers.
 
@@ -272,7 +285,9 @@ The data contains few outliers. Only the cholesterol value has a number of point
 - There are no major deviations in the distribution of the data
 - The numerical data contain no notable outliers
 
-#### 2.4.2 Variation of nominal/ordinal attributes
+\newpage
+
+#### Variation of nominal/ordinal attributes
 
 Let's look at the nominal values new. We are going to plot how often these occur.
 
@@ -292,37 +307,14 @@ grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9, ncol = 3)
 
 The dataset contains more man than women. Most values lean towards 'healthy' people. There are also more people who do not have a condition than do. So this difference partly comes from here. However, there are also many people who do have a condition, but have few or no complaints, for example, see figure Chest.pain.type. 
 
-Perhaps the most global characteristic to look at first is age. Let's take a closer look at the patients and perhaps spot some initial differences. Maybe a conclusion can already be drawn with this attribute. You would think that patients are more likely to develop a disease as they get older.
+conclusions:
 
-```{r}
-age.frame <- data.frame(
-  Patient = c(rep("Presence", length(data$Age[data$Heart.Disease == "Presence"])
-), rep("Absence", length(data$Age[data$Heart.Disease == "Absence"])
-)),
-  values = c(data$Age[data$Heart.Disease == "Presence"], data$Age[data$Heart.Disease == "Absence"])
-)
+- Comparatively few people have an FBS of over 120
+- There seems to be enough distribution in these attributes to train a good model (this says nothing about the usability of all attributes)
 
-ggplot(age.frame, aes(x = Patient, y = values, color=Patient)) + geom_boxplot() + labs(title = "Boxplot from patients age", subtitle = "Ages between presence and Absence") + theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), plot.subtitle = element_text(hjust = 0.5)) + scale_color_manual(values=c( "#949398FF", "#F4DF4EFF"))
-```
+\newpage
 
-The results show that the age is slightly higher in the presence group.
-It can be concluded that patients with a presence-condition are often
-slightly older.
-
-### 2.5 Comparison between values
-
-there are a few values that relate to each other. Take, for example, the ECG results and the ST depression. These both have to do with the ECG results. Attributes can now be examined to see whether they show any notable differences.
-
-First, let's have a look at the cholesterol and the Exercise angina. As told earlier, exercise angina is a narrowed blood vessels that deliver oxygen/nutrients to heart. It can be examined whether there may be a relationship between these two. Because a narrowed blood vessel can be caused by high cholesterol, according to ... 
-
-```{r}
-boxplot(data$Cholesterol ~ data$Exercise.angina)
-boxplot(data$Max.HR ~ data$Thallium)
-```
-
-...
-
-### 2.5 Class distribution
+### Class distribution
 
 For our model it's important to know how the classes are distributed. We
 can have a big dataset, but if it's only "absence" people, we can't say
@@ -344,7 +336,88 @@ ggplot(df, aes(x = "", y = value, fill = group)) +
 As you can see, the classes are not exactly evenly represented. But it
 certainly has no major deviation.
 
-### 2.6 Corrolation between attributes
+\newpage
+
+## Bivariate analysis
+
+In this sector, not one, but several variables are considered. By this we mean that we will look at each other. For example, how much correlation certain attributes have. First, we will compare age between groups
+
+### Age difference between class
+
+Perhaps the most global characteristic to look at first is age. Let's take a closer look at the patients and perhaps spot some initial differences. Maybe a conclusion can already be drawn with this attribute. You would think that patients are more likely to develop a disease as they get older.
+
+```{r}
+age.frame <- data.frame(
+  Patient = c(rep("Presence", length(data$Age[data$Heart.Disease == "Presence"])
+), rep("Absence", length(data$Age[data$Heart.Disease == "Absence"])
+)),
+  values = c(data$Age[data$Heart.Disease == "Presence"], data$Age[data$Heart.Disease == "Absence"])
+)
+
+ggplot(age.frame, aes(x = Patient, y = values, color=Patient)) + geom_boxplot() + labs(title = "Boxplot from patients age", subtitle = "Ages between presence and Absence") + theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), plot.subtitle = element_text(hjust = 0.5)) 
+```
+
+The results show that the age is slightly higher in the presence group.
+It can be concluded that patients with a presence-condition are often
+slightly older.
+
+we can test this by performing a statistical test.
+
+```{r}
+test <- t.test(data$Age[data$Heart.Disease == "Presence"], data$Age[data$Heart.Disease == "Absence"], alternative = "greater")
+cat("P-value: ", test$p.value)
+```
+
+The P-value of the test is 0.0001763. This means that with alpha = 0.05, the P-value is less than 0.05. There is a significant age difference between the presence and absence groups. The average age in the group with heart disease is significantly higher.
+
+### Comparing related attributes
+
+There are a few values that relate to each other. Values can be related to each other, but that doesn't necessarily mean anything. Let's see if differences can be spotted between attributes that are related to each other.
+
+First, let's have a look at the cholesterol and the Exercise angina. As told earlier, exercise angina is a narrowed blood vessels that deliver oxygen/nutrients to heart. It can be examined whether there may be a relationship between these two. Because a narrowed blood vessel can be caused by high cholesterol **(Harvard Health, 2021)**.
+
+```{r}
+related.frame <- data.frame(
+  labs = c(
+    rep("1", length(data$Exercise.angina[data$Exercise.angina == "1"])),
+    rep("0", length(data$Exercise.angina[data$Exercise.angina == "0"]))),
+  values = c(data$Cholesterol[data$Exercise.angina == "1"], data$Cholesterol[data$Exercise.angina == "0"]))
+
+
+ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot()
+```
+
+the boxes of the boxplot differ slightly, but this does not seem to be a big difference. Let's confirm this with a statistical test.
+
+```{r}
+test <- t.test(data$Cholesterol[data$Exercise.angina == "0"], data$Cholesterol[data$Exercise.angina == "1"], alternative = "two.sided")
+cat("P-value: ", test$p.value)
+```
+
+as expected, the p-value (0.182) is greater than 0.05. So there is no significant difference between the two groups.
+
+There are two more attributes that might be interesting. People with a heart condition often have an abnormal heart rate **(Perret‐Guillaume et al., 2009)**. It is possible to make this comparison and see if there is a difference. However, we are talking about the maximum heart rate here. This may therefore be different from the heart rate at rest.
+
+```{r}
+related.frame <- data.frame(
+  labs = c(
+    rep("Presence", length(data$Heart.Disease[data$Heart.Disease == "Presence"])),
+    rep("Absence", length(data$Heart.Disease[data$Heart.Disease == "Absence"]))),
+  values = c(data$Max.HR[data$Heart.Disease == "Presence"], data$Max.HR[data$Heart.Disease == "Absence"]))
+
+ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot()
+```
+
+```{r}
+test <- t.test(data$Max.HR[data$Heart.Disease == "Presence"], data$Max.HR[data$Heart.Disease == "Absence"], alternative = "two.sided")
+cat("P-value: ", test$p.value)
+```
+
+as the test shows, there is a significant difference. But these results are not entirely conclusive. As age increases, the maximum heart rate also decreases. With this figure and test no conclusion can be drawn about this comparison.
+
+\newpage
+
+### Corrolation between attributes
 
 As mentioned earlier, the main goal of this research was to develop a
 machine learning model. For this model, it is useful to see which
@@ -356,6 +429,8 @@ ggpairs( data[numeric.columns], ggplot2::aes(colour=data$Heart.Disease), progres
 
 The figure above shows a number of things. It shows the similarities between all variables. By looking at the points you can see how much correlation they have. However, it is of course much clearer to simply attach a number to the correlation. This happens below.
 
+\newpage
+
 ```{r}
 colMA <- function(n = 3) {
   colorRampPalette(c("#F4DF4EFF", "#949398FF"), space = "rgb")(n)
@@ -364,26 +439,51 @@ colMA <- function(n = 3) {
 # plotting corr heatmap
 ggcorrplot(cor(data[numeric.columns]), colors = colMA(), 
            lab = T, lab_col = "white", lab_size = 3)
-
 ```
 
-# ToDo:
+The output tells us that there are some values that are slightly to moderately correlated. Blood pressure and age have the highest correlation. Furthermore, there are no values that stand out. ST depression and maximum heart rate have the least correlation
 
-- Translate boxplots to GGPLOT2
-- Add some proper english/conclusions -> link: https://www.health.harvard.edu/heart-health/angina-symptoms-diagnosis-and-treatments
-- Tussen twee nominale waardes: kruistabel en/of Chi^2 toets
+Conclusion:
+
+- BP and Age have the highest corr
+- There are no major correlations that could cause any over fitting
+
+\newpage
+
+### Cisq
+
+In the last part of the EDA we will look at some similarities between ordinal values. First of all, let's see if age still has an influence. We do this in this section because it concerns a comparison with two ordinal groups. For this we must use the Chi-square test
+
+```{r}
+table(data$Sex, data$Heart.Disease)
+chisq.test(data$Sex, data$Heart.Disease, correct = FALSE)
+```
+The table already shows that there is a difference of 80 between men and women. The p-value is less than 0.05 and this therefore rejects the null hypothesis: independent.
+
+- The attributes Sex and Heart.disease are strongly related to each other
+
+Take for example the ECG results and the ST depression. These are both related to the ECG results. Let's see if these values are actually related to each other
+
+```{r}
+chisq.test(data$Slope.of.ST, data$EKG.results, correct = FALSE)
+```
+
+The test shows that the p-value is again less than 0.05. However, this is only slightly smaller than 0.05. It is not possible to draw a conclusion from this. That's strange, because Slope.ST says something about the EKG results. But this can of course be due to many factors.
+
+\newpage
 
 ```{=tex}
 \begin{thebibliography}{9}
 
-\bibitem{exercise_induced_angina}
-Cancer Statistics (2020, 25 september).: \textit{National Cancer Institute}.
+\bibitem{angina_chol}
+Harvard Health. (2021, 21 september).: \textit{Angina: Symptoms, diagnosis and Treatments}. 
+<https://www.health.harvard.edu/heart-health/angina-symptoms-diagnosis-and-treatments>
+
+\bibitem{maxHR}
+Perret‐Guillaume, C., Joly, L. Bénétos, A. (2009).: \textit{Heart rate as a risk factor for cardiovascular disease. Progress in Cardiovascular Diseases, 52(1), 6–10}
 
 \end{thebibliography}
 ```
-
-cite: apa bron generator.
-
 
 
 
