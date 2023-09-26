@@ -3,8 +3,9 @@ title: "Thema 09 - ML log"
 author: "Mark van de Streek"
 date: "`r Sys.Date()`"
 output:
-    pdf_document:
-      number_sections: yes
+  pdf_document:
+    number_sections: yes
+  word_document: default
 editor_options:
   markdown:
     wrap: 72
@@ -36,13 +37,9 @@ library(gridExtra)
 
 # Introduction
 
-Vraag: Welke medische eigenschappen zijn belangrijk om zo nauwkeurig
-mogelijk een hart aandoening/afwijking te voorspellen?
 
-Dataset:
-<https://www.kaggle.com/datasets/thedevastator/predicting-heart-disease-risk-using-clinical-var>
 
-This study examines a dataset on predicting heart disease based on
+This study examines a dataset \cite{dataset} on predicting heart disease based on
 clinical variables.
 
 The ultimate goal of this research is to create a machine learning model
@@ -50,24 +47,35 @@ that predicts whether a patient has heart disease.
 
 The dataset contains data from people with and without a heart disease.
 The last column shows whether the patient has heart disease (presence)
-or not (absence).
+or not (absence). The logbook often refers to the classification column. It is then referred to as "presence" and "absence" of heart disease.
+
+research question of the research: Which medical properties are important to be so accurate
+possible to predict a heart condition/abnormality?
 
 ## Details of the data
 
-Where did the data came from?
-what the dependent / class variable is?
+The dataset contains data from 270 patients. There are 13 independent predictive variables for each patient. These variables are described in further detail in the codebook.
+
+The dataset comes from the UCI repository. The Machine Learning Repository (UCI Repository) is a collection of databases and domains used by the machine learning community to create machine learning algorithms.
+
+The dataset was created and merged by the following 4 agencies:
+
+1. Hungarian Institute of Cardiology. Budapest: Andras Janosi, M.D.
+2. University Hospital, Zurich, Switzerland: William Steinbrunn, M.D.
+3. University Hospital, Basel, Switzerland: Matthias Pfisterer, M.D.
+4. V.A. Medical Center, Long Beach and Cleveland Clinic Foundation: Robert Detrano, M.D., Ph.D.
+
+The data was all collected in medical institutions. Good to remember that there can be a difference between medical equipment. However, these are of course not cheap devices that are found in the living room at home, for example. So the deviation will not be very large
 
 \newpage
 
 # Exploration of the data
 
-This study examines a dataset on predicting heart disease based on
-clinical variables. This means that distribution will be inspected,
-among other important subjects.
+In the very first part of this logbook, the data will be examined exploratively. I.e., for example, the distribution of values, correlations, characteristics, etc. is looked at. This is all explained below.
 
 ## Data structure and Codebook
 
-...
+As described in the introduction, the attributes in the data set must first be examined more closely. This is done using a code book. This codebook is then also used to put the attributes in the correct data type.
 
 ### Reading the data
 
@@ -278,7 +286,10 @@ numeric.frame <- data.frame(
   rep("Max.HR", length(data$Max.HR))),
   values = c(data$Age, data$BP, data$Cholesterol, data$Max.HR))
 
-ggplot(numeric.frame, aes(x=labs, y=values, colour = labs)) + theme(legend.position = "top") + coord_flip() + geom_violin(trim = F, alpha = 1) + geom_jitter(position=position_jitter(0.2), alpha = 0.2)
+ggplot(numeric.frame, aes(x=labs, y=values, colour = labs)) + 
+  theme(legend.position = "top") + coord_flip() + 
+  geom_violin(trim = F, alpha = 1) + geom_jitter(position=position_jitter(0.2), 
+                                                 alpha = 0.2)
 ```
 The data contains few outliers. Only the cholesterol value has a number of points that differ slightly. But looking at the distribution, it still looks normal. We can conclude that:
 
@@ -330,7 +341,10 @@ ggplot(df, aes(x = "", y = value, fill = group)) +
   geom_col(color = "black") +
   geom_text(aes(label = value),
             position = position_stack(vjust = 0.5)) +
-  coord_polar(theta = "y") + labs(title = "Pie chart of class distribution", subtitle = "The number of people per group") + theme_void() + theme(legend.position = "bottom", plot.title = element_text(face = "bold", size = 18, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) 
+  coord_polar(theta = "y") + labs(title = "Pie chart of class distribution", 
+  subtitle = "The number of people per group") + theme_void() + 
+  theme(legend.position = "bottom", plot.title = element_text(face = "bold", 
+      size = 18, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) 
 ```
 
 As you can see, the classes are not exactly evenly represented. But it
@@ -351,10 +365,15 @@ age.frame <- data.frame(
   Patient = c(rep("Presence", length(data$Age[data$Heart.Disease == "Presence"])
 ), rep("Absence", length(data$Age[data$Heart.Disease == "Absence"])
 )),
-  values = c(data$Age[data$Heart.Disease == "Presence"], data$Age[data$Heart.Disease == "Absence"])
+  values = c(data$Age[data$Heart.Disease == "Presence"], 
+             data$Age[data$Heart.Disease == "Absence"])
 )
 
-ggplot(age.frame, aes(x = Patient, y = values, color=Patient)) + geom_boxplot() + labs(title = "Boxplot from patients age", subtitle = "Ages between presence and Absence") + theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), plot.subtitle = element_text(hjust = 0.5)) 
+ggplot(age.frame, aes(x = Patient, y = values, color=Patient)) + 
+  geom_boxplot() + labs(title = "Boxplot from patients age", 
+                        subtitle = "Ages between presence and Absence") + 
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), 
+        plot.subtitle = element_text(hjust = 0.5)) 
 ```
 
 The results show that the age is slightly higher in the presence group.
@@ -364,7 +383,8 @@ slightly older.
 we can test this by performing a statistical test.
 
 ```{r}
-test <- t.test(data$Age[data$Heart.Disease == "Presence"], data$Age[data$Heart.Disease == "Absence"], alternative = "greater")
+test <- t.test(data$Age[data$Heart.Disease == "Presence"], 
+       data$Age[data$Heart.Disease == "Absence"], alternative = "greater")
 cat("P-value: ", test$p.value)
 ```
 
@@ -381,7 +401,8 @@ related.frame <- data.frame(
   labs = c(
     rep("1", length(data$Exercise.angina[data$Exercise.angina == "1"])),
     rep("0", length(data$Exercise.angina[data$Exercise.angina == "0"]))),
-  values = c(data$Cholesterol[data$Exercise.angina == "1"], data$Cholesterol[data$Exercise.angina == "0"]))
+  values = c(data$Cholesterol[data$Exercise.angina == "1"], 
+             data$Cholesterol[data$Exercise.angina == "0"]))
 
 
 ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot()
@@ -390,7 +411,9 @@ ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot()
 the boxes of the boxplot differ slightly, but this does not seem to be a big difference. Let's confirm this with a statistical test.
 
 ```{r}
-test <- t.test(data$Cholesterol[data$Exercise.angina == "0"], data$Cholesterol[data$Exercise.angina == "1"], alternative = "two.sided")
+test <- t.test(data$Cholesterol[data$Exercise.angina == "0"],
+               data$Cholesterol[data$Exercise.angina == "1"], 
+               alternative = "two.sided")
 cat("P-value: ", test$p.value)
 ```
 
@@ -403,13 +426,16 @@ related.frame <- data.frame(
   labs = c(
     rep("Presence", length(data$Heart.Disease[data$Heart.Disease == "Presence"])),
     rep("Absence", length(data$Heart.Disease[data$Heart.Disease == "Absence"]))),
-  values = c(data$Max.HR[data$Heart.Disease == "Presence"], data$Max.HR[data$Heart.Disease == "Absence"]))
+  values = c(data$Max.HR[data$Heart.Disease == "Presence"], 
+             data$Max.HR[data$Heart.Disease == "Absence"]))
 
 ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot()
 ```
 
 ```{r}
-test <- t.test(data$Max.HR[data$Heart.Disease == "Presence"], data$Max.HR[data$Heart.Disease == "Absence"], alternative = "two.sided")
+test <- t.test(data$Max.HR[data$Heart.Disease == "Presence"], 
+               data$Max.HR[data$Heart.Disease == "Absence"], 
+               alternative = "two.sided")
 cat("P-value: ", test$p.value)
 ```
 
@@ -421,10 +447,11 @@ as the test shows, there is a significant difference. But these results are not 
 
 As mentioned earlier, the main goal of this research was to develop a
 machine learning model. For this model, it is useful to see which
-attributes may be important.
+attributes may be important. We will compare all numeric attributes with each other. The goal is to demonstrate similarities or differences.
 
 ```{r}
-ggpairs( data[numeric.columns], ggplot2::aes(colour=data$Heart.Disease), progress = F, upper = "blank")
+ggpairs( data[numeric.columns], ggplot2::aes(colour=data$Heart.Disease), 
+         progress = F, upper = "blank")
 ```
 
 The figure above shows a number of things. It shows the similarities between all variables. By looking at the points you can see how much correlation they have. However, it is of course much clearer to simply attach a number to the correlation. This happens below.
@@ -445,14 +472,14 @@ The output tells us that there are some values that are slightly to moderately c
 
 Conclusion:
 
-- BP and Age have the highest corr
-- There are no major correlations that could cause any over fitting
+- BP and Age have the highest correlation
+- There are no major correlations that *could* cause any over fitting
 
 \newpage
 
-### Cisq
+### Similarities in the nominal attributes
 
-In the last part of the EDA we will look at some similarities between ordinal values. First of all, let's see if age still has an influence. We do this in this section because it concerns a comparison with two ordinal groups. For this we must use the Chi-square test
+In the last part of the EDA we will look at some similarities between ordinal values. First of all, let's see if sex still has an influence. We do this in this section because it concerns a comparison with two ordinal groups. For this we must use the Chi-square test
 
 ```{r}
 table(data$Sex, data$Heart.Disease)
@@ -473,7 +500,10 @@ The test shows that the p-value is again less than 0.05. However, this is only s
 \newpage
 
 ```{=tex}
-\begin{thebibliography}{9}
+\begin{thebibliography}{3}
+
+\bibitem{dataset}
+(2023, 12 januari).: \textit{Predicting heart disease using clinical variables}. <https://www.kaggle.com/datasets/thedevastator/predicting-heart-disease-risk-using-clinical-var>
 
 \bibitem{angina_chol}
 Harvard Health. (2021, 21 september).: \textit{Angina: Symptoms, diagnosis and Treatments}. 
