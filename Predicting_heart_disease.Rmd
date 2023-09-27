@@ -539,6 +539,29 @@ Perret‐Guillaume, C., Joly, L. Bénétos, A. (2009).: \textit{Heart rate as a 
 
 # Clean Dataset
 
-As told earlier, some columns have been log10 transformed. We are now going to make a 'clean' dataset. I.e., a dataset with usable columns and ...
+As told earlier, some columns have been log10 transformed. We are now going to make a 'clean' dataset. I.e., a dataset with usable columns and with the right range.
+
+Let's delete the index column. This column is unnecessary and we don't need it for our machine learning model later on.
+
+```{r}
+data <- data[ -c(1) ]
+```
+
+Now let's add columns for transformation. We have already told you for which column this is necessary. We will simply add a new column to the dataset with transformation. This is because we can always reuse the original data if we need it.
+
+```{r}
+data$Cholesterol.transformed <- log10(data$Cholesterol)
+data$ST.depression.transformed <- log10(data$ST.depression)
+```
+
+For the clean dataset it is also easy to read a number of values more quickly. Numbers cannot be read quickly, so we will convert some (simple) values into words. It becomes very confusing to convert all the ordinal attributes into words/description
+
+```{r}
+levels(data$Sex) <- c("Male", "Female")
+levels(data$FBS.over.120) <- c(FALSE, TRUE)
+levels(data$Exercise.angina) <- c("No", "Yes")
+```
+
+
 
 resultaten zijn objectief en de discussie is subjectief.
