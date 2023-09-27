@@ -1,5 +1,5 @@
 ---
-title: "Thema 09 - ML log"
+title: "Predicting Heart Disease"
 author: "Mark van de Streek"
 date: "`r Sys.Date()`"
 output:
@@ -262,20 +262,27 @@ Looking at the ST.depression, thit column has a wide range between minimum and m
 Now let's look at the distribution. This may give us a slightly clearer picture
 
 ```{r}
-c1 <- ggplot(data, aes(x=log10(Age))) + geom_histogram(bins = 15)
-c2 <- ggplot(data, aes(x=log10(BP))) + geom_histogram(bins = 10)
-c3 <- ggplot(data, aes(x=log10(Cholesterol))) + geom_histogram(bins = 40)
-c4 <- ggplot(data, aes(x=log10(Max.HR))) + geom_histogram(bins = 30)
-c5 <- ggplot(data, aes(x=log10(ST.depression))) + geom_histogram(bins = 30)
+c1 <- ggplot(data, aes(x=Age)) + geom_histogram(bins = 15) + 
+  labs(title = "Distribution Age Attribute")
+c2 <- ggplot(data, aes(x=BP)) + geom_histogram(bins = 10) + 
+  labs(title = "Distribution Blood pressure Attribute")
+c3 <- ggplot(data, aes(x = log10(Cholesterol))) + geom_histogram(bins = 40) + 
+  labs(title = "Distribution Cholesterol Attribute")
+c4 <- ggplot(data, aes(x=Max.HR)) + geom_histogram(bins = 30) + 
+  labs(title = "Distribution Max. heart rate Attribute")
+c5 <- ggplot(data, aes(x=log10(ST.depression))) + geom_histogram(bins = 30) + 
+  labs(title = "Distribution ST depression Attribute")
 
 grid.arrange(c1,c2,c3,c4,c5, ncol = 2)
 ```
 
 The above graphs tells us that Cholesterol is quite well distributed. The same can be said for BP. Max.HR, Age and ST.depression appears to be split more towards the right.
 
+The data of ST depression and cholesterol is log10 transformed. This is done because the data showed quite a different view. With an log10 transformation, the data is more observable.
+
 \newpage
 
-With the distributions displayed, we can then begin to identify *possible* outliers.
+With the distributions displayed, we can then begin to identify *possible* outliers. For this we use a violin plot. That's because a violin plot allows you to examine the distribution of the data and spot some outliers. It can also be immediately seen whether the outliers have a strong influence on the distribution.
 
 ```{r}
 numeric.frame <- data.frame(
@@ -289,7 +296,9 @@ numeric.frame <- data.frame(
 ggplot(numeric.frame, aes(x=labs, y=values, colour = labs)) + 
   theme(legend.position = "top") + coord_flip() + 
   geom_violin(trim = F, alpha = 1) + geom_jitter(position=position_jitter(0.2), 
-                                                 alpha = 0.2)
+                                                 alpha = 0.2) +
+  labs(title = "Violin plot from the numeric attributes") +
+  xlab("Attributes") + ylab("Values")
 ```
 The data contains few outliers. Only the cholesterol value has a number of points that differ slightly. But looking at the distribution, it still looks normal. We can conclude that:
 
@@ -300,7 +309,7 @@ The data contains few outliers. Only the cholesterol value has a number of point
 
 #### Variation of nominal/ordinal attributes
 
-Let's look at the nominal values new. We are going to plot how often these occur.
+Let's look at the nominal values new. We are going to plot how often these occur. This is to be able to see whether all classes are represented.
 
 ```{r}
 p1 <- ggplot(data, aes(x = Sex, colour = Sex)) + geom_bar()
@@ -313,7 +322,8 @@ p7 <- ggplot(data, aes(x = Number.of.vessels.fluro)) + geom_bar()
 p8 <- ggplot(data, aes(x = Thallium, colour = Thallium)) + geom_bar()
 p9 <- ggplot(data, aes(x = Heart.Disease, colour = Heart.Disease)) + geom_bar()
 
-grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9, ncol = 3)
+grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9, ncol = 3, 
+             top = "Barplots of all the nominal/ordinal valus")
 ```
 
 The dataset contains more man than women. Most values lean towards 'healthy' people. There are also more people who do not have a condition than do. So this difference partly comes from here. However, there are also many people who do have a condition, but have few or no complaints, for example, see figure Chest.pain.type. 
@@ -405,7 +415,11 @@ related.frame <- data.frame(
              data$Cholesterol[data$Exercise.angina == "0"]))
 
 
-ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot()
+ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot() +
+  labs(title = "Boxplot from Exercise angina against cholesterol", 
+                        subtitle = "0 = No, 1 = Yes") + 
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), 
+        plot.subtitle = element_text(hjust = 0.5)) 
 ```
 
 the boxes of the boxplot differ slightly, but this does not seem to be a big difference. Let's confirm this with a statistical test.
@@ -429,7 +443,11 @@ related.frame <- data.frame(
   values = c(data$Max.HR[data$Heart.Disease == "Presence"], 
              data$Max.HR[data$Heart.Disease == "Absence"]))
 
-ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot()
+ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot() +
+  labs(title = "Boxplot from disease against Heart rate", 
+                        subtitle = "Heart rate as maximum heart rate") + 
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), 
+        plot.subtitle = element_text(hjust = 0.5)) + xlab("Group") 
 ```
 
 ```{r}
@@ -451,7 +469,9 @@ attributes may be important. We will compare all numeric attributes with each ot
 
 ```{r}
 ggpairs( data[numeric.columns], ggplot2::aes(colour=data$Heart.Disease), 
-         progress = F, upper = "blank")
+         progress = F, upper = "blank") + 
+  labs(title = "Pairplot of the numeric attributes") + 
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20)) 
 ```
 
 The figure above shows a number of things. It shows the similarities between all variables. By looking at the points you can see how much correlation they have. However, it is of course much clearer to simply attach a number to the correlation. This happens below.
@@ -465,7 +485,9 @@ colMA <- function(n = 3) {
 
 # plotting corr heatmap
 ggcorrplot(cor(data[numeric.columns]), colors = colMA(), 
-           lab = T, lab_col = "white", lab_size = 3)
+           lab = T, lab_col = "white", lab_size = 3) +
+  labs(title = "Correlation Heatmap of the numeric attributes") + 
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20)) 
 ```
 
 The output tells us that there are some values that are slightly to moderately correlated. Blood pressure and age have the highest correlation. Furthermore, there are no values that stand out. ST depression and maximum heart rate have the least correlation
@@ -515,5 +537,8 @@ Perret‐Guillaume, C., Joly, L. Bénétos, A. (2009).: \textit{Heart rate as a 
 \end{thebibliography}
 ```
 
+# Clean Dataset
 
+As told earlier, some columns have been log10 transformed. We are now going to make a 'clean' dataset. I.e., a dataset with usable columns and ...
 
+resultaten zijn objectief en de discussie is subjectief.
