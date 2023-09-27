@@ -1,0 +1,42 @@
+---
+title: "Verslag voorspellen van hartaandoeningen"
+author: "Mark van de Streek"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Results
+
+In dit onderdeel zullen de belangrijkste resulaten en bevindingen uit het onderzoek worden getoond. Deze resultaten zullen worden bekrachtig met figuren en/of tabellen.
+
+Allereerst is dit onderzoek begonnen met de exploratieve data analyse (EDA). In dit onderdeel is er gekeken naar verschillende aspecten van de dataset. Neem bijvoorbeeld de samenhang van verschillede attributen of de verdeling van bepaalde variabelen.
+
+Een EDA begint met een aantal algemene eigenschappen van de data. Om te beginnen, de grootte/dimensies van de data. De dataset bevat 15 kolommen en 270 rijen. De dataset bevat dus data van 270 patiënten.
+
+Vervolgens werd er gekeken naar de classificatie variabele. Deze variabele is belangrijk voor het ontwikkelen van het machine learning model. Het model wordt gebaseerd/getraind op deze kolom in je data. De verdeling van dit attribuut wordt onderstaand weergegeven in tabel 1.
+
+| Groepverdeling | Presence (aanwezig) | Absence (afwezig) |
+|----------------|---------------------|-------------------|
+| Aantal         | 120                 | 150               |
+
+: Tabel 1: Verdeling classificatie variabele
+
+Zoals eerder vermeld bestaat de EDA uit twee onderdelen. Allereerst wordt er gekeken naar univerate analyse.
+
+![Verdeling van de numerieke attributen](images/00008c.png)
+
+# Discussie en Conclusie
+
+## Discussie
+
+-   Compare your results with what is expecting from the literature and discuss differences with them.
+-   Discuss striking and surprising results.
+-   Discuss weaknesses in your research and how they could be addressed.
+
+## Algemene conclusie en perspectief
+
+Discuss what your goal was, what the end result is and how you could continue working from here.

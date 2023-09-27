@@ -263,15 +263,28 @@ Now let's look at the distribution. This may give us a slightly clearer picture
 
 ```{r}
 c1 <- ggplot(data, aes(x=Age)) + geom_histogram(bins = 15) + 
-  labs(title = "Distribution Age Attribute")
+  labs(title = "Distribution Age Attribute") + xlab("Age (in years)") + 
+  theme(axis.title.x = element_text(colour = "red", size = 8))
+
 c2 <- ggplot(data, aes(x=BP)) + geom_histogram(bins = 10) + 
-  labs(title = "Distribution Blood pressure Attribute")
+  labs(title = "Distribution Blood pressure Attribute") + 
+  xlab("Blood pressure (in mm/HG)") + theme(axis.title.x = 
+                                  element_text(colour = "red", size = 8))
+
 c3 <- ggplot(data, aes(x = log10(Cholesterol))) + geom_histogram(bins = 40) + 
-  labs(title = "Distribution Cholesterol Attribute")
+  labs(title = "Distribution Cholesterol Attribute") + 
+  xlab("log10 of Cholesterol in mg/dl") + 
+  theme(axis.title.x = element_text(colour = "red", size = 8))
+
 c4 <- ggplot(data, aes(x=Max.HR)) + geom_histogram(bins = 30) + 
-  labs(title = "Distribution Max. heart rate Attribute")
+  labs(title = "Distribution Max. heart rate Attribute") + 
+  xlab("Heart beats (per minute)") + theme(axis.title.x = 
+                                    element_text(colour = "red", size = 8))
+
 c5 <- ggplot(data, aes(x=log10(ST.depression))) + geom_histogram(bins = 30) + 
-  labs(title = "Distribution ST depression Attribute")
+  labs(title = "Distribution ST depression Attribute") + 
+  xlab("ST depression (in relative with the state of rest)") +
+  theme(axis.title.x = element_text(colour = "red", size = 8))
 
 grid.arrange(c1,c2,c3,c4,c5, ncol = 2)
 ```
