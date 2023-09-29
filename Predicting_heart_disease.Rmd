@@ -37,8 +37,6 @@ library(gridExtra)
 
 # Introduction
 
-
-
 This study examines a dataset \cite{dataset} on predicting heart disease based on
 clinical variables.
 
@@ -67,6 +65,10 @@ The dataset was created and merged by the following 4 agencies:
 
 The data was all collected in medical institutions. Good to remember that there can be a difference between medical equipment. However, these are of course not cheap devices that are found in the living room at home, for example. So the deviation will not be very large
 
+## What is heart disease?
+
+What is a heart disease and how many people have one. Why is this research important?
+
 \newpage
 
 # Exploration of the data
@@ -75,17 +77,9 @@ In the very first part of this logbook, the data will be examined exploratively.
 
 ## Data structure and Codebook
 
-As described in the introduction, the attributes in the data set must first be examined more closely. This is done using a code book. This codebook is then also used to put the attributes in the correct data type.
-
 ### Reading the data
 
-First, the data is going to be loaded in R. This is done below. The
-pander library is being used for a good but simple overview of the data.
-And lastly, the data will be put in the right datatype.
-
-It's important to have the variables in the right datatype, because this
-is very important for our machine learning model. More on that, later in
-the research.
+Loading the data from the .csv file.
 
 ```{r}
 data <- read.csv("Heart_Disease_Prediction.csv", header = T, sep = ",")
@@ -205,16 +199,8 @@ dims <- dim(data)
 sprintf("Amount of rows: %.f, amount of columns: %.f", dims[1], dims[2])
 ```
 
-The data contains 270 rows. That means there is data from 270 patients.
-And for all these patients there are 14 values that say something about
+The data contains 270 rows. That means there is data from 270 patients. This corresponds to expectations. For all these patients there are 14 values that say something about
 that pearson. Not 15 because the first column is the index.
-
-It can be concluded that this dataset is fits well for the goal we want
-to achieve. This because it contains a couple of important variables
-that can say something about our patient and most important, the data
-has a classification column. With classification column will allow to
-train our model later on. However, we have not yet looked at all
-research topics to draw this conclusion.
 
 ### Missing values
 
@@ -271,12 +257,44 @@ c2 <- ggplot(data, aes(x=BP)) + geom_histogram(bins = 10) +
   xlab("Blood pressure (in mm/HG)") + theme(axis.title.x = 
                                   element_text(colour = "red", size = 8))
 
-c3 <- ggplot(data, aes(x = log10(Cholesterol))) + geom_histogram(bins = 40) + 
+c3 <- ggplot(data, aes(x = Cholesterol)) + geom_histogram(bins = 40) + 
   labs(title = "Distribution Cholesterol Attribute") + 
   xlab("log10 of Cholesterol in mg/dl") + 
   theme(axis.title.x = element_text(colour = "red", size = 8))
 
 c4 <- ggplot(data, aes(x=Max.HR)) + geom_histogram(bins = 30) + 
+  labs(title = "Distribution Max. heart rate Attribute") + 
+  xlab("Heart beats (per minute)") + theme(axis.title.x = 
+                                    element_text(colour = "red", size = 8))
+
+c5 <- ggplot(data, aes(x=ST.depression)) + geom_histogram(bins = 30) + 
+  labs(title = "Distribution ST depression Attribute") + 
+  xlab("ST depression (in relative with the state of rest)") +
+  theme(axis.title.x = element_text(colour = "red", size = 8))
+
+grid.arrange(c1,c2,c3,c4,c5, ncol = 2)
+```
+
+The above graphs tells us that Cholesterol is quite well normal distributed. The same can be said for BP. Max.HR and Age appears to be split more towards the right. ST.depression shows a very high peak at the first bin.
+
+Let's transform the data with log10 and see if the distribution is better/more observable.
+
+```{r}
+c1 <- ggplot(data, aes(x=log10(Age))) + geom_histogram(bins = 15) + 
+  labs(title = "Distribution Age Attribute") + xlab("Age (in years)") + 
+  theme(axis.title.x = element_text(colour = "red", size = 8))
+
+c2 <- ggplot(data, aes(x=log10(BP))) + geom_histogram(bins = 10) + 
+  labs(title = "Distribution Blood pressure Attribute") + 
+  xlab("Blood pressure (in mm/HG)") + theme(axis.title.x = 
+                                  element_text(colour = "red", size = 8))
+
+c3 <- ggplot(data, aes(x = log10(Cholesterol))) + geom_histogram(bins = 40) + 
+  labs(title = "Distribution Cholesterol Attribute") + 
+  xlab("log10 of Cholesterol in mg/dl") + 
+  theme(axis.title.x = element_text(colour = "red", size = 8))
+
+c4 <- ggplot(data, aes(x=log10(Max.HR))) + geom_histogram(bins = 30) + 
   labs(title = "Distribution Max. heart rate Attribute") + 
   xlab("Heart beats (per minute)") + theme(axis.title.x = 
                                     element_text(colour = "red", size = 8))
@@ -289,9 +307,7 @@ c5 <- ggplot(data, aes(x=log10(ST.depression))) + geom_histogram(bins = 30) +
 grid.arrange(c1,c2,c3,c4,c5, ncol = 2)
 ```
 
-The above graphs tells us that Cholesterol is quite well distributed. The same can be said for BP. Max.HR, Age and ST.depression appears to be split more towards the right.
-
-The data of ST depression and cholesterol is log10 transformed. This is done because the data showed quite a different view. With an log10 transformation, the data is more observable.
+The cholesteral attribute is good normal distributed now. ST.depression is not good normal distributed but is more readable.
 
 \newpage
 
@@ -313,6 +329,23 @@ ggplot(numeric.frame, aes(x=labs, y=values, colour = labs)) +
   labs(title = "Violin plot from the numeric attributes") +
   xlab("Attributes") + ylab("Values")
 ```
+
+```{r}
+numeric.frame <- data.frame(age = rep("Age", length(data$Age)),
+                            BP = rep("BP", length(data$BP)),
+                            age_value = data$Age,
+                            BP.value = data$BP
+  )
+
+ggplot(numeric.frame, aes(x=BP, y=BP.value, colour = BP)) + 
+  theme(legend.position = "top") + coord_flip() + 
+  geom_violin(trim = F, alpha = 1) + geom_jitter(position=position_jitter(0.2), 
+                                                 alpha = 0.2) +
+  labs(title = "Violin plot from the numeric attributes") +
+  xlab("Attributes") + ylab("Values")
+```
+
+
 The data contains few outliers. Only the cholesterol value has a number of points that differ slightly. But looking at the distribution, it still looks normal. We can conclude that:
 
 - There are no major deviations in the distribution of the data
@@ -325,15 +358,15 @@ The data contains few outliers. Only the cholesterol value has a number of point
 Let's look at the nominal values new. We are going to plot how often these occur. This is to be able to see whether all classes are represented.
 
 ```{r}
-p1 <- ggplot(data, aes(x = Sex, colour = Sex)) + geom_bar()
-p2 <- ggplot(data, aes(x = Chest.pain.type, colour = Chest.pain.type)) + geom_bar()
-p3 <- ggplot(data, aes(x = FBS.over.120, colour = FBS.over.120)) + geom_bar()
-p4 <- ggplot(data, aes(x = EKG.results, colour = EKG.results)) + geom_bar()
-p5 <- ggplot(data, aes(x = Exercise.angina, colour = Exercise.angina)) + geom_bar()
-p6 <- ggplot(data, aes(x = Slope.of.ST, colour = Slope.of.ST)) + geom_bar()
+p1 <- ggplot(data, aes(x = Sex, fill = Sex)) + geom_bar()
+p2 <- ggplot(data, aes(x = Chest.pain.type, fill = Chest.pain.type)) + geom_bar()
+p3 <- ggplot(data, aes(x = FBS.over.120, fill = FBS.over.120)) + geom_bar()
+p4 <- ggplot(data, aes(x = EKG.results, fill = EKG.results)) + geom_bar()
+p5 <- ggplot(data, aes(x = Exercise.angina, fill = Exercise.angina)) + geom_bar()
+p6 <- ggplot(data, aes(x = Slope.of.ST, fill = Slope.of.ST)) + geom_bar()
 p7 <- ggplot(data, aes(x = Number.of.vessels.fluro)) + geom_bar()
-p8 <- ggplot(data, aes(x = Thallium, colour = Thallium)) + geom_bar()
-p9 <- ggplot(data, aes(x = Heart.Disease, colour = Heart.Disease)) + geom_bar()
+p8 <- ggplot(data, aes(x = Thallium, fill = Thallium)) + geom_bar()
+p9 <- ggplot(data, aes(x = Heart.Disease, fill = Heart.Disease)) + geom_bar()
 
 grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9, ncol = 3, 
              top = "Barplots of all the nominal/ordinal valus")
@@ -388,15 +421,15 @@ age.frame <- data.frame(
   Patient = c(rep("Presence", length(data$Age[data$Heart.Disease == "Presence"])
 ), rep("Absence", length(data$Age[data$Heart.Disease == "Absence"])
 )),
-  values = c(data$Age[data$Heart.Disease == "Presence"], 
+  years = c(data$Age[data$Heart.Disease == "Presence"], 
              data$Age[data$Heart.Disease == "Absence"])
 )
 
-ggplot(age.frame, aes(x = Patient, y = values, color=Patient)) + 
+ggplot(age.frame, aes(x = Patient, y = years, fill=Patient)) + 
   geom_boxplot() + labs(title = "Boxplot from patients age", 
                         subtitle = "Ages between presence and Absence") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), 
-        plot.subtitle = element_text(hjust = 0.5)) 
+        plot.subtitle = element_text(hjust = 0.5)) + ylab("Age (in years)")
 ```
 
 The results show that the age is slightly higher in the presence group.
@@ -424,15 +457,15 @@ related.frame <- data.frame(
   labs = c(
     rep("1", length(data$Exercise.angina[data$Exercise.angina == "1"])),
     rep("0", length(data$Exercise.angina[data$Exercise.angina == "0"]))),
-  values = c(data$Cholesterol[data$Exercise.angina == "1"], 
+  cholesterol = c(data$Cholesterol[data$Exercise.angina == "1"], 
              data$Cholesterol[data$Exercise.angina == "0"]))
 
-
-ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot() +
+ggplot(related.frame, aes(x = labs, y = cholesterol, fill = labs)) + geom_boxplot() +
   labs(title = "Boxplot from Exercise angina against cholesterol", 
                         subtitle = "0 = No, 1 = Yes") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), 
-        plot.subtitle = element_text(hjust = 0.5)) 
+        plot.subtitle = element_text(hjust = 0.5)) +
+  ylab("Cholesterol (in mg/dl)")
 ```
 
 the boxes of the boxplot differ slightly, but this does not seem to be a big difference. Let's confirm this with a statistical test.
@@ -460,7 +493,8 @@ ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot() +
   labs(title = "Boxplot from disease against Heart rate", 
                         subtitle = "Heart rate as maximum heart rate") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), 
-        plot.subtitle = element_text(hjust = 0.5)) + xlab("Group") 
+        plot.subtitle = element_text(hjust = 0.5)) + xlab("Group") +
+  ylab("Heart rate (in beats/minute")
 ```
 
 ```{r}
@@ -480,14 +514,21 @@ As mentioned earlier, the main goal of this research was to develop a
 machine learning model. For this model, it is useful to see which
 attributes may be important. We will compare all numeric attributes with each other. The goal is to demonstrate similarities or differences.
 
+Scatterplots are plotted between all attributes. This makes it possible to see how far apart the groups presence/absence are. Or just how close they are to each other.
+
 ```{r}
 ggpairs( data[numeric.columns], ggplot2::aes(colour=data$Heart.Disease), 
-         progress = F, upper = "blank") + 
+         progress = F, upper = "blank", legend = 1) + 
   labs(title = "Pairplot of the numeric attributes") + 
-  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20)) 
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), axis.text.y = element_blank(), legend.position = "bottom")
 ```
 
-The figure above shows a number of things. It shows the similarities between all variables. By looking at the points you can see how much correlation they have. However, it is of course much clearer to simply attach a number to the correlation. This happens below.
+The figure above shows a number of things. It shows the similarities between all variables. However, it is of course much clearer to simply attach a number to the similarities. This happens below with a correlation heat map.
+
+Conclusions pairplot:
+
+- There is a small similaritie in the age attribute
+- The maximum heart rate appears to be lower in people who have a condition
 
 \newpage
 
@@ -575,6 +616,25 @@ levels(data$FBS.over.120) <- c(FALSE, TRUE)
 levels(data$Exercise.angina) <- c("No", "Yes")
 ```
 
+There is now a clean data set. We are going to save this in a new CSV file so that we can use it later.
+
+```{r}
+write.csv(data, "clean_dataset_Heart_disease_predicting.csv", row.names = F)
+```
 
 
-resultaten zijn objectief en de discussie is subjectief.
+
+
+- verglijk de log10 resultaten met normale restulaten
+- 4 kleine violin plots
+- Alle waardes vergelijken met absence/presence, dus numeriek en ordinaal
+- combineer ook alle p-waardes
+- heatmap met twee kleuren uiteinde
+- geen overfitting, maar vullen elkaar goed aan
+- alle p-waardes combineren in een tabel
+- te veel verslaglegging
+
+
+
+
+
