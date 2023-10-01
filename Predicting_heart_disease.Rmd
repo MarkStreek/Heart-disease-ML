@@ -31,6 +31,7 @@ library(ggplot2)
 library(GGally)
 library(ggcorrplot)
 library(gridExtra)
+library(dplyr)
 ```
 
 \newpage
@@ -462,26 +463,39 @@ b5 <- ggplot(age.frame, aes(x = Patient, y = ST.depression, fill=Patient)) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 10), 
         plot.subtitle = element_text(hjust = 0.5, size = 7)) + ylab("ST.depression value")
 
-
 grid.arrange(b1,b2,b3,b4,b5, ncol = 2)
 ```
 
-The results show that the age is slightly higher in the presence group.
-It can be concluded that patients with a presence-condition are often
+The results show that the age is slightly higher in the presence group. It can be concluded that patients with a presence-condition are often
 slightly older. The Max.HR is also higher in the absence group. And ST.depression is higher in the Presence group. 
+
+\newpage
 
 We can confirm the differneces with statistical tests.
 
 ```{r}
-test.1 <- t.test(data$Age[data$Heart.Disease == "Presence"], 
-       data$Age[data$Heart.Disease == "Absence"], alternative = "greater")
+age.test <- t.test(data$Age[data$Heart.Disease == "Presence"], 
+       data$Age[data$Heart.Disease == "Absence"])$p.value
+bp.test <- t.test(data$BP[data$Heart.Disease == "Presence"], 
+                  data$BP[data$Heart.Disease == "Absence"])$p.value
+cholesterol.test <- t.test(data$Cholesterol[data$Heart.Disease == "Presence"], 
+                           data$Cholesterol[data$Heart.Disease == "Absence"])$p.value
+max.hr.test <- t.test(data$Max.HR[data$Heart.Disease == "Presence"], 
+                      data$Max.HR[data$Heart.Disease == "Absence"])$p.value
+st.depression.test <- t.test(data$ST.depression[data$Heart.Disease == "Presence"], 
+                             data$ST.depression[data$Heart.Disease == "Absence"])$p.value
 
-# Add more t tests
+t.test.results <- data.frame(
+  Attributes = c("Age", "BP", "Cholesterol", "Max.HR", "ST depression"),
+  P.Value = c(age.test, bp.test, cholesterol.test, 
+               max.hr.test, st.depression.test))
 
-cat("P-value: ", test.1$p.value)
+pander(t.test.results)
 ```
 
-The P-value of the age test is 0.0001763. This means that with alpha = 0.05, the P-value is less than 0.05. There is a significant age difference between the presence and absence groups. The average age in the group with heart disease is significantly higher.
+The cholesterol p-value is less than 0.05, but the value is just below 0.05. The difference could therefore be characterized as small. The rest of the values have a significant difference between both groups
+
+\newpage
 
 ### Comparing the Categorial attributes with classification attribute
 
@@ -540,7 +554,11 @@ grid.arrange(b1, b2, b3, b4, ncol = 2)
 grid.arrange(b5, b6, b7, b8, ncol = 2)
 ```
 
-the boxes of the boxplot differ slightly, but this does not seem to be a big difference. Let's confirm this with a statistical test.
+There are many more men than women with a heart disease. Most people with a condition experience no pain on the chest. The ratio between sick and not sick between FBS over 120 is the same. There are many more people without FBS over 120. There are few people with exercise angina and no condition. Thallium 7 is most common in people with a condition.
+
+\newpage
+
+Let's do statistical tests for this as well.
 
 ```{r}
 sex.test <- chisq.test(data$Sex, data$Heart.Disease, correct = FALSE)$p.value
@@ -552,44 +570,17 @@ Slope.test <- chisq.test(data$Slope.of.ST, data$Heart.Disease, correct = FALSE)$
 Number.test <- chisq.test(data$Number.of.vessels.fluro, data$Heart.Disease, correct = FALSE)$p.value
 Thallium.test <- chisq.test(data$Thallium, data$Heart.Disease, correct = FALSE)$p.value
 
-sex.test
-chest.pain.type.test
-FBS.test
-EKG.test
-Exercise.test
-Slope.test
-Number.test
-Thallium.test
+chisq.results <- data.frame(
+  Attributes = c(
+    "Sex", "Chest Pain Type", "FBS over 120", "EKG results",
+    "Exercise angina", "Slope of ST", "Number of vessels", "Thallium"),
+  P.Value = c(sex.test, chest.pain.type.test, FBS.test, EKG.test, 
+            Exercise.test, Slope.test, Number.test, Thallium.test))
+
+pander(chisq.results)
 ```
 
-as expected, the p-value (0.182) is greater than 0.05. So there is no significant difference between the two groups.
-
-There are two more attributes that might be interesting. People with a heart condition often have an abnormal heart rate **(Perret‐Guillaume et al., 2009)**. It is possible to make this comparison and see if there is a difference. However, we are talking about the maximum heart rate here. This may therefore be different from the heart rate at rest.
-
-```{r}
-related.frame <- data.frame(
-  labs = c(
-    rep("Presence", length(data$Heart.Disease[data$Heart.Disease == "Presence"])),
-    rep("Absence", length(data$Heart.Disease[data$Heart.Disease == "Absence"]))),
-  values = c(data$Max.HR[data$Heart.Disease == "Presence"], 
-             data$Max.HR[data$Heart.Disease == "Absence"]))
-
-ggplot(related.frame, aes(x = labs, y = values, fill = labs)) + geom_boxplot() +
-  labs(title = "Boxplot from disease against Heart rate", 
-                        subtitle = "Heart rate as maximum heart rate") + 
-  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), 
-        plot.subtitle = element_text(hjust = 0.5)) + xlab("Group") +
-  ylab("Heart rate (in beats/minute")
-```
-
-```{r}
-test <- t.test(data$Max.HR[data$Heart.Disease == "Presence"], 
-               data$Max.HR[data$Heart.Disease == "Absence"], 
-               alternative = "two.sided")
-cat("P-value: ", test$p.value)
-```
-
-as the test shows, there is a significant difference. But these results are not entirely conclusive. As age increases, the maximum heart rate also decreases. With this figure and test no conclusion can be drawn about this comparison.
+All p-values except FBS over 120 have a p-value lower than 0.05. This means that all these values are related to the classification column (Presence/Absence). The lowest p-values are of course the most correlated.
 
 \newpage
 
@@ -619,8 +610,9 @@ Conclusions pairplot:
 
 ```{r}
 colMA <- function(n = 3) {
-  colorRampPalette(c("#F4DF4EFF", "#949398FF"), space = "rgb")(n)
+  colorRampPalette(c("red", "grey", "lightblue"), space = "rgb")(n)
 }
+
 
 # plotting corr heatmap
 ggcorrplot(cor(data[numeric.columns]), colors = colMA(), 
@@ -634,47 +626,22 @@ The output tells us that there are some values that are slightly to moderately c
 Conclusion:
 
 - BP and Age have the highest correlation
-- There are no major correlations that *could* cause any over fitting
+- There are no very high or low correlations, the values complement each other well
 
 \newpage
 
-### Similarities in the nominal attributes
+## Conclusions of the tests sorted
 
-In the last part of the EDA we will look at some similarities between ordinal values. First of all, let's see if sex still has an influence. We do this in this section because it concerns a comparison with two ordinal groups. For this we must use the Chi-square test
-
-```{r}
-table(data$Sex, data$Heart.Disease)
-chisq.test(data$Sex, data$Heart.Disease, correct = FALSE)
-```
-The table already shows that there is a difference of 80 between men and women. The p-value is less than 0.05 and this therefore rejects the null hypothesis: independent.
-
-- The attributes Sex and Heart.disease are strongly related to each other
-
-Take for example the ECG results and the ST depression. These are both related to the ECG results. Let's see if these values are actually related to each other
+Below is a table in which all p-values are sorted.
 
 ```{r}
-chisq.test(data$Slope.of.ST, data$EKG.results, correct = FALSE)
+combined <- bind_rows(chisq.results, t.test.results)
+pander(combined[order(combined$P.Value),])
 ```
 
-The test shows that the p-value is again less than 0.05. However, this is only slightly smaller than 0.05. It is not possible to draw a conclusion from this. That's strange, because Slope.ST says something about the EKG results. But this can of course be due to many factors.
+The attribute thallium is most related to disease. This value is going to be important for the model. The list if followed by chest pain type. The FBS value over 120 will be the least useful
 
 \newpage
-
-```{=tex}
-\begin{thebibliography}{3}
-
-\bibitem{dataset}
-(2023, 12 januari).: \textit{Predicting heart disease using clinical variables}. <https://www.kaggle.com/datasets/thedevastator/predicting-heart-disease-risk-using-clinical-var>
-
-\bibitem{angina_chol}
-Harvard Health. (2021, 21 september).: \textit{Angina: Symptoms, diagnosis and Treatments}. 
-<https://www.health.harvard.edu/heart-health/angina-symptoms-diagnosis-and-treatments>
-
-\bibitem{maxHR}
-Perret‐Guillaume, C., Joly, L. Bénétos, A. (2009).: \textit{Heart rate as a risk factor for cardiovascular disease. Progress in Cardiovascular Diseases, 52(1), 6–10}
-
-\end{thebibliography}
-```
 
 # Clean Dataset
 
@@ -707,19 +674,22 @@ There is now a clean data set. We are going to save this in a new CSV file so th
 write.csv(data, "clean_dataset_Heart_disease_predicting.csv", row.names = F)
 ```
 
+\newpage
 
+```{=tex}
+\begin{thebibliography}{3}
 
+\bibitem{dataset}
+(2023, 12 januari).: \textit{Predicting heart disease using clinical variables}. <https://www.kaggle.com/datasets/thedevastator/predicting-heart-disease-risk-using-clinical-var>
 
-- verglijk de log10 resultaten met normale restulaten
-- 4 kleine violin plots
-- Alle waardes vergelijken met absence/presence, dus numeriek en ordinaal
-- combineer ook alle p-waardes
-- heatmap met twee kleuren uiteinde
-- geen overfitting, maar vullen elkaar goed aan
-- alle p-waardes combineren in een tabel
-- te veel verslaglegging
+\bibitem{angina_chol}
+Harvard Health. (2021, 21 september).: \textit{Angina: Symptoms, diagnosis and Treatments}. 
+<https://www.health.harvard.edu/heart-health/angina-symptoms-diagnosis-and-treatments>
 
+\bibitem{maxHR}
+Perret‐Guillaume, C., Joly, L. Bénétos, A. (2009).: \textit{Heart rate as a risk factor for cardiovascular disease. Progress in Cardiovascular Diseases, 52(1), 6–10}
 
-
+\end{thebibliography}
+```
 
 
