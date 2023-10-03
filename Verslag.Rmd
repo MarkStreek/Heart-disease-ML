@@ -35,9 +35,9 @@ In figuur 1 zijn 5 grafieken zichtbaar. Van links naar rechts is de verdeling va
 
 Bovenstaand worden de verdelingen van de attributen weergegeven. Het is echter ook belangrijk om te kijken hoeveel buitenliggende waardes er zijn in de attributen. Dit staat direct in verband met elkaar, want als er veel buitenliggende waardes zijn, trekken die waardes de verdeling scheef. Onderstaand een violin plot, waarin de verdelingen worden weergegeven samen met de punten uit de data.
 
-![Violin plot van de verdelingen inclusief alle punten](images/000052.png)
+![Violin plot van de verdelingen inclusief alle punten](images/000016.png)
 
-Figuur 2 bevat van boven naar beneden, maximale hartslag, cholesterol gehalte, bloeddruk en leeftijd. Van al deze attributen is de verdeling zichtbaar. Daaroverheen zijn de punten van de attributen weergegeven. Op de x-as staan de waarden van de verdeling en op de y-as de attributen. Het is zichtbaar dat cholesterol een behoorlijk aantal punten buiten deze verdeling heeft. Verder heeft de waarde bloeddruk ook een aantal punten buiten de verdeling liggen. Leeftijd bevat de minste punten buiten de verdeling en heeft de minste uitschieters.
+Figuur 2 bevat van links naar rechts, leeftijd, bloeddruk, maximale hartslag en cholesterol. Van al deze attributen is de verdeling zichtbaar. Daaroverheen zijn de punten van de attributen weergegeven. Op de x-as staan de waarden van de verdeling en op de y-as het attribuut. De waarde bloeddruk heeft het meeste aantal punten buiten de verdeling liggen. Cholesterol bevat de minste punten buiten de verdeling en heeft de minste uitschieters.
 
 Tenslotte, is het nuttig om ook de representatie van de ordinale klassen te tonen. Dit wordt onderstaand gedaan.
 
@@ -45,36 +45,58 @@ Tenslotte, is het nuttig om ook de representatie van de ordinale klassen te tone
 
 Figuur 3 is een barplot zichtbaar van alle ordinale waardes. In deze grafiek zijn van links naar rechts aanwezig: geslacht, pijn op de borst, FBS boven 120, ECG resultaten, Exercise angina, helling ST, aantal aderen, Thallium en hart aandoening. Van elk attribuut is zichtbaar hoe vaak de categoriën voorkomen. Over het algemeen zijn de waardes goed gerepresenteerd. Er zijn wel een paar opvallende zaken. Er zijn behoorlijk meer mannen dan vrouwen. Er zijn weinig tot geen mensen met een FBS van boven de 120.
 
-In het tweede gedeelte van de EDA (biverate analyse) wordt er naar meerdere waarden tegelijk gekeken. Allereerst wordt er gekeken naar de leeftijd tussen de aanwezigheid/afwezigheid groep. In de discussie zal verkrachtigd worden, waarom voor deze vergelijking is gekozen.
+In het tweede gedeelte van de EDA (biverate analyse) wordt er naar meerdere waarden tegelijk gekeken. Allereerst wordt er gekeken naar de correlaties tussen de numerieke waardes. Deze correlaties worden weergegeven in een heatmap.
 
-![Boxplot van de leeftijd tussen de aanwezigheid/afwezigheid groep](images/000040.png)
+![Correlatie heatmap van de numerieke kolommen in de dataset](images/00002e.png)
 
-In figuur 4 is een boxplot aanwezig. Op de x-as staan de labels aanwezigheid/afwezigheid. Op de y-as staat de leeftijd (in jaren). In deze boxplot is te zien dat de box van de aanwezigheid-groep, hoger ligt dan de de groep met afwezigheid. De minimum, mediaan en maximum liggen hoger. Om te kijken of het verschil ook significant is, wordt er een t-test uitgevoerd.
+In deze heatmap (figuur 5) staan zowel op de x- als op de y-as alle numerieke attributen. In de blokken van de heatmap is een kleur zichtbaar en een cijfer, deze geven de hoogte van de correlatie weer. De vergelijking tussen maximale hartslag (Max.HR) en ST.depression heeft de laagste correlatie, gevolgd door Max.HR en leeftijd. Tussen leeftijd en bloeddruk is de hoogste correlatie aanwezig.
 
-Uit deze t-toets komt een p-waarde van 0.0001763058. Deze p-waarde is kleiner dan 0.05 en hiermee wordt de nul-hypothese verwerpt, de leeftijd is significant hoger in de aanwezigheid-groep.
+Tot slot wordt er nog gekeken naar p-waardes van statistische toetsen Elk attribuut is getoetst tegen de ziek/niet ziek groep. Op deze manier kan er worden aangetoond welke waardes een samenhang met elkaar hebben.
 
-Nu er is gekeken naar twee waardes onderling, wordt er ook gekeken naar meerdere waardes. Onderstaand een correlatie heatmap. In deze heatmap is het zichtbaar om de correlatie tussen alle numerieke waardes in de dataset te zien.
+| Attribuut         | P-waarde  |
+|-------------------|-----------|
+| Thallium          | 6.419e-17 |
+| Chest Pain Type   | 8.561e-15 |
+| Number of vessles | 1.437-13  |
+| Max HR            | 2.604e-12 |
+| Exercise Angina   | 5.585e-12 |
+| ST depression     | 1.601e-11 |
+| Slope of ST       | 1.713e-09 |
+| Sex               | 9.979e-07 |
+| Age               | 0.0003526 |
+| EKG results       | 0.01122   |
+| BP                | 0.01196   |
+| Cholesterol       | 0.04971   |
+| FBS over 120      | 0.7886    |
 
-![Correlatie heatmap van de numerieke kolommen in de dataset](images/00002a.png)
+: Tabel 2: De p-waardes van de statistische toetsen
 
-Figuur 5 is een heatmap. In deze heatmap staan zowel op de x- als op de y-as alle numerieke attributen. In de blokken van de heatmap is een kleur zichtbaar en een cijfer, deze geven de hoogte van de correlatie weer. De vergelijking tussen maximale hartslag (Max.HR) en ST.depression heeft de laagste correlatie, gevolgd door Max.HR en leeftijd. Tussen leeftijd en bloeddruk is de hoogste correlatie aanwezig.
+In de bovenstaande tabel zijn de p-waardes zichtbaar. Bij een p-waarde lager dan 0.05 is er een significant verschil. Het attribuut Thallium heeft de laagste p-waarde en dus ook de meeste samenhang met de classificatie kolom. Verder zeggen de waardes Cholesterol en FBS over 120 weinig, want deze hebben een p-waarde van rond de 0.05 of groter dan 0.05.
 
-Aan het eind van de EDA wordt er ook gekeken naar de ordinale waarden. Bovenstaand is er gekeken naar numerieke waarden, maar het is ook mogelijk om met statistische testen een verschil of overeenkomst tussen ordinale attributen aan te tonen. 
-
-Om te beginnen wordt er gekeken naar het (biologische) geslacht van de patienten in de dataset. Dit attribuut is nog niet aan bod gekomen. Er wordt gekeken of er een verschil is tussen geslacht en aandoening. D.w.z, is er een verschil in geslacht tussen de aanwezigheid/afwezigheid van een hartaandoening.
-
-Om deze vergelijking te maken wordt er een Chi-kwadraat toets uitgevoerd. Deze test is geschikt om nominale waardes met elkaar te vergelijken.
-
-De nulhypothese van een Chi-kwadraat toets is dat er geen relatie aanwezig is tussen de attributen, de waardes zijn onafhankelijk. Uit de toets komt een p-waarde van 9.979e-07. Deze waarde is kleiner dan 0.05. Hiermee wordt de nulhypothese verwerpt. Er is een hoge overeenkomstigheid.
+Voordat er een machine learning model ontwikkeld kan worden, moeten er nog aantal ascpecten van de data worden aangepast. Om te beginnen is de eerste kolom verwijderd. Verder worden een aantal attributen omgezet in een label, dit om de dataset overzichterlijker en leesbaarder te maken. Tot slot worden de cholesterol en ST.depression atributen getransformeerd (log10). Dit wordt gedaan, omdat de log10 verdeling van deze waardes een *betere* verderling toonde.
 
 # Discussie en Conclusie
 
 ## Discussie
 
--   Compare your results with what is expecting from the literature and discuss differences with them.
--   Discuss striking and surprising results.
--   Discuss weaknesses in your research and how they could be addressed.
+In deze sectie zal er teruggekomen worden de resultaten en een antwoord worden gegeven op de onderzoeksvraag.
 
-## Algemene conclusie en perspectief
+Allereerst de resultaten van de EDA. In deze sectie is er gekeken naar de eigenschappen van de data. Maar ook de samenhang tussen vele attributen. Om te beginnen zijn de buitenliggende waardes weergegeven. Dit werd gedaan door middel van een violin plot. In dit plot zijn naar verhouding, weinig buitenliggende waardes te zien. Er zijn welliswaar een aantal waardes die buiten de verdeling liggen, maar dit is niet significant. 
 
-Discuss what your goal was, what the end result is and how you could continue working from here.
+De numerieke waardes bevatten geen lege waardes en zijn redelijk normaal verdeeld. Samen met het feit dat deze waarden weinig tot geen buitenliggende waardes bevat, hoeven de attributen niet worden aangepast of gemodificeerd. 
+
+Verder is er ook gekeken naar de samenhang van waardes. Dit werd onder andere gedaan in een correlatie heatmap. In dit figuur zijn weinig uitschieters of opvallende waardes zichtbaar. Alle waardes compenseren mooi met elkaar.
+
+Tot slot werd er in de EDA gekeken naar de p-waardes van statistiche toetsen. Alle attributen in de dataset zijn getest met de ziek/niet ziek groep om de samenhang te bepalen. 11 van de 13 kolommen bevat een p-waarde lager dan 0.05. Dit betekend dat er 11 attributen zijn die een signiciante samenhang hebben met de ziek/niet ziet waarde. Al deze attributen zijn dus geschikt om een model op te bouwen. 
+
+## Conclusie
+
+Voordat er begonnen wordt aan het bouwen van een model is het belangrijk om de data te inspecteren. De dataset bevatte weinig opmerkelijk resultaten. 
+
+Allereerst waren er geen missende waardes aanwezig, twee attributen zijn getransformeerd om de beste verdeling te hebben, er waren niet veel uitschieters aanwezig en meer dan dan 80% van de attributen had een grote samenhang met de classificatie kolom. 
+
+Deze resultaten samen met de omzetting van een aantal labels in overzichtelijke waardes, maakt deze schone data geschikt voor het ontwikkelen van een machine learning model.
+
+Echter had de dataset natuurlijk beter gekund. Om te beginnen, zijn 270 patiënten weinig. Zeker omdat de data afkomstig is van 4 verschillende bronnen. Verder hadden er nog attributen kunnen worden toegevoegd. Denk bijvoorbeeld aan de lichaamslengte van de patiënt. Hiermee kan de BMI ook bepaald worden. 
+
+
