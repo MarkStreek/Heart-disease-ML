@@ -33,6 +33,8 @@ Zoals eerder vermeld bestaat de EDA uit twee onderdelen. Allereerst wordt er gek
 
 In figuur 1 zijn 5 grafieken zichtbaar. Van links naar rechts is de verdeling van de leeftijd, bloeddruk, cholesterol gehalte, maximale hartslag en ST depression zichtbaar. De attributen cholesterol en ST depression zijn log10 getransformeerd. Om te beginnen is de leeftijd niet helemaal mooi verdeeld. Dit is ook niet mooi verdeeld met een log10 transformatie. Het neigt een beetje naar rechts te verdelen. De bloeddruk is wel mooi verdeeld. Echter is deze verdeling niet precies in het midden, maar richting de linker zijde van de grafiek. De cholesterol waarde is mooi normaal verdeeld. De maximimale hartslag wijkt iets uit naar rechts, dit geldt ook voor de ST depression. De ST depression waarde loopt heel erg uiteen en is verre van normaal verdeeld.
 
+Zoals gezegd is het attribuut ST depression getransformeerd. Zonder normalisatie is er een hoge piek aanwezig bij de nullen. Met een log10 transformatie worden deze waardes allemaal -oneindig. Dit is niet goed bruikbaar en zal dus achterwege worden gelaten, de data is tenslotte nog steeds niet normaal verdeeld.
+
 Bovenstaand worden de verdelingen van de attributen weergegeven. Het is echter ook belangrijk om te kijken hoeveel buitenliggende waardes er zijn in de attributen. Dit staat direct in verband met elkaar, want als er veel buitenliggende waardes zijn, trekken die waardes de verdeling scheef. Onderstaand een violin plot, waarin de verdelingen worden weergegeven samen met de punten uit de data.
 
 ![Violin plot van de verdelingen inclusief alle punten](images/000016.png)
@@ -73,7 +75,7 @@ Tot slot wordt er nog gekeken naar p-waardes van statistische toetsen Elk attrib
 
 In de bovenstaande tabel zijn de p-waardes zichtbaar. Bij een p-waarde lager dan 0.05 is er een significant verschil. Het attribuut Thallium heeft de laagste p-waarde en dus ook de meeste samenhang met de classificatie kolom. Verder zeggen de waardes Cholesterol en FBS over 120 weinig, want deze hebben een p-waarde van rond de 0.05 of groter dan 0.05.
 
-Voordat er een machine learning model ontwikkeld kan worden, moeten er nog aantal ascpecten van de data worden aangepast. Om te beginnen is de eerste kolom verwijderd. Verder worden een aantal attributen omgezet in een label, dit om de dataset overzichterlijker en leesbaarder te maken. Tot slot worden de cholesterol en ST.depression atributen getransformeerd (log10). Dit wordt gedaan, omdat de log10 verdeling van deze waardes een *betere* verderling toonde.
+Voordat er een machine learning model ontwikkeld kan worden, moeten er nog twee stappen worden uitgevoerd met de data. Om te beginnen is de eerste kolom verwijderd. Verder worden een aantal attributen omgezet in een label, dit om de dataset overzichterlijker en leesbaarder te maken.
 
 # Discussie en Conclusie
 
@@ -81,22 +83,20 @@ Voordat er een machine learning model ontwikkeld kan worden, moeten er nog aanta
 
 In deze sectie zal er teruggekomen worden de resultaten en een antwoord worden gegeven op de onderzoeksvraag.
 
-Allereerst de resultaten van de EDA. In deze sectie is er gekeken naar de eigenschappen van de data. Maar ook de samenhang tussen vele attributen. Om te beginnen zijn de buitenliggende waardes weergegeven. Dit werd gedaan door middel van een violin plot. In dit plot zijn naar verhouding, weinig buitenliggende waardes te zien. Er zijn welliswaar een aantal waardes die buiten de verdeling liggen, maar dit is niet significant. 
+Allereerst de resultaten van de EDA. In deze sectie is er gekeken naar de eigenschappen van de data. Maar ook de samenhang tussen vele attributen. Om te beginnen zijn de buitenliggende waardes weergegeven. Dit werd gedaan door middel van een violin plot. In dit plot zijn naar verhouding, weinig buitenliggende waardes te zien. Er zijn weliswaar een aantal waardes die buiten de verdeling liggen, maar dit is niet significant.
 
-De numerieke waardes bevatten geen lege waardes en zijn redelijk normaal verdeeld. Samen met het feit dat deze waarden weinig tot geen buitenliggende waardes bevat, hoeven de attributen niet worden aangepast of gemodificeerd. 
+De numerieke waardes bevatten geen lege waardes en zijn redelijk normaal verdeeld. De cholesterol waarde vertoond een (veel) betere normaalverdeling bij een log10 transformatie. Deze waarde zal dus verder worden gebruikt als transformatie. Dit samen met het feit dat de attributen weinig tot geen buitenliggende waardes bevat, hoeven de attributen verder niet te worden aangepast of gemodificeerd. 
 
 Verder is er ook gekeken naar de samenhang van waardes. Dit werd onder andere gedaan in een correlatie heatmap. In dit figuur zijn weinig uitschieters of opvallende waardes zichtbaar. Alle waardes compenseren mooi met elkaar.
 
-Tot slot werd er in de EDA gekeken naar de p-waardes van statistiche toetsen. Alle attributen in de dataset zijn getest met de ziek/niet ziek groep om de samenhang te bepalen. 11 van de 13 kolommen bevat een p-waarde lager dan 0.05. Dit betekend dat er 11 attributen zijn die een signiciante samenhang hebben met de ziek/niet ziet waarde. Al deze attributen zijn dus geschikt om een model op te bouwen. 
+Tot slot werd er in de EDA gekeken naar de p-waardes van statistische toetsen. Alle attributen in de dataset zijn getest met de ziek/niet ziek groep om de samenhang te bepalen. 11 van de 13 kolommen bevat een p-waarde lager dan 0.05. Dit betekend dat er 11 attributen zijn die een significante samenhang hebben met de ziek/niet ziet waarde. Al deze attributen zijn dus geschikt om een model op te bouwen.
 
 ## Conclusie
 
-Voordat er begonnen wordt aan het bouwen van een model is het belangrijk om de data te inspecteren. De dataset bevatte weinig opmerkelijk resultaten. 
+Voordat er begonnen wordt aan het bouwen van een model is het belangrijk om de data te inspecteren. De dataset bevatte weinig opmerkelijk resultaten.
 
-Allereerst waren er geen missende waardes aanwezig, twee attributen zijn getransformeerd om de beste verdeling te hebben, er waren niet veel uitschieters aanwezig en meer dan dan 80% van de attributen had een grote samenhang met de classificatie kolom. 
+Allereerst waren er geen missende waardes aanwezig, twee attributen zijn getransformeerd om de beste verdeling te hebben, er waren niet veel uitschieters aanwezig en meer dan dan 80% van de attributen had een grote samenhang met de classificatie kolom.
 
 Deze resultaten samen met de omzetting van een aantal labels in overzichtelijke waardes, maakt deze schone data geschikt voor het ontwikkelen van een machine learning model.
 
-Echter had de dataset natuurlijk beter gekund. Om te beginnen, zijn 270 patiënten weinig. Zeker omdat de data afkomstig is van 4 verschillende bronnen. Verder hadden er nog attributen kunnen worden toegevoegd. Denk bijvoorbeeld aan de lichaamslengte van de patiënt. Hiermee kan de BMI ook bepaald worden. 
-
-
+Echter had de dataset natuurlijk beter gekund. Om te beginnen, zijn 270 patiënten weinig. Zeker omdat de data afkomstig is van 4 verschillende bronnen. Verder hadden er nog attributen kunnen worden toegevoegd. Denk bijvoorbeeld aan de lichaamslengte van de patiënt. Hiermee kan de BMI ook bepaald worden.

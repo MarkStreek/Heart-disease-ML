@@ -308,7 +308,11 @@ c5 <- ggplot(data, aes(x=log10(ST.depression))) + geom_histogram(bins = 30) +
 grid.arrange(c1,c2,c3,c4,c5, ncol = 2)
 ```
 
-The cholesteral attribute is good normal distributed now. ST.depression is not good normal distributed but is more readable.
+The cholesteral attribute is good normal distributed now. ST.depression is not good normal distributed but is more readable. However, in ST.depression there is a high peak at - infinity. The attribute is still not normally distributed, so it is left behind for the transformation.
+
+```{r}
+data$Cholesterol <- log10(data$Cholesterol)
+```
 
 \newpage
 
@@ -653,25 +657,41 @@ Let's delete the index column. This column is unnecessary and we don't need it f
 data <- data[ -c(1) ]
 ```
 
-Now let's add columns for transformation. We have already told you for which column this is necessary. We will simply add a new column to the dataset with transformation. This is because we can always reuse the original data if we need it.
-
-```{r}
-data$Cholesterol.transformed <- log10(data$Cholesterol)
-data$ST.depression.transformed <- log10(data$ST.depression)
-```
-
-For the clean dataset it is also easy to read a number of values more quickly. Numbers cannot be read quickly, so we will convert some (simple) values into words. It becomes very confusing to convert all the ordinal attributes into words/description
+For the clean dataset it is also easy to read a number of values more quickly. Numbers cannot be read quickly, so we will convert (simple) values into words. 
 
 ```{r}
 levels(data$Sex) <- c("Male", "Female")
 levels(data$FBS.over.120) <- c(FALSE, TRUE)
 levels(data$Exercise.angina) <- c("No", "Yes")
+levels(data$Chest.pain.type) <- c("Asymptomatic", "Non-anginal pain (pain without disease)", 
+                                  "Atypical angina", "Typical angina")
+levels(data$EKG.results) <- c("Probable or definite LVH", "Normal", "ST-T wave abnormality")
+levels(data$Slope.of.ST) <- c("Flat", "Up sloping", "Down sloping")
+levels(data$Number.of.vessels.fluro) <- c("3", "0", "1", "2")
+levels(data$Thallium) <- c("Normal", "Reversible defect", "Fixed defect")
 ```
 
-There is now a clean data set. We are going to save this in a new CSV file so that we can use it later.
+We are now creating three other datasets to test algorithms in weka. First, a dataset is created that contains only the attributes of the top 5 lowest p-values. Then another data set is saved in which the remaining numeric columns are transformed. Finally, a dataset will be created, containing only the simple attributes. These attributes can easily be taken with a simple test.
 
 ```{r}
-write.csv(data, "clean_dataset_Heart_disease_predicting.csv", row.names = F)
+data.top5 <- data[c("Thallium", "Chest.pain.type", 
+                    "Number.of.vessels.fluro", "Max.HR", 
+                    "Exercise.angina", "Heart.Disease")]
+
+data.allTransformed <- data
+data.allTransformed$Max.HR <- log10(data.allTransformed$Max.HR)
+data.allTransformed$BP <- log10(data.allTransformed$BP)
+
+data.simple <- data[c("Age", "Sex", "Cholesterol", "BP", "Heart.Disease")]
+```
+
+There are now clean data sets. We are going to save these in a CSV file so that we can use it in Weka.
+
+```{r}
+write.csv(data, "01-Clean_dataset.csv", row.names = F)
+write.csv(data.top5, "02-top5_p_values.csv", row.names = F)
+write.csv(data.allTransformed, "03-Numeric_transformed.csv", row.names = F)
+write.csv(data.simple, "04-Simple.csv", row.names = F)
 ```
 
 \newpage
