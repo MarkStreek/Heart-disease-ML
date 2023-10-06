@@ -2,7 +2,7 @@
 title: "Predicting Heart Disease"
 author: "Mark van de Streek"
 date: "`r Sys.Date()`"
-output:
+output: 
   pdf_document:
     number_sections: yes
   word_document: default
@@ -32,49 +32,65 @@ library(GGally)
 library(ggcorrplot)
 library(gridExtra)
 library(dplyr)
+library(data.table)
 ```
 
 \newpage
 
 # Introduction
 
-This study examines a dataset \cite{dataset} on predicting heart disease based on
-clinical variables.
+This study examines a dataset \cite{dataset} on predicting heart disease
+based on clinical variables.
 
 The ultimate goal of this research is to create a machine learning model
 that predicts whether a patient has heart disease.
 
 The dataset contains data from people with and without a heart disease.
 The last column shows whether the patient has heart disease (presence)
-or not (absence). The logbook often refers to the classification column. It is then referred to as "presence" and "absence" of heart disease.
+or not (absence). The logbook often refers to the classification column.
+It is then referred to as "presence" and "absence" of heart disease.
 
-research question of the research: Which medical properties are important to be so accurate
-possible to predict a heart condition/abnormality?
+research question of the research: Which medical properties are
+important to be so accurate possible to predict a heart
+condition/abnormality?
 
 ## Details of the data
 
-The dataset contains data from 270 patients. There are 13 independent predictive variables for each patient. These variables are described in further detail in the codebook.
+The dataset contains data from 270 patients. There are 13 independent
+predictive variables for each patient. These variables are described in
+further detail in the codebook.
 
-The dataset comes from the UCI repository. The Machine Learning Repository (UCI Repository) is a collection of databases and domains used by the machine learning community to create machine learning algorithms.
+The dataset comes from the UCI repository. The Machine Learning
+Repository (UCI Repository) is a collection of databases and domains
+used by the machine learning community to create machine learning
+algorithms.
 
 The dataset was created and merged by the following 4 agencies:
 
-1. Hungarian Institute of Cardiology. Budapest: Andras Janosi, M.D.
-2. University Hospital, Zurich, Switzerland: William Steinbrunn, M.D.
-3. University Hospital, Basel, Switzerland: Matthias Pfisterer, M.D.
-4. V.A. Medical Center, Long Beach and Cleveland Clinic Foundation: Robert Detrano, M.D., Ph.D.
+1.  Hungarian Institute of Cardiology. Budapest: Andras Janosi, M.D.
+2.  University Hospital, Zurich, Switzerland: William Steinbrunn, M.D.
+3.  University Hospital, Basel, Switzerland: Matthias Pfisterer, M.D.
+4.  V.A. Medical Center, Long Beach and Cleveland Clinic Foundation:
+    Robert Detrano, M.D., Ph.D.
 
-The data was all collected in medical institutions. Good to remember that there can be a difference between medical equipment. However, these are of course not cheap devices that are found in the living room at home, for example. So the deviation will not be very large
+The data was all collected in medical institutions. Good to remember
+that there can be a difference between medical equipment. However, these
+are of course not cheap devices that are found in the living room at
+home, for example. So the deviation will not be very large
 
 ## What is heart disease?
 
-What is a heart disease and how many people have one. Why is this research important?
+What is a heart disease and how many people have one. Why is this
+research important?
 
 \newpage
 
 # Exploration of the data
 
-In the very first part of this logbook, the data will be examined exploratively. I.e., for example, the distribution of values, correlations, characteristics, etc. is looked at. This is all explained below.
+In the very first part of this logbook, the data will be examined
+exploratively. I.e., for example, the distribution of values,
+correlations, characteristics, etc. is looked at. This is all explained
+below.
 
 ## Data structure and Codebook
 
@@ -87,9 +103,9 @@ data <- read.csv("Heart_Disease_Prediction.csv", header = T, sep = ",")
 data <- data.frame(data)
 ```
 
-An overview of the data will be stored inside a codebook, so it's easy to change/translate.
-After that's done, it's easier to show all the columns' datatypes and
-description.
+An overview of the data will be stored inside a codebook, so it's easy
+to change/translate. After that's done, it's easier to show all the
+columns' datatypes and description.
 
 ```{r}
 codebook <- data.frame(
@@ -129,7 +145,8 @@ With the codebook we can print a overview of all the variables.
 pander(codebook)
 ```
 
-As shown above, the dataset contains some 'factor' attributes. These columns need some extra declaration to understand.
+As shown above, the dataset contains some 'factor' attributes. These
+columns need some extra declaration to understand.
 
 Additional description of nomial attriutes in the dataset:
 
@@ -176,7 +193,7 @@ Additional description of nomial attriutes in the dataset:
     -   Value 6: Fixed defect
 
     -   Value 7: Reversible defect
-    
+
 \newpage
 
 With all the right datatypes given, it is possible to change all the
@@ -200,8 +217,10 @@ dims <- dim(data)
 sprintf("Amount of rows: %.f, amount of columns: %.f", dims[1], dims[2])
 ```
 
-The data contains 270 rows. That means there is data from 270 patients. This corresponds to expectations. For all these patients there are 14 values that say something about
-that pearson. Not 15 because the first column is the index.
+The data contains 270 rows. That means there is data from 270 patients.
+This corresponds to expectations. For all these patients there are 14
+values that say something about that pearson. Not 15 because the first
+column is the index.
 
 ### Missing values
 
@@ -221,13 +240,17 @@ that, there is little to say about it.
 
 ## Univariate analysis
 
-This section examines each variable in the dataset separately. The distribution of numerical values, outliers of numerical values and variation of ordinal values will be examined
+This section examines each variable in the dataset separately. The
+distribution of numerical values, outliers of numerical values and
+variation of ordinal values will be examined
 
 ### Variation of the data
 
-There are a lot of numeric columns in the dataset. This means that the distribution shows us a good first impression of the data.
+There are a lot of numeric columns in the dataset. This means that the
+distribution shows us a good first impression of the data.
 
-We will look at the nominal/ordinal values as well, so we're going to filter these first.
+We will look at the nominal/ordinal values as well, so we're going to
+filter these first.
 
 ```{r}
 numeric.columns <- c(2,5,6,9,11)
@@ -236,17 +259,22 @@ nominal.columns <- c(3,4,7,8,10,12,13,14,15)
 
 #### Variation of numeric attributes
 
-We made sure there aren't missing values in the dataset. Let's look at the range of columns.
+We made sure there aren't missing values in the dataset. Let's look at
+the range of columns.
 
 ```{r}
 pander(summary(data[numeric.columns]))
 ```
 
-Looking at the ST.depression, thit column has a wide range between minimum and maximum. The median and mean value is also far from the maximum. These could be outlier values, but it could also just be how the value is constructed.
+Looking at the ST.depression, thit column has a wide range between
+minimum and maximum. The median and mean value is also far from the
+maximum. These could be outlier values, but it could also just be how
+the value is constructed.
 
 \newpage
 
-Now let's look at the distribution. This may give us a slightly clearer picture
+Now let's look at the distribution. This may give us a slightly clearer
+picture
 
 ```{r}
 c1 <- ggplot(data, aes(x=Age)) + geom_histogram(bins = 15) + 
@@ -276,9 +304,13 @@ c5 <- ggplot(data, aes(x=ST.depression)) + geom_histogram(bins = 30) +
 grid.arrange(c1,c2,c3,c4,c5, ncol = 2)
 ```
 
-The above graphs tells us that Cholesterol is quite well normal distributed. The same can be said for BP. Max.HR and Age appears to be split more towards the right. ST.depression shows a very high peak at the first bin.
+The above graphs tells us that Cholesterol is quite well normal
+distributed. The same can be said for BP. Max.HR and Age appears to be
+split more towards the right. ST.depression shows a very high peak at
+the first bin.
 
-Let's transform the data with log10 and see if the distribution is better/more observable.
+Let's transform the data with log10 and see if the distribution is
+better/more observable.
 
 ```{r}
 c1 <- ggplot(data, aes(x=log10(Age))) + geom_histogram(bins = 15) + 
@@ -308,7 +340,10 @@ c5 <- ggplot(data, aes(x=log10(ST.depression))) + geom_histogram(bins = 30) +
 grid.arrange(c1,c2,c3,c4,c5, ncol = 2)
 ```
 
-The cholesteral attribute is good normal distributed now. ST.depression is not good normal distributed but is more readable. However, in ST.depression there is a high peak at - infinity. The attribute is still not normally distributed, so it is left behind for the transformation.
+The cholesteral attribute is good normal distributed now. ST.depression
+is not good normal distributed but is more readable. However, in
+ST.depression there is a high peak at - infinity. The attribute is still
+not normally distributed, so it is left behind for the transformation.
 
 ```{r}
 data$Cholesterol <- log10(data$Cholesterol)
@@ -316,7 +351,11 @@ data$Cholesterol <- log10(data$Cholesterol)
 
 \newpage
 
-With the distributions displayed, we can then begin to identify *possible* outliers. For this we use a violin plot. That's because a violin plot allows you to examine the distribution of the data and spot some outliers. It can also be immediately seen whether the outliers have a strong influence on the distribution.
+With the distributions displayed, we can then begin to identify
+*possible* outliers. For this we use a violin plot. That's because a
+violin plot allows you to examine the distribution of the data and spot
+some outliers. It can also be immediately seen whether the outliers have
+a strong influence on the distribution.
 
 ```{r}
 numeric.frame <- data.frame(
@@ -352,16 +391,20 @@ p4 <- ggplot(numeric.frame, aes(x=Cholesterol, y=Cholesterol.value)) +
 grid.arrange(p1,p2,p3,p4, ncol = 2)
 ```
 
-The data contains few outliers. BP and Max.HR  has a number of points that differ slightly. But looking at the distribution, it still looks quite well normal. We can conclude that:
+The data contains few outliers. BP and Max.HR has a number of points
+that differ slightly. But looking at the distribution, it still looks
+quite well normal. We can conclude that:
 
-- There are no major deviations in the distribution of the data
-- The numerical data contain no notable outliers
+-   There are no major deviations in the distribution of the data
+-   The numerical data contain no notable outliers
 
 \newpage
 
 #### Variation of nominal/ordinal attributes
 
-Let's look at the nominal values new. We are going to plot how often these occur. This is to be able to see whether all classes are represented.
+Let's look at the nominal values new. We are going to plot how often
+these occur. This is to be able to see whether all classes are
+represented.
 
 ```{r}
 p1 <- ggplot(data, aes(x = Sex, fill = Sex)) + geom_bar()
@@ -378,12 +421,17 @@ grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9, ncol = 3,
              top = "Barplots of all the nominal/ordinal valus")
 ```
 
-The dataset contains more man than women. Most values lean towards 'healthy' people. There are also more people who do not have a condition than do. So this difference partly comes from here. However, there are also many people who do have a condition, but have few or no complaints, for example, see figure Chest.pain.type. 
+The dataset contains more man than women. Most values lean towards
+'healthy' people. There are also more people who do not have a condition
+than do. So this difference partly comes from here. However, there are
+also many people who do have a condition, but have few or no complaints,
+for example, see figure Chest.pain.type.
 
 conclusions:
 
-- Comparatively few people have an FBS of over 120
-- There seems to be enough distribution in these attributes to train a good model (this says nothing about the usability of all attributes)
+-   Comparatively few people have an FBS of over 120
+-   There seems to be enough distribution in these attributes to train a
+    good model (this says nothing about the usability of all attributes)
 
 \newpage
 
@@ -416,11 +464,15 @@ certainly has no major deviation.
 
 ## Bivariate analysis
 
-In this sector, not one, but several variables are considered. By this we mean that we will look at each other. For example, how much correlation certain attributes have. First, we will compare age between groups
+In this sector, not one, but several variables are considered. By this
+we mean that we will look at each other. For example, how much
+correlation certain attributes have. First, we will compare age between
+groups
 
 ### Comparing the numeric attributes with classification attribute
 
-Let's take a closer look at the patients and numeric values. Perhaps we spot some initial differences. 
+Let's take a closer look at the patients and numeric values. Perhaps we
+spot some initial differences.
 
 ```{r}
 age.frame <- data.frame(
@@ -470,8 +522,10 @@ b5 <- ggplot(age.frame, aes(x = Patient, y = ST.depression, fill=Patient)) +
 grid.arrange(b1,b2,b3,b4,b5, ncol = 2)
 ```
 
-The results show that the age is slightly higher in the presence group. It can be concluded that patients with a presence-condition are often
-slightly older. The Max.HR is also higher in the absence group. And ST.depression is higher in the Presence group. 
+The results show that the age is slightly higher in the presence group.
+It can be concluded that patients with a presence-condition are often
+slightly older. The Max.HR is also higher in the absence group. And
+ST.depression is higher in the Presence group.
 
 \newpage
 
@@ -497,7 +551,9 @@ t.test.results <- data.frame(
 pander(t.test.results)
 ```
 
-The cholesterol p-value is less than 0.05, but the value is just below 0.05. The difference could therefore be characterized as small. The rest of the values have a significant difference between both groups
+The cholesterol p-value is less than 0.05, but the value is just below
+0.05. The difference could therefore be characterized as small. The rest
+of the values have a significant difference between both groups
 
 \newpage
 
@@ -558,7 +614,11 @@ grid.arrange(b1, b2, b3, b4, ncol = 2)
 grid.arrange(b5, b6, b7, b8, ncol = 2)
 ```
 
-There are many more men than women with a heart disease. Most people with a condition experience no pain on the chest. The ratio between sick and not sick between FBS over 120 is the same. There are many more people without FBS over 120. There are few people with exercise angina and no condition. Thallium 7 is most common in people with a condition.
+There are many more men than women with a heart disease. Most people
+with a condition experience no pain on the chest. The ratio between sick
+and not sick between FBS over 120 is the same. There are many more
+people without FBS over 120. There are few people with exercise angina
+and no condition. Thallium 7 is most common in people with a condition.
 
 \newpage
 
@@ -584,7 +644,10 @@ chisq.results <- data.frame(
 pander(chisq.results)
 ```
 
-All p-values except FBS over 120 have a p-value lower than 0.05. This means that all these values are related to the classification column (Presence/Absence). The lowest p-values are of course the most correlated.
+All p-values except FBS over 120 have a p-value lower than 0.05. This
+means that all these values are related to the classification column
+(Presence/Absence). The lowest p-values are of course the most
+correlated.
 
 \newpage
 
@@ -592,9 +655,12 @@ All p-values except FBS over 120 have a p-value lower than 0.05. This means that
 
 As mentioned earlier, the main goal of this research was to develop a
 machine learning model. For this model, it is useful to see which
-attributes may be important. We will compare all numeric attributes with each other. The goal is to demonstrate similarities or differences.
+attributes may be important. We will compare all numeric attributes with
+each other. The goal is to demonstrate similarities or differences.
 
-Scatterplots are plotted between all attributes. This makes it possible to see how far apart the groups presence/absence are. Or just how close they are to each other.
+Scatterplots are plotted between all attributes. This makes it possible
+to see how far apart the groups presence/absence are. Or just how close
+they are to each other.
 
 ```{r}
 ggpairs( data[numeric.columns], ggplot2::aes(colour=data$Heart.Disease), 
@@ -603,12 +669,16 @@ ggpairs( data[numeric.columns], ggplot2::aes(colour=data$Heart.Disease),
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), axis.text.y = element_blank(), legend.position = "bottom")
 ```
 
-The figure above shows a number of things. It shows the similarities between all variables. However, it is of course much clearer to simply attach a number to the similarities. This happens below with a correlation heat map.
+The figure above shows a number of things. It shows the similarities
+between all variables. However, it is of course much clearer to simply
+attach a number to the similarities. This happens below with a
+correlation heat map.
 
 Conclusions pairplot:
 
-- There is a small similaritie in the age attribute
-- The maximum heart rate appears to be lower in people who have a condition
+-   There is a small similaritie in the age attribute
+-   The maximum heart rate appears to be lower in people who have a
+    condition
 
 \newpage
 
@@ -625,12 +695,16 @@ ggcorrplot(cor(data[numeric.columns]), colors = colMA(),
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20)) 
 ```
 
-The output tells us that there are some values that are slightly to moderately correlated. Blood pressure and age have the highest correlation. Furthermore, there are no values that stand out. ST depression and maximum heart rate have the least correlation
+The output tells us that there are some values that are slightly to
+moderately correlated. Blood pressure and age have the highest
+correlation. Furthermore, there are no values that stand out. ST
+depression and maximum heart rate have the least correlation
 
 Conclusion:
 
-- BP and Age have the highest correlation
-- There are no very high or low correlations, the values complement each other well
+-   BP and Age have the highest correlation
+-   There are no very high or low correlations, the values complement
+    each other well
 
 \newpage
 
@@ -643,21 +717,28 @@ combined <- bind_rows(chisq.results, t.test.results)
 pander(combined[order(combined$P.Value),])
 ```
 
-The attribute thallium is most related to disease. This value is going to be important for the model. The list if followed by chest pain type. The FBS value over 120 will be the least useful
+The attribute thallium is most related to disease. This value is going
+to be important for the model. The list if followed by chest pain type.
+The FBS value over 120 will be the least useful
 
 \newpage
 
 # Clean Dataset
 
-As told earlier, some columns have been log10 transformed. We are now going to make a 'clean' dataset. I.e., a dataset with usable columns and with the right range.
+As told earlier, some columns have been log10 transformed. We are now
+going to make a 'clean' dataset. I.e., a dataset with usable columns and
+with the right range.
 
-Let's delete the index column. This column is unnecessary and we don't need it for our machine learning model later on.
+Let's delete the index column. This column is unnecessary and we don't
+need it for our machine learning model later on.
 
 ```{r}
 data <- data[ -c(1) ]
 ```
 
-For the clean dataset it is also easy to read a number of values more quickly. Numbers cannot be read quickly, so we will convert (simple) values into words. 
+For the clean dataset it is also easy to read a number of values more
+quickly. Numbers cannot be read quickly, so we will convert (simple)
+values into words.
 
 ```{r}
 levels(data$Sex) <- c("Male", "Female")
@@ -671,7 +752,12 @@ levels(data$Number.of.vessels.fluro) <- c("3", "0", "1", "2")
 levels(data$Thallium) <- c("Normal", "Reversible defect", "Fixed defect")
 ```
 
-We are now creating three other datasets to test algorithms in weka. First, a dataset is created that contains only the attributes of the top 5 lowest p-values. Then another data set is saved in which the remaining numeric columns are transformed. Finally, a dataset will be created, containing only the simple attributes. These attributes can easily be taken with a simple test.
+We are now creating three other datasets to test algorithms in weka.
+First, a dataset is created that contains only the attributes of the top
+5 lowest p-values. Then another data set is saved in which the remaining
+numeric columns are transformed. Finally, a dataset will be created,
+containing only the simple attributes. These attributes can easily be
+taken with a simple test.
 
 ```{r}
 data.top5 <- data[c("Thallium", "Chest.pain.type", 
@@ -685,7 +771,8 @@ data.allTransformed$BP <- log10(data.allTransformed$BP)
 data.simple <- data[c("Age", "Sex", "Cholesterol", "BP", "Heart.Disease")]
 ```
 
-There are now clean data sets. We are going to save these in a CSV file so that we can use it in Weka.
+There are now clean data sets. We are going to save these in a CSV file
+so that we can use it in Weka.
 
 ```{r}
 write.csv(data, "01-Clean_dataset.csv", row.names = F)
@@ -693,6 +780,77 @@ write.csv(data.top5, "02-top5_p_values.csv", row.names = F)
 write.csv(data.allTransformed, "03-Numeric_transformed.csv", row.names = F)
 write.csv(data.simple, "04-Simple.csv", row.names = F)
 ```
+
+\newpage
+
+# Machine learning model
+
+Now that the datasets are stored, the best model can be created. We
+create a new Weka experiment with different algorithms and settings. We
+run all these algorithms on all the datasets. These results are stored
+in a csv-file. The settings of the algorithms are described below.
+
+## Algorithms and Settings
+
+1.  ZeroR
+2.  OneR
+    1.  Bucket size 6
+    2.  Bucket size 15
+3.  J48
+    1.  Minimum number of objects: 2, Backward Pruning: 0.25
+    2.  Minimum number of objects: 2, Unpruned
+    3.  Minimum number of objects: 15, Backward Pruning: 0.25
+    4.  Minimum number of objects: 35, Backward Pruning: 0.25
+    5.  Minimum number of objects 10, Backward Pruning: 0.025
+4.  RandomForest - standard settings
+5.  RandomTree - standard settings
+6.  K-nears neighbours
+    1.  KNN: 10
+    2.  KNN: 35 (35 was the best result from CVParamaterSelection)
+    3.  KNN: 35, Manhattan distance
+7.  SMO - standard settings
+8.  Logistic regression - standard settings
+9.  NaieveBayes
+10. ClassificationViaClustering - standard settings
+
+## Results analysis
+
+```{r}
+weka.results <- read.csv("WEKA_RESULTS.csv")
+weka.results <- data.frame(weka.results)
+View(weka.results)
+```
+
+```{r}
+unique(weka.results$Key_Scheme)
+weka.results$Percent_correct[grep("NaiveBayes", weka.results$Key_Scheme) & weka.results$Key_Dataset == "01-Clean_dataset"]
+
+
+
+weka.results$Percent_correct[grep("SMO", weka.results$Key_Scheme) & weka.results$Key_Dataset == "01-Clean_dataset"]
+
+
+mean(weka.results$Percent_correct[weka.results$Key_Scheme %like% "SMO" & weka.results$Key_Dataset == "01-Clean_dataset"])
+
+
+weka.results[weka.results$Key_Scheme %like% "OneR" & weka.results$Key_Dataset == "01-Clean_dataset" & weka.results$Key_Scheme_options %like% "-B 15",]
+
+library(tidyverse)
+
+Results <- weka.results %>%
+ group_by(Key_Dataset, Key_Scheme, Key_Scheme_options) %>%
+  summarise(mean(Percent_correct), .groups = "keep")
+
+Results
+
+x <- Results$Key_Dataset[Results$Key_Scheme == "weka.classifiers.bayes.NaiveBayes"]
+y <- Results$`mean(Percent_correct)`[Results$Key_Scheme == "weka.classifiers.bayes.NaiveBayes"]
+
+x
+barplot(y, names.arg = x, las = 2, cex.names = .5, horiz = T)
+
+```
+
 
 \newpage
 
@@ -711,5 +869,3 @@ Perret‐Guillaume, C., Joly, L. Bénétos, A. (2009).: \textit{Heart rate as a 
 
 \end{thebibliography}
 ```
-
-
