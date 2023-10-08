@@ -33,6 +33,7 @@ library(ggcorrplot)
 library(gridExtra)
 library(dplyr)
 library(data.table)
+library(tidyverse)
 ```
 
 \newpage
@@ -822,33 +823,68 @@ View(weka.results)
 ```
 
 ```{r}
-unique(weka.results$Key_Scheme)
-weka.results$Percent_correct[grep("NaiveBayes", weka.results$Key_Scheme) & weka.results$Key_Dataset == "01-Clean_dataset"]
-
-
-
-weka.results$Percent_correct[grep("SMO", weka.results$Key_Scheme) & weka.results$Key_Dataset == "01-Clean_dataset"]
-
-
-mean(weka.results$Percent_correct[weka.results$Key_Scheme %like% "SMO" & weka.results$Key_Dataset == "01-Clean_dataset"])
-
-
-weka.results[weka.results$Key_Scheme %like% "OneR" & weka.results$Key_Dataset == "01-Clean_dataset" & weka.results$Key_Scheme_options %like% "-B 15",]
-
-library(tidyverse)
-
 Results <- weka.results %>%
  group_by(Key_Dataset, Key_Scheme, Key_Scheme_options) %>%
-  summarise(mean(Percent_correct), .groups = "keep")
+  summarise(mean = mean(Percent_correct), .groups = "keep")
 
 Results
 
-x <- Results$Key_Dataset[Results$Key_Scheme == "weka.classifiers.bayes.NaiveBayes"]
-y <- Results$`mean(Percent_correct)`[Results$Key_Scheme == "weka.classifiers.bayes.NaiveBayes"]
+unique(Results$Key_Dataset)
 
-x
-barplot(y, names.arg = x, las = 2, cex.names = .5, horiz = T)
+Dataset = c("01-Clean_dataset", "02-top5_p_values", "03-Numeric_transformed", "04-Simple")
 
+
+unique(Results$Key_Scheme_options)
+Results$Key_Scheme[1:16]
+
+x <- data.frame(
+  algorithm = c(
+    "NaiveBayes", "SMO"
+  ),
+  means = c(
+    Results$mean[Results$Key_Scheme %like% "NaiveBayes"],
+    Results$mean[Results$Key_Scheme %like% "SMO"],
+  )
+)
+
+ggplot(x, aes(y = means)) + geom_bar()
+
+
+```
+
+```{r}
+df <- data.frame(
+  Label = c(
+    "Label1", "Label2", "Label3", "Label4", 
+    "Label5", "Label6", "Label7", "Label8", 
+    "Label9", "Label10", "Label11", "Label12", 
+    "Label13", "Label14", "Label15", "Label16", "Label17"),
+  Gemiddelde = c(
+    Results$mean[Results$Key_Scheme %like% "NaiveBayes" & Results$Key_Dataset == "01-Clean_dataset"],
+    Results$mean[Results$Key_Scheme %like% "SMO" & Results$Key_Dataset == "01-Clean_dataset"],
+    Results$mean[Results$Key_Scheme %like% "Logistic" & Results$Key_Dataset == "01-Clean_dataset"],
+    Results$mean[Results$Key_Scheme %like% "IBk" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-K 10"],
+    Results$mean[Results$Key_Scheme %like% "IBk" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-K 35" & Results$Key_Scheme_options %like% "EuclideanDistance"],
+    Results$mean[Results$Key_Scheme %like% "IBk" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "ManhattanDistance"],
+    Results$mean[Results$Key_Scheme %like% "ClassificationViaClustering" & Results$Key_Dataset == "01-Clean_dataset"],
+    Results$mean[Results$Key_Scheme %like% "OneR" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-B 15"],
+    Results$mean[Results$Key_Scheme %like% "OneR" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-B 6"],
+    Results$mean[Results$Key_Scheme %like% "ZeroR" & Results$Key_Dataset == "01-Clean_dataset"],
+    Results$mean[Results$Key_Scheme %like% "J48" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-C 0.025 -M 10"],
+    Results$mean[Results$Key_Scheme %like% "J48" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-C 0.25 -M 15"],
+    Results$mean[Results$Key_Scheme %like% "J48" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-C 0.25 -M 2"],
+    Results$mean[Results$Key_Scheme %like% "J48" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-C 0.25 -M 35"],
+    Results$mean[Results$Key_Scheme %like% "J48" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-U -M 2"],
+    Results$mean[Results$Key_Scheme %like% "RandomForest" & Results$Key_Dataset == "01-Clean_dataset"],
+    Results$mean[Results$Key_Scheme %like% "RandomTree" & Results$Key_Dataset == "01-Clean_dataset"])
+  )
+
+ggplot(df, aes(x = Label, y = Gemiddelde, fill = Label)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Mean ACC per Algorithm in clean dataset", 
+       x = "Algorithm", y = "Mean") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+        legend.key.size = unit(0.4, "cm")) + coord_cartesian(ylim=c(50,100))
 ```
 
 
