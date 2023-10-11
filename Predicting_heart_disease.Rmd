@@ -841,6 +841,8 @@ Results <- weka.results %>%
   summarise(mean = mean(Percent_correct), .groups = "keep")
 ```
 
+\newpage
+
 ## Accuracy
 
 Let's look at the clean dataset first.
@@ -880,7 +882,37 @@ ggplot(df, aes(x = Label, y = Gemiddelde, fill = Label)) +
         legend.key.size = unit(0.4, "cm")) + coord_cartesian(ylim=c(50,100))
 ```
 
-Naive bayes scores highest accuracy. In the tests below, this will be put first to detect concepts that are significantly better than Naive bayes. Let's look at other comparison fields.
+Naive bayes scores highest accuracy. This accuracy is for the clean dataset. For the other three datasets, NaiveBayes has the highest ACC as well.
+
+
+We will now look at all the four datasets at once.
+
+```{r}
+Results.4.datasets <- weka.results %>%
+ group_by(Key_Scheme, Key_Scheme_options) %>%
+  summarise(mean = mean(Percent_correct), .groups = "keep")
+
+pander(head(Results[c(2, 4)]))
+```
+
+We can conclude that:
+
+- NaiveBayes scores the highest
+- Logistic regression scores seccond highest
+
+If we only look at our clean dataset, we have the same results.
+
+```{r}
+Results <- weka.results %>%
+ group_by(Key_Dataset[1], Key_Scheme, Key_Scheme_options) %>%
+  summarise(mean = mean(Percent_correct), .groups = "keep")
+
+pander(head(Results[c(2, 4)]))
+```
+ 
+It's the same result as the four datasets combined, so Naieve bayes and logistic are the best here.
+
+Let's look at other comparison fields.
 
 \newpage
 
@@ -908,15 +940,15 @@ Key:
 (15) functions.Logistic '-R 1.0E-8 -M -1 -num-decimal-places 4' 3932117032546553727
 (16) bayes.NaiveBayes '' 5995231201785697655
 
-K-nearest neighbours and SMO show the highest Area_under_ROC after Naive Bayes. 
+RandomTree, K-nearest neighbours (KNN 35, euclideanDistance) and NaieveBayes are the highest here. There are very close to eachother, but NaiveBayes is at top followed by K-nearest neighbours.
 
 ## False negative rate and False positive rate
 
 We want a concept with a low false negative rate and a low false positive rate. 
 
-For the false negative rate there are two values that are significantly lower than for NaiveBayes. However, these values are in the "simple" dataset. This dataset does not score highly (this is shown below).
+For the false negative rate SMO and ClassificationViaCLustering score lower over 4 datasets. K-nearest neighbours scores low as well. Again, NaiveBayes scores here low too. It is difficult to make conclusions with this because there are all differences between data sets.
 
-For the flase positive rate only zeroR scores lower. But that makes sense.
+For the flase positive rate only zeroR scores lower. But that makes sense. Not looking at ZeroR, K-nearest neighbours and NaiveBayes scores the lowest. 
 
 ## UserCPU_CPU_Time_Training.
 
@@ -924,31 +956,41 @@ The UserCPU_CPU_Time_Training for each model is very fast. ZeroR scores the fast
 
 ## Dataset comparison
 
-Now all that remains is to look for the best dataset.
+Now all that remains is to look for the best dataset. For now, we will only look at the ACC, because attribute selection will be looked at next.
 
+```{r}
+Results <- weka.results %>%
+ group_by(Key_Dataset) %>%
+  summarise(mean = mean(Percent_correct), .groups = "keep")
 
-Dataset                   (1) 01-Clean_da | (2) 02-top5_ (3) 03-Numer (4) 04-Simpl
-----------------------------------------------------------------------------------
-rules.ZeroR '' 4805554146(100)   55.55556 |   55.55556     55.55556     55.55556  
-rules.OneR '-B 6' -345942(100)   71.62963 |   73.07407     71.62963     51.40741 *
-rules.OneR '-B 15' -34594(200)   71.62963 |   73.07407     71.62963     60.81481 *
-trees.J48 '-C 0.25 -M 2' (100)   76.40741 |   80.96296 v   76.44444     65.44444 *
-trees.J48 '-U -M 2' -2177(100)   75.81481 |   81.07407 v   75.92593     65.22222 *
-trees.J48 '-C 0.25 -M 15'(100)   73.81481 |   73.00000     73.81481     63.07407 *
-trees.J48 '-C 0.25 -M 35'(100)   72.44444 |   73.00000     72.44444     64.62963 *
-trees.J48 '-C 0.025 -M 10(100)   73.88889 |   76.51852     73.88889     63.22222 *
-trees.RandomForest '-P 10(100)   81.33333 |   79.33333     82.22222     64.96296 *
-trees.RandomTree '-K 0 -M(100)   73.00000 |   74.59259     73.88889     62.48148 *
-lazy.IBk '-K 10 -W 0 -A \(100)   80.85185 |   80.88889     80.92593     64.22222 *
-lazy.IBk '-K 35 -W 0 -A \(100)   83.66667 |   83.37037     83.29630     67.25926 *
-lazy.IBk '-K 35 -W 0 -A \(100)   83.44444 |   83.18519     83.40741     67.03704 *
-functions.SMO '-C 1.0 -L (100)   84.07407 |   83.70370     84.03704     62.66667 *
-functions.Logistic '-R 1.(100)   83.96296 |   83.81481     83.85185     66.03704 *
-bayes.NaiveBayes '' 59952(100)   84.88889 |   83.44444     84.14815     68.25926 *
-meta.ClassificationViaClu(100)   78.07407 |   80.81481     78.14815     62.11111 *
-----------------------------------------------------------------------------------
-                                  (v/ /*) |     (2/15/0)     (0/17/0)     (0/1/16)
+pander(head(Results))
+```
 
+| Dataset                   | (1) 01-Clean_da  | (2) 02-top5_ | (3) 03-Numer. | (4) 04-Simpl |
+|---------------------------|------------------|--------------|---------------|--------------|
+| rules.ZeroR '' 4805554146 | (100)   55.55556 |   55.55556   |  55.55556     | 55.55556     |
+| rules.OneR '-B 6' -345942 | (100)   71.62963 |   73.07407   |  71.62963     | 51.40741 *   |
+| rules.OneR '-B 15' -34594 | (200)   71.62963 |   73.07407   |  71.62963     | 60.81481 *   |
+| trees.J48 '-C 0.25 -M 2'  | (100)   76.40741 |   80.96296 v |  76.44444     | 65.44444 *   |
+| trees.J48 '-U -M 2' -2177 | (100)   75.81481 |   81.07407 v |  75.92593     | 65.22222 *   |
+| trees.J48 '-C 0.25 -M 15' | (100)   73.81481 |   73.00000   |  73.81481     | 63.07407 *   |
+| trees.J48 '-C 0.25 -M 35' | (100)   72.44444 |   73.00000   |  72.44444     | 64.62963 *   |
+| trees.J48 '-C 0.025 -M 10 | (100)   73.88889 |   76.51852   |  73.88889     | 63.22222 *   |
+| trees.RandomForest '-P 10 | (100)   81.33333 |   79.33333   |  82.22222     | 64.96296 *   |
+| trees.RandomTree '-K 0 -M | (100)   73.00000 |   74.59259   |  73.88889     | 62.48148 *   |
+| lazy.IBk '-K 10 -W 0 -A   | (100)   80.85185 |   80.88889   |  80.92593     | 64.22222 *   |
+| lazy.IBk '-K 35 -W 0 -A   | (100)   83.66667 |   83.37037   |  83.29630     | 67.25926 *   |
+| lazy.IBk '-K 35 -W 0 -A   | (100)   83.44444 |   83.18519   |  83.40741     | 67.03704 *   |
+| functions.SMO '-C 1.0 -L  | (100)   84.07407 |   83.70370   |  84.03704     | 62.66667 *   |
+| functions.Logistic '-R 1. | (100)   83.96296 |   83.81481   |  83.85185     | 66.03704 *   |
+| bayes.NaiveBayes '' 59952 | (100)   84.88889 |   83.44444   |  84.14815     | 68.25926 *   |
+| meta.ClassificationViaClu | (100)   78.07407 |   80.81481   |  78.14815     | 62.11111 *   |
+
+By looking at these two tables, we can see that the dataset with the lowest p-values scores better than the "clean" dataset. A model bases on only the best 5 attributes scores better than a model with all models. The five attributes are determined with 'simple' t-tests. This can be calculated much better in Weka. This will examined in the next section. Specific algorithms and search methods will then be used to determine the best attributes.
+
+## Attribute Selection
+
+In weka it is possible to look which attributes in your datasets are suited best for your model. This can be done on multiple ways...
 
 \newpage
 
@@ -974,6 +1016,8 @@ Attribute selection checklist
 1. Ranking
 2. Wrapper
 3. CSF
+
+
 
 
 
