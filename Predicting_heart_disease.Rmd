@@ -813,6 +813,7 @@ in a csv-file. The settings of the algorithms are described below.
 8.  Logistic regression - standard settings
 9.  NaieveBayes
 10. ClassificationViaClustering - standard settings
+11. CostSensitiveClassifier with a cost of 4 for Fals Negatives
 
 ## Results analysis
 
@@ -834,22 +835,19 @@ unique(Results$Key_Dataset)
 Dataset = c("01-Clean_dataset", "02-top5_p_values", "03-Numeric_transformed", "04-Simple")
 
 
-unique(Results$Key_Scheme_options)
-Results$Key_Scheme[1:16]
+cbind(Results$Key_Dataset, Results$mean)
 
-x <- data.frame(
-  algorithm = c(
-    "NaiveBayes", "SMO"
-  ),
-  means = c(
-    Results$mean[Results$Key_Scheme %like% "NaiveBayes"],
-    Results$mean[Results$Key_Scheme %like% "SMO"],
-  )
-)
-
-ggplot(x, aes(y = means)) + geom_bar()
-
-
+#x <- data.frame(
+#  algorithm = c(
+#    "NaiveBayes", "SMO"
+#  ),
+#  means = c(
+#    Results$mean[Results$Key_Scheme %like% "NaiveBayes"],
+#    Results$mean[Results$Key_Scheme %like% "SMO"],
+#  )
+#)
+#
+#ggplot(x, aes(y = means)) + geom_bar()
 ```
 
 ```{r}
@@ -886,6 +884,8 @@ ggplot(df, aes(x = Label, y = Gemiddelde, fill = Label)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1), 
         legend.key.size = unit(0.4, "cm")) + coord_cartesian(ylim=c(50,100))
 ```
+
+# Table
 
 
 \newpage
