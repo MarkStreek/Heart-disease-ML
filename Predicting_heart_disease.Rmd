@@ -2,10 +2,12 @@
 title: "Predicting Heart Disease"
 author: "Mark van de Streek"
 date: "`r Sys.Date()`"
-output: 
+output:
   pdf_document:
     number_sections: yes
   word_document: default
+  html_document:
+    df_print: paged
 editor_options:
   markdown:
     wrap: 72
@@ -787,11 +789,11 @@ write.csv(data.simple, "04-Simple.csv", row.names = F)
 # Machine learning model
 
 Now that the datasets are stored, the best model can be created. We
-create a new Weka experiment with different algorithms and settings. We
-run all these algorithms on all the datasets. These results are stored
-in a csv-file. The settings of the algorithms are described below.
+create a new Weka experiment with different algorithms and datasets.
 
 ## Algorithms and Settings
+
+In weka there is a option to compare all datasets and concepts with eachother. This is done at the "experimenter" tab. Create a "new" experimenter and add the files that you've just created above. On the right pannel, add the algorithms that we want the run. The algorithms are described below. 
 
 1.  ZeroR
 2.  OneR
@@ -813,42 +815,35 @@ in a csv-file. The settings of the algorithms are described below.
 8.  Logistic regression - standard settings
 9.  NaieveBayes
 10. ClassificationViaClustering - standard settings
-11. CostSensitiveClassifier with a cost of 4 for Fals Negatives
+
+After you've add all the algorithms, we can now run the experiment. This can be done at the "Run" tab. In the "Analyse" tab, you can retrieve the experiment results by pressing "Experiment". It's now possible to perform tests. These tests can be used to determine which concept scores the best or highest.
+
+By selecting a comparison field, you can get the right information about the experiment. We will look at Percent_correct, Area_under_ROC, False_negative_rate, False_pisitive_rate and UserCPU_CPU_Time_Training. After the right comparison field is selected, press "Perform test". A table will now be displayed with the results. **"V"** means siginificantly higher and **\"\*\"** means significantly lower.
+
+The last thing we want to test is the datasets. This can be done by pressing "swap". The columns and rows are now reversed. Tests can now be performed again. An comparison field can be selected again and another table with results will be showed after performing a test.
+
+It is possible to save the experimenter's results. This can be done in the "setup" tab. A path and file name can be selected under the heading "Results destination". The results are saved after pressing "Run".
+
+The next section looks at the experimenter's results with the above datasets and algorithms.
 
 ## Results analysis
 
 ```{r}
 weka.results <- read.csv("WEKA_RESULTS.csv")
 weka.results <- data.frame(weka.results)
-View(weka.results)
 ```
+
+We have to group the results because there are a lot of values. With grouping it is possible to see what values are per dataset or per concept. This way we don't have to go through the complete results and create groups/new data frames with results.
 
 ```{r}
 Results <- weka.results %>%
  group_by(Key_Dataset, Key_Scheme, Key_Scheme_options) %>%
   summarise(mean = mean(Percent_correct), .groups = "keep")
-
-Results
-
-unique(Results$Key_Dataset)
-
-Dataset = c("01-Clean_dataset", "02-top5_p_values", "03-Numeric_transformed", "04-Simple")
-
-
-cbind(Results$Key_Dataset, Results$mean)
-
-#x <- data.frame(
-#  algorithm = c(
-#    "NaiveBayes", "SMO"
-#  ),
-#  means = c(
-#    Results$mean[Results$Key_Scheme %like% "NaiveBayes"],
-#    Results$mean[Results$Key_Scheme %like% "SMO"],
-#  )
-#)
-#
-#ggplot(x, aes(y = means)) + geom_bar()
 ```
+
+## Accuracy
+
+Let's look at the clean dataset first.
 
 ```{r}
 df <- data.frame(
@@ -885,7 +880,74 @@ ggplot(df, aes(x = Label, y = Gemiddelde, fill = Label)) +
         legend.key.size = unit(0.4, "cm")) + coord_cartesian(ylim=c(50,100))
 ```
 
-# Table
+Naive bayes scores highest accuracy. In the tests below, this will be put first to detect concepts that are significantly better than Naive bayes. Let's look at other comparison fields.
+
+\newpage
+
+## Area under ROC
+
+The table below pulls out the "simple" concepts. This is because otherwise a large table will be created with values that are not relevant. above, the ACC is visible for all algorithms.
+
+| Dataset                |  (16) Bayes  | (5)    | (6)    | (7)    | (8)    | (10) | (12) | (13)   | (14) | (15)   | 
+| -----------------------|--------------|--------|--------|--------|--------|------|------|--------|------|--------|
+| 01-Clean_dataset       | (100)   0.91 | 0.78 * | 0.74 * | 0.76 * | 0.89   | 0.89 | 0.90 | 0.83 * | 0.90 | 0.78 * |
+| 02-top5_p_values       | (100)   0.90 | 0.78 * | 0.74 * | 0.79 * | 0.84 * | 0.88 | 0.89 | 0.83 * | 0.90 | 0.80 * |
+| 03-Numeric_transformed | (100)   0.91 | 0.78 * | 0.74 * | 0.76 * | 0.89   | 0.90 | 0.90 | 0.83 * | 0.90 | 0.78 * |
+| 04-Simple              | (100)   0.72 | 0.68   | 0.68   | 0.66 * | 0.71   | 0.71 | 0.74 | 0.63 * | 0.72 | 0.64 * |
+
+Key:
+
+(5) trees.J48 '-U -M 2' -217733168393644444
+(6) trees.J48 '-C 0.25 -M 15' -217733168393644444
+(7) trees.J48 '-C 0.25 -M 35' -217733168393644444
+(8) trees.J48 '-C 0.025 -M 10' -217733168393644444
+(10) trees.RandomTree '-K 0 -M 1.0 -V 0.001 -S 1' -9051119597407396024
+(12) lazy.IBk '-K 35 -W 0 -A \"weka.core.neighboursearch.LinearNNSearch -A \\\"weka.core.EuclideanDistance -R first-last\\\"\"' -3080186098777067172
+(13) lazy.IBk '-K 35 -W 0 -A \"weka.core.neighboursearch.LinearNNSearch -A \\\"weka.core.ManhattanDistance -R first-last\\\"\"' -3080186098777067172
+(14) functions.SMO '-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"' -6585883636378691736
+(15) functions.Logistic '-R 1.0E-8 -M -1 -num-decimal-places 4' 3932117032546553727
+(16) bayes.NaiveBayes '' 5995231201785697655
+
+K-nearest neighbours and SMO show the highest Area_under_ROC after Naive Bayes. 
+
+## False negative rate and False positive rate
+
+We want a concept with a low false negative rate and a low false positive rate. 
+
+For the false negative rate there are two values that are significantly lower than for NaiveBayes. However, these values are in the "simple" dataset. This dataset does not score highly (this is shown below).
+
+For the flase positive rate only zeroR scores lower. But that makes sense.
+
+## UserCPU_CPU_Time_Training.
+
+The UserCPU_CPU_Time_Training for each model is very fast. ZeroR scores the fastest here. But this model will not not be used eventually.
+
+## Dataset comparison
+
+Now all that remains is to look for the best dataset.
+
+
+Dataset                   (1) 01-Clean_da | (2) 02-top5_ (3) 03-Numer (4) 04-Simpl
+----------------------------------------------------------------------------------
+rules.ZeroR '' 4805554146(100)   55.55556 |   55.55556     55.55556     55.55556  
+rules.OneR '-B 6' -345942(100)   71.62963 |   73.07407     71.62963     51.40741 *
+rules.OneR '-B 15' -34594(200)   71.62963 |   73.07407     71.62963     60.81481 *
+trees.J48 '-C 0.25 -M 2' (100)   76.40741 |   80.96296 v   76.44444     65.44444 *
+trees.J48 '-U -M 2' -2177(100)   75.81481 |   81.07407 v   75.92593     65.22222 *
+trees.J48 '-C 0.25 -M 15'(100)   73.81481 |   73.00000     73.81481     63.07407 *
+trees.J48 '-C 0.25 -M 35'(100)   72.44444 |   73.00000     72.44444     64.62963 *
+trees.J48 '-C 0.025 -M 10(100)   73.88889 |   76.51852     73.88889     63.22222 *
+trees.RandomForest '-P 10(100)   81.33333 |   79.33333     82.22222     64.96296 *
+trees.RandomTree '-K 0 -M(100)   73.00000 |   74.59259     73.88889     62.48148 *
+lazy.IBk '-K 10 -W 0 -A \(100)   80.85185 |   80.88889     80.92593     64.22222 *
+lazy.IBk '-K 35 -W 0 -A \(100)   83.66667 |   83.37037     83.29630     67.25926 *
+lazy.IBk '-K 35 -W 0 -A \(100)   83.44444 |   83.18519     83.40741     67.03704 *
+functions.SMO '-C 1.0 -L (100)   84.07407 |   83.70370     84.03704     62.66667 *
+functions.Logistic '-R 1.(100)   83.96296 |   83.81481     83.85185     66.03704 *
+bayes.NaiveBayes '' 59952(100)   84.88889 |   83.44444     84.14815     68.25926 *
+meta.ClassificationViaClu(100)   78.07407 |   80.81481     78.14815     62.11111 *
+----------------------------------------------------------------------------------
+                                  (v/ /*) |     (2/15/0)     (0/17/0)     (0/1/16)
 
 
 \newpage
@@ -905,3 +967,13 @@ Perret‐Guillaume, C., Joly, L. Bénétos, A. (2009).: \textit{Heart rate as a 
 
 \end{thebibliography}
 ```
+
+Attribute selection checklist
+
+
+1. Ranking
+2. Wrapper
+3. CSF
+
+
+
