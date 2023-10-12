@@ -845,7 +845,7 @@ Results <- weka.results %>%
 
 ## Accuracy
 
-Let's look at the clean dataset first.
+Let's look at the accuracy first.
 
 ```{r}
 df <- data.frame(
@@ -900,7 +900,7 @@ We can conclude that:
 - NaiveBayes scores the highest
 - Logistic regression scores seccond highest
 
-If we only look at our clean dataset, we have the same results.
+Looking only at the clean dataset:
 
 ```{r}
 Results <- weka.results %>%
@@ -942,6 +942,10 @@ Key:
 
 RandomTree, K-nearest neighbours (KNN 35, euclideanDistance) and NaieveBayes are the highest here. There are very close to eachother, but NaiveBayes is at top followed by K-nearest neighbours.
 
+- NaieveBayes
+- K-neares neighbours
+- RandomTree
+
 ## False negative rate and False positive rate
 
 We want a concept with a low false negative rate and a low false positive rate. 
@@ -949,6 +953,18 @@ We want a concept with a low false negative rate and a low false positive rate.
 For the false negative rate SMO and ClassificationViaCLustering score lower over 4 datasets. K-nearest neighbours scores low as well. Again, NaiveBayes scores here low too. It is difficult to make conclusions with this because there are all differences between data sets.
 
 For the flase positive rate only zeroR scores lower. But that makes sense. Not looking at ZeroR, K-nearest neighbours and NaiveBayes scores the lowest. 
+
+False Negative Rate:
+
+- SMO
+- ClassificationViaClustering
+- K-nearest neighbours 
+- NaiveBayes
+
+False Positive Rate:
+
+- K-nearest neighbours 
+- NaiveBayes
 
 ## UserCPU_CPU_Time_Training.
 
@@ -990,7 +1006,40 @@ By looking at these two tables, we can see that the dataset with the lowest p-va
 
 ## Attribute Selection
 
-In weka it is possible to look which attributes in your datasets are suited best for your model. This can be done on multiple ways...
+In weka it is possible to look which attributes in your datasets are suited best for your model. This can be done on multiple ways. We will look at three posible ways:
+
+1. Single attribute evaluation
+  1. Correlation
+  2. Information Gain
+  3. Gain ratio
+  4. Accuracy
+2. Attribute subset evaluation
+  1. CfsSubsetEval
+  2. Wrappr (model dependance)
+
+### Single attribute evaluation
+
+Each attribute is going to be compared with the classification label. This will result in a list of the best attributes. We show 4 measures of ranking.
+
+In Weka, open the explorer and open the "original" dataset. Press "attributeSelection". You can now choose a Attribute Evaluator and search method. It may happen that when selecting a specific Attribute Evaluator, a warning message appears. This is because some evaluators only work with a specific search method. therefore press yes. 
+
+Make sure to choose the right attribute for classification. Leave the rest of the settings unchanged en press start. You now see a list of attributes with percentages. These percentages indicate accuracy.
+
+Accurary (OneRAttributeEval):
+
+Ranked attributes: (CHANGE TO RIGHT DATASET)
+71.4844   2 plas
+67.4479   1 preg
+66.9271   8 age
+64.974    5 insu
+64.0625   6 mass
+63.2813   4 skin
+62.5      3 pres
+58.2031   7 pedi
+
+Just as the t-test in the EDA, the Thallium attribute is highest ranked with 00.00%.
+
+### Attribute subset evaluation
 
 \newpage
 
