@@ -778,10 +778,10 @@ There are now clean data sets. We are going to save these in a CSV file
 so that we can use it in Weka.
 
 ```{r}
-write.csv(data, "01-Clean_dataset.csv", row.names = F)
-write.csv(data.top5, "02-top5_p_values.csv", row.names = F)
-write.csv(data.allTransformed, "03-Numeric_transformed.csv", row.names = F)
-write.csv(data.simple, "04-Simple.csv", row.names = F)
+write.csv(data, "ExperimenterTestSets/01-Clean_dataset.csv", row.names = F)
+write.csv(data.top5, "ExperimenterTestSets/02-top5_p_values.csv", row.names = F)
+write.csv(data.allTransformed, "ExperimenterTestSets/03-Numeric_transformed.csv", row.names = F)
+write.csv(data.simple, "ExperimenterTestSets/04-Simple.csv", row.names = F)
 ```
 
 \newpage
@@ -793,7 +793,11 @@ create a new Weka experiment with different algorithms and datasets.
 
 ## Algorithms and Settings
 
-In weka there is a option to compare all datasets and concepts with eachother. This is done at the "experimenter" tab. Create a "new" experimenter and add the files that you've just created above. On the right pannel, add the algorithms that we want the run. The algorithms are described below. 
+In weka there is a option to compare all datasets and concepts with
+eachother. This is done at the "experimenter" tab. Create a "new"
+experimenter and add the files that you've just created above. On the
+right pannel, add the algorithms that we want the run. The algorithms
+are described below.
 
 1.  ZeroR
 2.  OneR
@@ -816,24 +820,40 @@ In weka there is a option to compare all datasets and concepts with eachother. T
 9.  NaieveBayes
 10. ClassificationViaClustering - standard settings
 
-After you've add all the algorithms, we can now run the experiment. This can be done at the "Run" tab. In the "Analyse" tab, you can retrieve the experiment results by pressing "Experiment". It's now possible to perform tests. These tests can be used to determine which concept scores the best or highest.
+After you've add all the algorithms, we can now run the experiment. This
+can be done at the "Run" tab. In the "Analyse" tab, you can retrieve the
+experiment results by pressing "Experiment". It's now possible to
+perform tests. These tests can be used to determine which concept scores
+the best or highest.
 
-By selecting a comparison field, you can get the right information about the experiment. We will look at Percent_correct, Area_under_ROC, False_negative_rate, False_pisitive_rate and UserCPU_CPU_Time_Training. After the right comparison field is selected, press "Perform test". A table will now be displayed with the results. **"V"** means siginificantly higher and **\"\*\"** means significantly lower.
+By selecting a comparison field, you can get the right information about
+the experiment. We will look at Percent_correct, Area_under_ROC,
+False_negative_rate, False_pisitive_rate, UserCPU_CPU_Time_Training and
+F-score. After the right comparison field is selected, press "Perform
+test". A table will now be displayed with the results. **"V"** means
+siginificantly higher and **"\*"** means significantly lower.
 
-The last thing we want to test is the datasets. This can be done by pressing "swap". The columns and rows are now reversed. Tests can now be performed again. An comparison field can be selected again and another table with results will be showed after performing a test.
+The columns and rows can be reversed by pressing "sawp". Sometimes you
+have to select a comparison field again, after pressing swap.
 
-It is possible to save the experimenter's results. This can be done in the "setup" tab. A path and file name can be selected under the heading "Results destination". The results are saved after pressing "Run".
+It is possible to save the experimenter's results. This can be done in
+the "setup" tab. A path and file name can be selected under the heading
+"Results destination". The results are saved after pressing "Run".
 
-The next section looks at the experimenter's results with the above datasets and algorithms.
+The next section looks at the experimenter's results with the above
+datasets and algorithms.
 
-## Results analysis
+## Experimenter analysis
 
 ```{r}
 weka.results <- read.csv("WEKA_RESULTS.csv")
 weka.results <- data.frame(weka.results)
 ```
 
-We have to group the results because there are a lot of values. With grouping it is possible to see what values are per dataset or per concept. This way we don't have to go through the complete results and create groups/new data frames with results.
+We have to group the results because there are a lot of values. With
+grouping it is possible to see what values are per dataset or per
+concept. This way we don't have to go through the complete results and
+create groups/new data frames with results.
 
 ```{r}
 Results <- weka.results %>%
@@ -843,49 +863,38 @@ Results <- weka.results %>%
 
 \newpage
 
-## Accuracy
+### Accuracy
 
 Let's look at the accuracy first.
 
 ```{r}
-df <- data.frame(
-  Label = c(
-    "Label1", "Label2", "Label3", "Label4", 
-    "Label5", "Label6", "Label7", "Label8", 
-    "Label9", "Label10", "Label11", "Label12", 
-    "Label13", "Label14", "Label15", "Label16", "Label17"),
-  Gemiddelde = c(
-    Results$mean[Results$Key_Scheme %like% "NaiveBayes" & Results$Key_Dataset == "01-Clean_dataset"],
-    Results$mean[Results$Key_Scheme %like% "SMO" & Results$Key_Dataset == "01-Clean_dataset"],
-    Results$mean[Results$Key_Scheme %like% "Logistic" & Results$Key_Dataset == "01-Clean_dataset"],
-    Results$mean[Results$Key_Scheme %like% "IBk" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-K 10"],
-    Results$mean[Results$Key_Scheme %like% "IBk" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-K 35" & Results$Key_Scheme_options %like% "EuclideanDistance"],
-    Results$mean[Results$Key_Scheme %like% "IBk" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "ManhattanDistance"],
-    Results$mean[Results$Key_Scheme %like% "ClassificationViaClustering" & Results$Key_Dataset == "01-Clean_dataset"],
-    Results$mean[Results$Key_Scheme %like% "OneR" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-B 15"],
-    Results$mean[Results$Key_Scheme %like% "OneR" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-B 6"],
-    Results$mean[Results$Key_Scheme %like% "ZeroR" & Results$Key_Dataset == "01-Clean_dataset"],
-    Results$mean[Results$Key_Scheme %like% "J48" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-C 0.025 -M 10"],
-    Results$mean[Results$Key_Scheme %like% "J48" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-C 0.25 -M 15"],
-    Results$mean[Results$Key_Scheme %like% "J48" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-C 0.25 -M 2"],
-    Results$mean[Results$Key_Scheme %like% "J48" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-C 0.25 -M 35"],
-    Results$mean[Results$Key_Scheme %like% "J48" & Results$Key_Dataset == "01-Clean_dataset" & Results$Key_Scheme_options %like% "-U -M 2"],
-    Results$mean[Results$Key_Scheme %like% "RandomForest" & Results$Key_Dataset == "01-Clean_dataset"],
-    Results$mean[Results$Key_Scheme %like% "RandomTree" & Results$Key_Dataset == "01-Clean_dataset"])
-  )
-
-ggplot(df, aes(x = Label, y = Gemiddelde, fill = Label)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Mean ACC per Algorithm in clean dataset", 
-       x = "Algorithm", y = "Mean") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
-        legend.key.size = unit(0.4, "cm")) + coord_cartesian(ylim=c(50,100))
+# Dataset                   (1) 01-Clean | (2) 02-to (3) 03-Nu (4) 04-Si
+# ----------------------------------------------------------------------
+# rules.ZeroR '' 4805554146(100)   55.56 |   55.56     55.56     55.56  
+# rules.OneR '-B 6' -345942(100)   71.63 |   73.07     71.63     51.41 *
+# rules.OneR '-B 15' -34594(100)   71.63 |   73.07     71.63     60.81 *
+# trees.J48 '-C 0.25 -M 2' (100)   76.41 |   80.96 v   76.44     65.44 *
+# trees.J48 '-U -M 2' -2177(100)   75.81 |   81.07 v   75.93     65.22 *
+# trees.J48 '-C 0.25 -M 15'(100)   73.81 |   73.00     73.81     63.07 *
+# trees.J48 '-C 0.25 -M 35'(100)   72.44 |   73.00     72.44     64.63 *
+# trees.J48 '-C 0.025 -M 10(100)   73.89 |   76.52     73.89     63.22 *
+# trees.RandomForest '-P 10(100)   81.33 |   79.33     82.22     64.96 *
+# trees.RandomTree '-K 0 -M(100)   73.00 |   74.59     73.89     62.48 *
+# lazy.IBk '-K 10 -W 0 -A \(100)   80.85 |   80.89     80.93     64.22 *
+# lazy.IBk '-K 35 -W 0 -A \(100)   83.67 |   83.37     83.30     67.26 *
+# lazy.IBk '-K 35 -W 0 -A \(100)   83.44 |   83.19     83.41     67.04 *
+# functions.SMO '-C 1.0 -L (100)   84.07 |   83.70     84.04     62.67 *
+# functions.Logistic '-R 1.(100)   83.96 |   83.81     83.85     66.04 *
+# bayes.NaiveBayes '' 59952(100)   84.89 |   83.44     84.15     68.26 *
+# meta.ClassificationViaClu(100)   78.07 |   80.81     78.15     62.11 *
+# ----------------------------------------------------------------------
+#                                (v/ /*) |  (2/15/0)  (0/17/0)  (0/1/16)
 ```
 
-Naive bayes scores highest accuracy. This accuracy is for the clean dataset. For the other three datasets, NaiveBayes has the highest ACC as well.
+NaiveBates has the highest accuracy in the "clean" dataset. Logistic
+scores the highest in the "top5" dataset.
 
-
-We will now look at all the four datasets at once.
+We can also look at mean accuracy in the four datasets.
 
 ```{r}
 Results.4.datasets <- weka.results %>%
@@ -897,149 +906,322 @@ pander(head(Results[c(2, 4)]))
 
 We can conclude that:
 
-- NaiveBayes scores the highest
-- Logistic regression scores seccond highest
-
-Looking only at the clean dataset:
-
-```{r}
-Results <- weka.results %>%
- group_by(Key_Dataset[1], Key_Scheme, Key_Scheme_options) %>%
-  summarise(mean = mean(Percent_correct), .groups = "keep")
-
-pander(head(Results[c(2, 4)]))
-```
- 
-It's the same result as the four datasets combined, so Naieve bayes and logistic are the best here.
-
-Let's look at other comparison fields.
+-   NaiveBayes scores the highest
+-   Logistic scores seccond highest
 
 \newpage
 
-## Area under ROC
+### Area under ROC
 
-The table below pulls out the "simple" concepts. This is because otherwise a large table will be created with values that are not relevant. above, the ACC is visible for all algorithms.
-
-| Dataset                |  (16) Bayes  | (5)    | (6)    | (7)    | (8)    | (10) | (12) | (13)   | (14) | (15)   | 
-| -----------------------|--------------|--------|--------|--------|--------|------|------|--------|------|--------|
-| 01-Clean_dataset       | (100)   0.91 | 0.78 * | 0.74 * | 0.76 * | 0.89   | 0.89 | 0.90 | 0.83 * | 0.90 | 0.78 * |
-| 02-top5_p_values       | (100)   0.90 | 0.78 * | 0.74 * | 0.79 * | 0.84 * | 0.88 | 0.89 | 0.83 * | 0.90 | 0.80 * |
-| 03-Numeric_transformed | (100)   0.91 | 0.78 * | 0.74 * | 0.76 * | 0.89   | 0.90 | 0.90 | 0.83 * | 0.90 | 0.78 * |
-| 04-Simple              | (100)   0.72 | 0.68   | 0.68   | 0.66 * | 0.71   | 0.71 | 0.74 | 0.63 * | 0.72 | 0.64 * |
-
-Key:
-
-(5) trees.J48 '-U -M 2' -217733168393644444
-(6) trees.J48 '-C 0.25 -M 15' -217733168393644444
-(7) trees.J48 '-C 0.25 -M 35' -217733168393644444
-(8) trees.J48 '-C 0.025 -M 10' -217733168393644444
-(10) trees.RandomTree '-K 0 -M 1.0 -V 0.001 -S 1' -9051119597407396024
-(12) lazy.IBk '-K 35 -W 0 -A \"weka.core.neighboursearch.LinearNNSearch -A \\\"weka.core.EuclideanDistance -R first-last\\\"\"' -3080186098777067172
-(13) lazy.IBk '-K 35 -W 0 -A \"weka.core.neighboursearch.LinearNNSearch -A \\\"weka.core.ManhattanDistance -R first-last\\\"\"' -3080186098777067172
-(14) functions.SMO '-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\"' -6585883636378691736
-(15) functions.Logistic '-R 1.0E-8 -M -1 -num-decimal-places 4' 3932117032546553727
-(16) bayes.NaiveBayes '' 5995231201785697655
-
-RandomTree, K-nearest neighbours (KNN 35, euclideanDistance) and NaieveBayes are the highest here. There are very close to eachother, but NaiveBayes is at top followed by K-nearest neighbours.
-
-- NaieveBayes
-- K-neares neighbours
-- RandomTree
-
-## False negative rate and False positive rate
-
-We want a concept with a low false negative rate and a low false positive rate. 
-
-For the false negative rate SMO and ClassificationViaCLustering score lower over 4 datasets. K-nearest neighbours scores low as well. Again, NaiveBayes scores here low too. It is difficult to make conclusions with this because there are all differences between data sets.
-
-For the flase positive rate only zeroR scores lower. But that makes sense. Not looking at ZeroR, K-nearest neighbours and NaiveBayes scores the lowest. 
-
-False Negative Rate:
-
-- SMO
-- ClassificationViaClustering
-- K-nearest neighbours 
-- NaiveBayes
-
-False Positive Rate:
-
-- K-nearest neighbours 
-- NaiveBayes
-
-## UserCPU_CPU_Time_Training.
-
-The UserCPU_CPU_Time_Training for each model is very fast. ZeroR scores the fastest here. But this model will not not be used eventually.
-
-## Dataset comparison
-
-Now all that remains is to look for the best dataset. For now, we will only look at the ACC, because attribute selection will be looked at next.
+The results of the area under ROC comparison field are showed in the
+table below.
 
 ```{r}
-Results <- weka.results %>%
- group_by(Key_Dataset) %>%
-  summarise(mean = mean(Percent_correct), .groups = "keep")
-
-pander(head(Results))
+# Dataset                   (1) 01-Clea | (2) 02-t (3) 03-N (4) 04-S
+# ------------------------------------------------------------------
+# rules.ZeroR '' 4805554146(100)   0.50 |   0.50     0.50     0.50  
+# rules.OneR '-B 6' -345942(100)   0.71 |   0.73     0.71     0.50 *
+# rules.OneR '-B 15' -34594(100)   0.71 |   0.73     0.71     0.60 *
+# trees.J48 '-C 0.25 -M 2' (100)   0.76 |   0.83 v   0.76     0.70  
+# trees.J48 '-U -M 2' -2177(100)   0.76 |   0.82     0.76     0.70  
+# trees.J48 '-C 0.25 -M 15'(100)   0.78 |   0.78     0.78     0.68 *
+# trees.J48 '-C 0.25 -M 35'(100)   0.74 |   0.74     0.74     0.68  
+# trees.J48 '-C 0.025 -M 10(100)   0.76 |   0.79     0.76     0.66 *
+# trees.RandomForest '-P 10(100)   0.89 |   0.84 *   0.89     0.71 *
+# trees.RandomTree '-K 0 -M(100)   0.73 |   0.75     0.74     0.62 *
+# lazy.IBk '-K 10 -W 0 -A \(100)   0.89 |   0.88     0.90     0.71 *
+# lazy.IBk '-K 35 -W 0 -A \(100)   0.91 |   0.89     0.90     0.73 *
+# lazy.IBk '-K 35 -W 0 -A \(100)   0.90 |   0.89     0.90     0.74 *
+# functions.SMO '-C 1.0 -L (100)   0.83 |   0.83     0.83     0.63 *
+# functions.Logistic '-R 1.(100)   0.90 |   0.90     0.90     0.72 *
+# bayes.NaiveBayes '' 59952(100)   0.91 |   0.90     0.91     0.72 *
+# meta.ClassificationViaClu(100)   0.78 |   0.80     0.78     0.64 *
+# ------------------------------------------------------------------
+#                               (v/ /*) | (1/15/1) (0/17/0) (0/4/13)
 ```
 
-| Dataset                   | (1) 01-Clean_da  | (2) 02-top5_ | (3) 03-Numer. | (4) 04-Simpl |
-|---------------------------|------------------|--------------|---------------|--------------|
-| rules.ZeroR '' 4805554146 | (100)   55.55556 |   55.55556   |  55.55556     | 55.55556     |
-| rules.OneR '-B 6' -345942 | (100)   71.62963 |   73.07407   |  71.62963     | 51.40741 *   |
-| rules.OneR '-B 15' -34594 | (200)   71.62963 |   73.07407   |  71.62963     | 60.81481 *   |
-| trees.J48 '-C 0.25 -M 2'  | (100)   76.40741 |   80.96296 v |  76.44444     | 65.44444 *   |
-| trees.J48 '-U -M 2' -2177 | (100)   75.81481 |   81.07407 v |  75.92593     | 65.22222 *   |
-| trees.J48 '-C 0.25 -M 15' | (100)   73.81481 |   73.00000   |  73.81481     | 63.07407 *   |
-| trees.J48 '-C 0.25 -M 35' | (100)   72.44444 |   73.00000   |  72.44444     | 64.62963 *   |
-| trees.J48 '-C 0.025 -M 10 | (100)   73.88889 |   76.51852   |  73.88889     | 63.22222 *   |
-| trees.RandomForest '-P 10 | (100)   81.33333 |   79.33333   |  82.22222     | 64.96296 *   |
-| trees.RandomTree '-K 0 -M | (100)   73.00000 |   74.59259   |  73.88889     | 62.48148 *   |
-| lazy.IBk '-K 10 -W 0 -A   | (100)   80.85185 |   80.88889   |  80.92593     | 64.22222 *   |
-| lazy.IBk '-K 35 -W 0 -A   | (100)   83.66667 |   83.37037   |  83.29630     | 67.25926 *   |
-| lazy.IBk '-K 35 -W 0 -A   | (100)   83.44444 |   83.18519   |  83.40741     | 67.03704 *   |
-| functions.SMO '-C 1.0 -L  | (100)   84.07407 |   83.70370   |  84.03704     | 62.66667 *   |
-| functions.Logistic '-R 1. | (100)   83.96296 |   83.81481   |  83.85185     | 66.03704 *   |
-| bayes.NaiveBayes '' 59952 | (100)   84.88889 |   83.44444   |  84.14815     | 68.25926 *   |
-| meta.ClassificationViaClu | (100)   78.07407 |   80.81481   |  78.14815     | 62.11111 *   |
+RandomTree, K-nearest neighbours (KNN 35, euclideanDistance) and
+NaieveBayes are the highest here. There are very close to eachother, but
+NaiveBayes is at top followed by K-nearest neighbours.
 
-By looking at these two tables, we can see that the dataset with the lowest p-values scores better than the "clean" dataset. A model bases on only the best 5 attributes scores better than a model with all models. The five attributes are determined with 'simple' t-tests. This can be calculated much better in Weka. This will examined in the next section. Specific algorithms and search methods will then be used to determine the best attributes.
+-   NaieveBayes
+-   K-neares neighbours (-K 35, EuclideanDistance)
+-   RandomTree
+
+### False negative rate and False positive rate
+
+We want a concept with a low false negative rate and a low false
+positive rate. Below we first show a table with the false negative rate.
+
+```{r}
+# Dataset                   (1) 01-Clea | (2) 02-t (3) 03-N (4) 04-S
+# ------------------------------------------------------------------
+# rules.ZeroR '' 4805554146(100)   1.00 |   1.00     1.00     1.00  
+# rules.OneR '-B 6' -345942(100)   0.32 |   0.30     0.32     0.60 v
+# rules.OneR '-B 15' -34594(100)   0.32 |   0.30     0.32     0.47 v
+# trees.J48 '-C 0.25 -M 2' (100)   0.30 |   0.25     0.30     0.46 v
+# trees.J48 '-U -M 2' -2177(100)   0.29 |   0.24     0.28     0.47 v
+# trees.J48 '-C 0.25 -M 15'(100)   0.30 |   0.34     0.30     0.50 v
+# trees.J48 '-C 0.25 -M 35'(100)   0.29 |   0.26     0.29     0.52 v
+# trees.J48 '-C 0.025 -M 10(100)   0.26 |   0.24     0.26     0.50 v
+# trees.RandomForest '-P 10(100)   0.25 |   0.27     0.23     0.39 v
+# trees.RandomTree '-K 0 -M(100)   0.33 |   0.31     0.30     0.41  
+# lazy.IBk '-K 10 -W 0 -A \(100)   0.20 |   0.21     0.20     0.33 v
+# lazy.IBk '-K 35 -W 0 -A \(100)   0.22 |   0.25     0.22     0.43 v
+# lazy.IBk '-K 35 -W 0 -A \(100)   0.23 |   0.26     0.23     0.44 v
+# functions.SMO '-C 1.0 -L (100)   0.23 |   0.23     0.23     0.30  
+# functions.Logistic '-R 1.(100)   0.22 |   0.23     0.22     0.38 v
+# bayes.NaiveBayes '' 59952(100)   0.19 |   0.22     0.21     0.38 v
+# meta.ClassificationViaClu(100)   0.24 |   0.26     0.23     0.24  
+# ------------------------------------------------------------------
+#                               (v/ /*) | (0/17/0) (0/17/0) (13/4/0)
+
+# Key:
+# (1) 01-Clean_dataset
+# (2) 02-top5_p_values
+# (3) 03-Numeric_transformed
+# (4) 04-Simple
+```
+
+NaieveBayes has the lowest false negative rate. This score has been
+achieved in the clean dataset. K-nearest neighbours (IBK) has a solid
+score as well. It has the lowest FNR rate in the second (top5) and third
+(numeric transformed) dataset.
+
+-   NaieveBayes scores the best
+-   K-nearest neighbours also scores well (-K 10, EuclideanDistance)
+
+The false positive rate is now discussed below, first the results will
+be showed.
+
+```{r}
+# Dataset                   (1) 01-Clea | (2) 02-t (3) 03-N (4) 04-S
+# ------------------------------------------------------------------
+# rules.ZeroR '' 4805554146(100)   0.00 |   0.00     0.00     0.00  
+# rules.OneR '-B 6' -345942(100)   0.26 |   0.24     0.26     0.40 v
+# rules.OneR '-B 15' -34594(100)   0.26 |   0.24     0.26     0.33  
+# trees.J48 '-C 0.25 -M 2' (100)   0.18 |   0.14     0.18     0.25  
+# trees.J48 '-U -M 2' -2177(100)   0.21 |   0.15     0.21     0.25  
+# trees.J48 '-C 0.25 -M 15'(100)   0.23 |   0.21     0.23     0.26  
+# trees.J48 '-C 0.25 -M 35'(100)   0.26 |   0.28     0.26     0.22  
+# trees.J48 '-C 0.025 -M 10(100)   0.26 |   0.23     0.26     0.26  
+# trees.RandomForest '-P 10(100)   0.14 |   0.16     0.13     0.32 v
+# trees.RandomTree '-K 0 -M(100)   0.22 |   0.21     0.23     0.35 v
+# lazy.IBk '-K 10 -W 0 -A \(100)   0.18 |   0.17     0.18     0.38 v
+# lazy.IBk '-K 35 -W 0 -A \(100)   0.12 |   0.10     0.12     0.24 v
+# lazy.IBk '-K 35 -W 0 -A \(100)   0.11 |   0.10     0.11     0.24 v
+# functions.SMO '-C 1.0 -L (100)   0.11 |   0.11     0.10     0.43 v
+# functions.Logistic '-R 1.(100)   0.11 |   0.11     0.11     0.30 v
+# bayes.NaiveBayes '' 59952(100)   0.12 |   0.12     0.12     0.27 v
+# meta.ClassificationViaClu(100)   0.21 |   0.14     0.21     0.49 v
+# ------------------------------------------------------------------
+#                               (v/ /*) | (0/17/0) (0/17/0) (10/7/0)
+```
+
+For the false positive rate, zeroR scores best. This makes sense,
+because Zero always choose the attribute with the highest number of
+occurance. Not looking at ZeroR, K-nearest neighbours and SMO scores the
+lowest. In the simple dataset, a J48 concept scores the lowest.
+
+Overall findings:
+
+-   K-nearest neighbours (-K 35, ManhattanDistance)
+-   SMO
+-   Logitisc
+-   NaiveBayes
+
+### UserCPU_CPU_Time_Training.
+
+The UserCPU_CPU_Time_Training for each model is very fast. ZeroR scores
+the fastest here. But this model will not not be used eventually.
+
+### F messure
+
+The F-score indicates the accuracy of a concept. Let's look at the
+F-scores.
+
+```{r}
+# Dataset                   (1) 01-Clea | (2) 02-t (3) 03-N (4) 04-S
+# ------------------------------------------------------------------
+# rules.ZeroR '' 4805554146  (0)        |                           
+# rules.OneR '-B 6' -345942(100)   0.68 |   0.69     0.68     0.42 *
+# rules.OneR '-B 15' -34594(100)   0.68 |   0.69     0.68     0.53 *
+# trees.J48 '-C 0.25 -M 2' (100)   0.72 |   0.78 v   0.72     0.57 *
+# trees.J48 '-U -M 2' -2177(100)   0.72 |   0.78     0.72     0.57 *
+# trees.J48 '-C 0.25 -M 15'(100)   0.70 |   0.68     0.70     0.53 *
+# trees.J48 '-C 0.25 -M 35'(100)   0.69 |   0.71     0.69     0.54 *
+# trees.J48 '-C 0.025 -M 10(100)   0.71 |   0.74     0.71     0.54 *
+# trees.RandomForest '-P 10(100)   0.78 |   0.76     0.79     0.60 *
+# trees.RandomTree '-K 0 -M(100)   0.69 |   0.71     0.70     0.58 *
+# lazy.IBk '-K 10 -W 0 -A \(100)   0.79 |   0.78     0.79     0.62 *
+# lazy.IBk '-K 35 -W 0 -A \(100)   0.81 |   0.80     0.80     0.60 *
+# lazy.IBk '-K 35 -W 0 -A \(100)   0.80 |   0.79     0.80     0.60 *
+# functions.SMO '-C 1.0 -L (100)   0.81 |   0.81     0.81     0.63 *
+# functions.Logistic '-R 1.(100)   0.81 |   0.81     0.81     0.61 *
+# bayes.NaiveBayes '' 59952(100)   0.83 |   0.81     0.82     0.63 *
+# meta.ClassificationViaClu(100)   0.75 |   0.77     0.75     0.64 *
+# ------------------------------------------------------------------
+#                               (v/ /*) | (1/15/0) (0/16/0) (0/0/16)
+```
+
+NaiveBayes scores the highest. This is accomplished in the clean
+dataset. In the second dataset (top5), SMO and Logistic, scores as high
+as NaiveBayes and in the third dataset (numeric transformed), NaiveBayes
+scores the highest again.
+
+Overall:
+
+-   NaiveBayes
+-   Logistic
+-   SMO
+
+### Conclusions on best concepts
+
+We've now looked at several comparison fields. 5 to be precies. There
+are a few concepts that keep coming out here. Looking at the overall:
+
+-   NaiveBayes : 5
+-   Logistic : 3
+-   SMO : 2
+-   K-nearest neighbours : 3
+
+NaiveBayes came out highest. It is good to mention K-nearest neighbours,
+but a different concept always emerged as the best. Logistics also
+scores well. Therefore, NaiveBayes and Logistic are the best models in
+this case.
+
+\newpage
 
 ## Attribute Selection
 
-In weka it is possible to look which attributes in your datasets are suited best for your model. This can be done on multiple ways. We will look at three posible ways:
+Now that the best models are known, it is still important to look at the
+best attributes.
 
-1. Single attribute evaluation
-  1. Correlation
-  2. Information Gain
-  3. Gain ratio
-  4. Accuracy
-2. Attribute subset evaluation
-  1. CfsSubsetEval
-  2. Wrappr (model dependance)
+In weka it is possible to look which attributes in your datasets are
+suited best for your model. This can be done on multiple ways. We will
+look at three posible ways:
+
+1.  Single attribute evaluation
+    1.  Correlation
+    2.  Information Gain
+    3.  Gain ratio
+    4.  Accuracy
+2.  Attribute subset evaluation
+    1.  CfsSubsetEval
+    2.  Wrappr (model dependancy)
 
 ### Single attribute evaluation
 
-Each attribute is going to be compared with the classification label. This will result in a list of the best attributes. We show 4 measures of ranking.
+Each attribute is going to be compared with the classification label.
+This will result in a list of the best attributes. We show 4 measures of
+ranking.
 
-In Weka, open the explorer and open the "original" dataset. Press "attributeSelection". You can now choose a Attribute Evaluator and search method. It may happen that when selecting a specific Attribute Evaluator, a warning message appears. This is because some evaluators only work with a specific search method. therefore press yes. 
+In Weka, open the explorer and open the "clean" dataset (We use the
+clean dataset, since all attributes are still present here and the
+labels are the best readable here). Press "attributeSelection". You can
+now choose a Attribute Evaluator and search method. It may happen that
+when selecting a specific Attribute Evaluator, a warning message
+appears. This is because some evaluators only work with a specific
+search method. therefore press yes.
 
-Make sure to choose the right attribute for classification. Leave the rest of the settings unchanged en press start. You now see a list of attributes with percentages. These percentages indicate accuracy.
+after selecting a Attribute Evaluator, leave the rest of the settings
+unchanged en press start. You now see a list of attributes with
+percentages. We will combine the results in table below.
 
-Accurary (OneRAttributeEval):
+| Attribute               | Accuracy (oneR) | Correlation | Gain ratio | Information Gain |
+|---------------|---------------|---------------|---------------|---------------|
+| Thallium                | 76.2963         | 0.4888      | 0.171204   | 0.208556         |
+| Chest.pain.type         | 75.1852         | 0.3724      | 0.111511   | 0.192202         |
+| Number.of.vessels.fluro | 74.0741         | 0.4553      | 0.17015    | 0.165916         |
+| Exercise.angina         | 71.4815         | 0.4193      | 0.142054   | 0.129915         |
+| ST.depression           | 70              | 0.418       | 0.148019   | 0.119648         |
+| Slope.of.ST             | 68.8889         | 0.35        | 0.086432   | 0.111153         |
+| Max.HR                  | 62.2222         | 0.4185      | 0.123102   | 0.12028          |
+| Sex                     | 61.8519         | 0.2977      | 0.073773   | 0.066896         |
+| Age                     | 59.6296         | 0.2123      | 0.056747   | 0.056726         |
+| EKG.results             | 58.8889         | 0.1801      | 0.022886   | 0.024152         |
+| Cholesterol             | 53.7037         | 0.1315      | 0          | 0                |
+| BP                      | 53.7037         | 0.1554      | 0          | 0                |
+| FBS.over.120            | 53.3333         | 0.0163      | 0.000318   | 0.000193         |
 
-Ranked attributes: (CHANGE TO RIGHT DATASET)
-71.4844   2 plas
-67.4479   1 preg
-66.9271   8 age
-64.974    5 insu
-64.0625   6 mass
-63.2813   4 skin
-62.5      3 pres
-58.2031   7 pedi
+: Single attribute evaluation results
 
-Just as the t-test in the EDA, the Thallium attribute is highest ranked with 00.00%.
+Just as the t-test in the EDA, the Thallium attribute is highest ranked
+with 76.29%. It has the highest correlation as well. It also has the
+highest gain ratio and information gain.
+
+Each evaluator also produces a list of the best selected attributes.
+Each evaluator in the single attribute evaluator comes with the same
+list, which contains each attribute.
 
 ### Attribute subset evaluation
+
+Each evaluator also produces a list of the best selected attributes.
+Each evaluator in the single attribute evaluator comes with the same
+list, which contains each attribute.
+
+For each evaluator, we use exhaustive search. Exhaustive search
+calculates all possibilities and gets the best one. This may take a long
+time, but it will produce the best results. Larger datasets are not
+suitable for exhaustive search. In this case it is better to use
+BestFirst
+
+> CfsSubsetEval: Chest.pain.type, EKG.results, Max.HR, Exercise.angina,
+> ST.depression, Number.of.vessels.fluro and Thallium
+
+> Wrapr + NaieveBayes: Sex, Chest.pain.type, BP, Cholesterol,
+> EKG.results, Max.HR, Exercise.angina, ST.depression, Slope.of.ST,
+> Number.of.vessels.fluro, Thallium
+
+> Wrapr + Logitic: Age, Sex, Chest.pain.type, BP, FBS.over.120, Max.HR,
+> Exercise.angina, ST.depression, Slope.of.ST, Number.of.vessels.fluro,
+> Thallium
+
+If the attribute selection is done on the "original" file, virtually the
+same subsets emerge. In the single attribute evaluation, exactly the
+same subsets appear and in the attribute subset evaluation, there is
+only a difference in 1 attribute between Wrapr(NaiveBayes) and
+Wrapr(logistic).
+
+### Subset Experimenter
+
+We will now make the subsets that are defined above. These subsets will
+again be checked in Experimenter to see which concept scores the highest
+on which datasets. In the Weka Explorer, you can click the check marks
+and then press remove. The selected attribute will be removed and you
+can save the new dataset by pressing save in the top right.
+
+The next filenames will be used:
+
+-   Set 1 ALl attributes
+-   Set 2 CfsSubsetEval: Chest.pain.type, EKG.results, Max.HR,
+    Exercise.angina, ST.depression, Number.of.vessels.fluro and Thallium
+-   Set 3 Wrapr + NaieveBayes:Sex, Chest.pain.type, BP, Cholesterol,
+    EKG.results, Max.HR, Exercise.angina, ST.depression, Slope.of.ST,
+    Number.of.vessels.fluro, Thallium
+-   Set 4 Wrapr + Logitic: Age, Sex, Chest.pain.type, BP, FBS.over.120,
+    Max.HR, Exercise.angina, ST.depression, Slope.of.ST,
+    Number.of.vessels.fluro, Thallium
+
+In weka, open a new experimenter and add these files. Add NaiveBayes and
+Logistic and run the new experiment. All the results are combined in a
+table.
+
+| Set                            | Set 1 | Set 2 | Set 3 | Set 4 |
+|--------------------------------|-------|-------|-------|-------|
+| NaiveBayes Percent_correct     | 84.89 | 85.07 | 85.52 | 84.26 |
+| Logistic Percent_correct       | 83.96 | 83.44 | 83.78 | 86.07 |
+| NaiveBayes Area_under_ROC      | 0.91  | 0.90  | 0.91  | 0.91  |
+| Logistic Area_under_ROC        | 0.90  | 0.89  | 0.90  | 0.91  |
+| NaiveBayes False_positive_rate | 0.12  | 0.10  | 0.11  | 0.13  |
+| Logistic False_positive_rate   | 0.11  | 0.12  | 0.11  | 0.09  |
+| NaiveBayes False_negative_rate | 0.19  | 0.21  | 0.19  | 0.19  |
+| Logistic False_negative_rate   | 0.22  | 0.23  | 0.23  | 0.19  |
+
+The highest accuracy is achieved in the 4th set by Logistic. The Area under ROC is almost identical, but looking at average, set 4 scores the best. In false positive rate, set 4 scores best again with Logitic. False negative rate is again, on average done best in set 4.
+
+It's difficult to choose a concept and say, this is the best. But looking at the results, logistic seems to be the best here in combination with set 4. This is because the highest accuracy is achieved, on average the highest area_under_ROC, the lowest false positive rate and on average the lowest false negative rate.
+
 
 \newpage
 
@@ -1058,15 +1240,8 @@ Perret‐Guillaume, C., Joly, L. Bénétos, A. (2009).: \textit{Heart rate as a 
 
 \end{thebibliography}
 ```
-
 Attribute selection checklist
 
-
-1. Ranking
-2. Wrapper
-3. CSF
-
-
-
-
-
+1.  Ranking
+2.  Wrapper
+3.  CSF
