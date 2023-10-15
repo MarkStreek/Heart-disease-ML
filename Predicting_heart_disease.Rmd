@@ -1086,9 +1086,8 @@ are a few concepts that keep coming out here. Looking at the overall:
 -   K-nearest neighbours : 3
 
 NaiveBayes came out highest. It is good to mention K-nearest neighbours,
-but a different concept always emerged as the best. Logistics also
-scores well. Therefore, NaiveBayes and Logistic are the best models in
-this case.
+but a different concept (different hyperparameters) always emerged as the best. Logistics also
+scores well. It's difficult to say, this model is really the best. Based on these results, we will take a closer look at NaiveBayes and Logistic.
 
 \newpage
 
@@ -1097,8 +1096,7 @@ this case.
 Now that the best models are known, it is still important to look at the
 best attributes.
 
-In weka it is possible to look which attributes in your datasets are
-suited best for your model. This can be done on multiple ways. We will
+We have already looked at 4 different data sets. Two of the datasets were modified by removing attributes. In weka it is possible to see which attributes are most suitable for your model, instead of just removing instances and seeing if the accuracy has increased. This can be done on multiple ways. We will
 look at three posible ways:
 
 1.  Single attribute evaluation
@@ -1129,7 +1127,7 @@ unchanged en press start. You now see a list of attributes with
 percentages. We will combine the results in table below.
 
 | Attribute               | Accuracy (oneR) | Correlation | Gain ratio | Information Gain |
-|---------------|---------------|---------------|---------------|---------------|
+|-------------------------|---------------|---------------|------------|------------------|
 | Thallium                | 76.2963         | 0.4888      | 0.171204   | 0.208556         |
 | Chest.pain.type         | 75.1852         | 0.3724      | 0.111511   | 0.192202         |
 | Number.of.vessels.fluro | 74.0741         | 0.4553      | 0.17015    | 0.165916         |
@@ -1156,15 +1154,15 @@ list, which contains each attribute.
 
 ### Attribute subset evaluation
 
-Each evaluator also produces a list of the best selected attributes.
-Each evaluator in the single attribute evaluator comes with the same
-list, which contains each attribute.
+In the Attribute subset evalutation, multiple instances are compared with each other. Where the Single attribute evaluation only looked at one instance at a time, this one looks at them all at once.
 
 For each evaluator, we use exhaustive search. Exhaustive search
 calculates all possibilities and gets the best one. This may take a long
 time, but it will produce the best results. Larger datasets are not
 suitable for exhaustive search. In this case it is better to use
-BestFirst
+BestFirst.
+
+With the Attribute subset evaluation, only a subset is produced and not a list of numbers. The following subsets arise:
 
 > CfsSubsetEval: Chest.pain.type, EKG.results, Max.HR, Exercise.angina,
 > ST.depression, Number.of.vessels.fluro and Thallium
@@ -1222,6 +1220,27 @@ The highest accuracy is achieved in the 4th set by Logistic. The Area under ROC 
 
 It's difficult to choose a concept and say, this is the best. But looking at the results, logistic seems to be the best here in combination with set 4. This is because the highest accuracy is achieved, on average the highest area_under_ROC, the lowest false positive rate and on average the lowest false negative rate.
 
+Now that the best model has been created with the best attributes, we can classify it in the weka explorer.
+
+\newpage
+
+## ROC curve of model
+
+After you've run Logistic on set 4 in the Weka explorer, you can right-click on the result (in result list). Press the option: "visualize treshold curve" and then "absence". You can now store the data to make a ROC curve in R. Press save and enter a destination.
+
+```{r}
+ROC.data <- data.frame(read.csv("ROCCurve.arff", skip = 18))
+colnames(ROC.data) <- c(
+  "Instance_number","True_Positives", "False_Negatives", "False_Positives",  
+  "True_Negatives", "False_Positive_Rate",  "True_Positive_Rate", "Precision", 
+  "Recall", "Fallout", "FMeasure", "Sample_Size", "Lift", "Threshold")
+
+ggplot(ROC.data, aes(x = False_Positive_Rate, y = True_Positive_Rate)) + 
+  geom_line(color = "orange", size = 1.2) + labs(title = "ROC curve from Logistic", subtitle = "Logistic was run on Set 4 (See above)") + theme(legend.position = "bottom", plot.title = element_text(face = "bold", 
+      size = 15, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+```
+
+The curve has a high deflection to the upper left, which is good for a roc curve. The area under the curve is 0.91.
 
 \newpage
 
@@ -1240,8 +1259,4 @@ Perret‐Guillaume, C., Joly, L. Bénétos, A. (2009).: \textit{Heart rate as a 
 
 \end{thebibliography}
 ```
-Attribute selection checklist
 
-1.  Ranking
-2.  Wrapper
-3.  CSF
