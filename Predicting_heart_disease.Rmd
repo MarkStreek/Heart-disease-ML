@@ -1075,6 +1075,28 @@ Overall:
 -   Logistic
 -   SMO
 
+### Cost sensitive classifier
+
+There is also a model where the cost can be adjusted. We will take a closer look. 'Cost' means that more errors are charged for instances that are done wrong, which are punished more severely. The cost can be customized.
+
+Imagine a concept where 50 people are classified as absence but are presence in fact. This means that people with presence are being overlooked. Therefore, we want a concept with a low False positive. 
+
+In the Weka explorer, under functions there is a classifier "CostSensitiveClassifier". After selecting this classifier, open the options and resize the scoring matrix. After resizing, select a score of 4 for the false positives. Select Logistic as classifier and press start.
+
+| a   | b  | <-- classified as |
+|-----|----|-------------------|
+| 109 | 11 |   a = Presence    |
+| 51  | 99 |   b = Absence     |
+: Confusion matrix of CostSensitiveClassifier with Logistic
+
+There are 11 instances that are classified as Absence but are Presence in fact.
+
+Let's run Logistic again, but then with default cost. The folowing scoring matrix appears
+
+   a   b   <-- classified as
+  97  23 |   a = Presence
+  15 135 |   b = Absence
+
 ### Conclusions on best concepts
 
 We've now looked at several comparison fields. 5 to be precies. There
@@ -1220,13 +1242,47 @@ The highest accuracy is achieved in the 4th set by Logistic. The Area under ROC 
 
 It's difficult to choose a concept and say, this is the best. But looking at the results, logistic seems to be the best here in combination with set 4. This is because the highest accuracy is achieved, on average the highest area_under_ROC, the lowest false positive rate and on average the lowest false negative rate.
 
-Now that the best model has been created with the best attributes, we can classify it in the weka explorer.
+## Meta learners
+
+Now we know our best concept(s) and attributes. Let's look at meta-classifiers. There are methods to classify multiple concepts together. Or in a specific way.
+
+Three learners will be looked at:
+
+1. Voting
+2. Stacking
+3. Bagging
+
+### Voting
+
+This method allows different concepts to vote. In the weka explorer, under the tab "meta", there is an option "Vote". Of course you choose the dataset with the best attributes. In the option of Vote, it's possible to add concepts. Add the best concepts that are found above (NaiveBayes and Logistic).
+
+This method achieves an accuracy of 86.2963%. This is higher than our original Logistic. The confusion matrix is almost exactly the same. The Area under AOC is also the same.
+
+### Stacking
+
+This methods "stacks" the concepts and creates a deciding attribute. Again, this method can be found under "meta". Add the best concepts. You can choose a meta Classifier that decides. We will run twice, with Logistic as meta Classiefier and NaieveBayes.
+
+Stacking with Logistic as meta classifier achieves an accuracy of 86.6667%, which again is higher. Stacking with NaiveBayes achieves an accuracy of 87.037%! The False Positve rate is also lower, 0.16 vs 0.19. Fals negative rate is the same.
+
+Stacking with NaiveBayes as a meta classifier is therefore a lot better!
+
+### Bagging
+
+This last method uses multiple classifiers that are exactly the same. The data that comes in, is being changed. Again, under meta you can find bagging. Choose logistic.
+
+This method achieves an accuracy of 85.1852% with Logistic as classifer and 83.7037% with NaiveBayes.
+
+We have now looked at three meta-learners. In the experimenter we also looked at randomForest, which is also a form of a meta learner.
+
+It is now clear that stacking with Logistic and NaiveBayes with NaiveBayes as the meta-classifier achieves the highest accuracy and lowest false positive rate for us.
 
 \newpage
 
 ## ROC curve of model
 
-After you've run Logistic on set 4 in the Weka explorer, you can right-click on the result (in result list). Press the option: "visualize treshold curve" and then "absence". You can now store the data to make a ROC curve in R. Press save and enter a destination.
+We will plot the ROC curve of our best model and dataset.
+
+After you've run Stacking with the above settings on set 4 in the Weka explorer, you can right-click on the result (in result list). Press the option: "visualize treshold curve" and then "absence". You can now store the data to make a ROC curve in R. Press save and enter a destination.
 
 ```{r}
 ROC.data <- data.frame(read.csv("ROCCurve.arff", skip = 18))
@@ -1236,7 +1292,10 @@ colnames(ROC.data) <- c(
   "Recall", "Fallout", "FMeasure", "Sample_Size", "Lift", "Threshold")
 
 ggplot(ROC.data, aes(x = False_Positive_Rate, y = True_Positive_Rate)) + 
-  geom_line(color = "orange", size = 1.2) + labs(title = "ROC curve from Logistic", subtitle = "Logistic was run on Set 4 (See above)") + theme(legend.position = "bottom", plot.title = element_text(face = "bold", 
+  geom_line(color = "orange", size = 1.2) + 
+  labs(title = "ROC curve from Logistic", 
+       subtitle = "Logistic was run on Set 4 (See above)") + 
+  theme(legend.position = "bottom", plot.title = element_text(face = "bold", 
       size = 15, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
 ```
 
