@@ -1262,7 +1262,7 @@ This method achieves an accuracy of 86.2963%. This is higher than our original L
 
 This methods "stacks" the concepts and creates a deciding attribute. Again, this method can be found under "meta". Add the best concepts. You can choose a meta Classifier that decides. We will run twice, with Logistic as meta Classiefier and NaieveBayes.
 
-Stacking with Logistic as meta classifier achieves an accuracy of 86.6667%, which again is higher. Stacking with NaiveBayes achieves an accuracy of 87.037%! The False Positve rate is also lower, 0.16 vs 0.19. Fals negative rate is the same.
+Stacking with Logistic as meta classifier achieves an accuracy of 86.6667%, which again is higher. Stacking with NaiveBayes achieves an accuracy of 87.037%! The False Positve rate is also lower, 0.16 vs 0.19. Fals negative rate is the same. The Area under ROC is 0.8983. That is a small fraction lower, but certainly not a lot lower.
 
 Stacking with NaiveBayes as a meta classifier is therefore a lot better!
 
@@ -1296,10 +1296,11 @@ ggplot(ROC.data, aes(x = False_Positive_Rate, y = True_Positive_Rate)) +
   labs(title = "ROC curve from Logistic", 
        subtitle = "Logistic was run on Set 4 (See above)") + 
   theme(legend.position = "bottom", plot.title = element_text(face = "bold", 
-      size = 15, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+      size = 15, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) + 
+  annotate("text", x=0.50, y=0.55, label= "Area_Under_AOC: 0.8983.", color = "orange")
 ```
 
-The curve has a high deflection to the upper left, which is good for a roc curve. The area under the curve is 0.91.
+The curve has a high deflection to the upper left, which is good for a roc curve. The area under the curve is 0.8983.
 
 \newpage
 

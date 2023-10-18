@@ -1,0 +1,286 @@
+@relation '01-Clean_dataset-weka.filters.unsupervised.attribute.Remove-R5,7'
+
+@attribute Age numeric
+@attribute Sex {Male,Female}
+@attribute Chest.pain.type {Asymptomatic,'Non-anginal pain (pain without disease)','Atypical angina','Typical angina'}
+@attribute BP numeric
+@attribute FBS.over.120 {FALSE,TRUE}
+@attribute Max.HR numeric
+@attribute Exercise.angina {No,Yes}
+@attribute ST.depression numeric
+@attribute Slope.of.ST {Flat,'Up sloping','Down sloping'}
+@attribute Number.of.vessels.fluro numeric
+@attribute Thallium {Normal,'Reversible defect','Fixed defect'}
+@attribute Heart.Disease {Presence,Absence}
+
+@data
+70,Male,Asymptomatic,130,FALSE,109,No,2.4,Flat,3,Normal,Presence
+67,Female,'Non-anginal pain (pain without disease)',115,FALSE,160,No,1.6,Flat,0,'Reversible defect',Absence
+57,Male,'Atypical angina',124,FALSE,141,No,0.3,'Up sloping',0,'Reversible defect',Presence
+64,Male,Asymptomatic,128,FALSE,105,Yes,0.2,Flat,1,'Reversible defect',Absence
+74,Female,'Atypical angina',120,FALSE,121,Yes,0.2,'Up sloping',1,Normal,Absence
+65,Male,Asymptomatic,120,FALSE,140,No,0.4,'Up sloping',0,'Reversible defect',Absence
+56,Male,'Non-anginal pain (pain without disease)',130,TRUE,142,Yes,0.6,Flat,1,'Fixed defect',Presence
+59,Male,Asymptomatic,110,FALSE,142,Yes,1.2,Flat,1,'Reversible defect',Presence
+60,Male,Asymptomatic,140,FALSE,170,No,1.2,Flat,2,'Reversible defect',Presence
+63,Female,Asymptomatic,150,FALSE,154,No,4,Flat,3,'Reversible defect',Presence
+59,Male,Asymptomatic,135,FALSE,161,No,0.5,Flat,0,'Reversible defect',Absence
+53,Male,Asymptomatic,142,FALSE,111,Yes,0,'Up sloping',0,'Reversible defect',Absence
+44,Male,'Non-anginal pain (pain without disease)',140,FALSE,180,No,0,'Up sloping',0,Normal,Absence
+61,Male,'Typical angina',134,FALSE,145,No,2.6,Flat,2,Normal,Presence
+57,Female,Asymptomatic,128,FALSE,159,No,0,'Up sloping',1,Normal,Absence
+71,Female,Asymptomatic,112,FALSE,125,No,1.6,Flat,0,Normal,Absence
+46,Male,Asymptomatic,140,FALSE,120,Yes,1.8,Flat,2,'Reversible defect',Presence
+53,Male,Asymptomatic,140,TRUE,155,Yes,3.1,'Down sloping',0,'Reversible defect',Presence
+64,Male,'Typical angina',110,FALSE,144,Yes,1.8,Flat,0,Normal,Absence
+40,Male,'Typical angina',140,FALSE,178,Yes,1.4,'Up sloping',0,'Reversible defect',Absence
+67,Male,Asymptomatic,120,FALSE,129,Yes,2.6,Flat,2,'Reversible defect',Presence
+48,Male,'Atypical angina',130,FALSE,180,No,0.2,Flat,0,Normal,Absence
+43,Male,Asymptomatic,115,FALSE,181,No,1.2,Flat,0,Normal,Absence
+47,Male,Asymptomatic,112,FALSE,143,No,0.1,'Up sloping',0,Normal,Absence
+54,Female,'Atypical angina',132,TRUE,159,Yes,0,'Up sloping',1,Normal,Absence
+48,Female,'Non-anginal pain (pain without disease)',130,FALSE,139,No,0.2,'Up sloping',0,Normal,Absence
+46,Female,Asymptomatic,138,FALSE,152,Yes,0,Flat,0,Normal,Absence
+51,Female,'Non-anginal pain (pain without disease)',120,FALSE,157,No,0.6,'Up sloping',0,Normal,Absence
+58,Male,'Non-anginal pain (pain without disease)',112,FALSE,165,No,2.5,Flat,1,'Reversible defect',Presence
+71,Female,'Non-anginal pain (pain without disease)',110,TRUE,130,No,0,'Up sloping',1,Normal,Absence
+57,Male,'Non-anginal pain (pain without disease)',128,FALSE,150,No,0.4,Flat,1,'Reversible defect',Presence
+66,Male,Asymptomatic,160,FALSE,138,No,2.3,'Up sloping',0,'Fixed defect',Absence
+37,Female,'Non-anginal pain (pain without disease)',120,FALSE,170,No,0,'Up sloping',0,Normal,Absence
+59,Male,Asymptomatic,170,FALSE,140,Yes,3.4,'Down sloping',0,'Reversible defect',Presence
+50,Male,Asymptomatic,144,FALSE,126,Yes,0.9,Flat,0,'Reversible defect',Presence
+48,Male,Asymptomatic,130,TRUE,150,Yes,0,'Up sloping',2,'Reversible defect',Presence
+61,Male,Asymptomatic,140,FALSE,138,Yes,1.9,'Up sloping',1,'Reversible defect',Presence
+59,Male,'Typical angina',160,FALSE,125,No,0,'Up sloping',0,Normal,Presence
+42,Male,'Non-anginal pain (pain without disease)',130,FALSE,150,No,0,'Up sloping',0,Normal,Absence
+48,Male,Asymptomatic,122,FALSE,186,No,0,'Up sloping',0,Normal,Absence
+40,Male,Asymptomatic,152,FALSE,181,No,0,'Up sloping',0,'Reversible defect',Presence
+62,Female,Asymptomatic,124,FALSE,163,No,0,'Up sloping',0,Normal,Absence
+44,Male,'Non-anginal pain (pain without disease)',130,FALSE,179,Yes,0.4,'Up sloping',0,Normal,Absence
+46,Male,'Atypical angina',101,TRUE,156,No,0,'Up sloping',0,'Reversible defect',Absence
+59,Male,'Non-anginal pain (pain without disease)',126,TRUE,134,No,2.2,Flat,1,'Fixed defect',Presence
+58,Male,'Non-anginal pain (pain without disease)',140,TRUE,165,No,0,'Up sloping',0,Normal,Absence
+49,Male,'Non-anginal pain (pain without disease)',118,FALSE,126,No,0.8,'Up sloping',3,Normal,Presence
+44,Male,Asymptomatic,110,FALSE,177,No,0,'Up sloping',1,Normal,Presence
+66,Male,'Atypical angina',160,FALSE,120,Yes,0,Flat,3,'Fixed defect',Presence
+65,Female,Asymptomatic,150,FALSE,114,No,1,Flat,3,'Reversible defect',Presence
+42,Male,Asymptomatic,136,FALSE,125,Yes,1.8,Flat,0,'Fixed defect',Presence
+52,Male,'Atypical angina',128,TRUE,184,No,0,'Up sloping',0,Normal,Absence
+65,Female,'Non-anginal pain (pain without disease)',140,TRUE,157,No,0.8,'Up sloping',1,Normal,Absence
+63,Female,'Atypical angina',140,FALSE,179,No,0,'Up sloping',2,Normal,Absence
+45,Female,'Atypical angina',130,FALSE,175,No,0.6,Flat,0,Normal,Absence
+41,Female,'Atypical angina',105,FALSE,168,No,0,'Up sloping',1,Normal,Absence
+61,Male,Asymptomatic,138,FALSE,125,Yes,3.6,Flat,1,Normal,Presence
+60,Female,'Non-anginal pain (pain without disease)',120,TRUE,96,No,0,'Up sloping',0,Normal,Absence
+59,Female,Asymptomatic,174,FALSE,143,Yes,0,Flat,0,Normal,Presence
+62,Male,'Atypical angina',120,FALSE,103,No,1.4,Flat,1,'Reversible defect',Presence
+57,Male,'Non-anginal pain (pain without disease)',150,TRUE,173,No,0.2,'Up sloping',1,'Reversible defect',Absence
+51,Female,Asymptomatic,130,FALSE,142,Yes,1.2,Flat,0,'Reversible defect',Presence
+44,Male,'Non-anginal pain (pain without disease)',120,FALSE,169,No,0,'Up sloping',0,Normal,Absence
+60,Female,'Typical angina',150,FALSE,171,No,0.9,'Up sloping',0,Normal,Absence
+63,Male,'Typical angina',145,TRUE,150,No,2.3,'Down sloping',0,'Fixed defect',Absence
+57,Male,Asymptomatic,150,FALSE,112,Yes,0.6,Flat,1,'Fixed defect',Presence
+51,Male,Asymptomatic,140,FALSE,186,Yes,0,'Up sloping',0,Normal,Absence
+58,Female,'Atypical angina',136,TRUE,152,No,0,'Up sloping',2,Normal,Presence
+44,Female,'Non-anginal pain (pain without disease)',118,FALSE,149,No,0.3,Flat,1,Normal,Absence
+47,Male,'Non-anginal pain (pain without disease)',108,FALSE,152,No,0,'Up sloping',0,Normal,Presence
+61,Male,Asymptomatic,120,FALSE,140,Yes,3.6,Flat,1,'Reversible defect',Presence
+57,Female,Asymptomatic,120,FALSE,163,Yes,0.6,'Up sloping',0,Normal,Absence
+70,Male,'Atypical angina',156,FALSE,143,No,0,'Up sloping',0,Normal,Absence
+76,Female,'Non-anginal pain (pain without disease)',140,FALSE,116,No,1.1,Flat,0,Normal,Absence
+67,Female,Asymptomatic,106,FALSE,142,No,0.3,'Up sloping',2,Normal,Absence
+45,Male,Asymptomatic,142,FALSE,147,Yes,0,Flat,3,'Reversible defect',Presence
+45,Male,Asymptomatic,104,FALSE,148,Yes,3,Flat,0,Normal,Absence
+39,Female,'Non-anginal pain (pain without disease)',94,FALSE,179,No,0,'Up sloping',0,Normal,Absence
+42,Female,'Non-anginal pain (pain without disease)',120,FALSE,173,No,0,Flat,0,Normal,Absence
+56,Male,'Atypical angina',120,FALSE,178,No,0.8,'Up sloping',0,Normal,Absence
+58,Male,Asymptomatic,146,FALSE,105,No,2,Flat,1,'Reversible defect',Presence
+35,Male,Asymptomatic,120,FALSE,130,Yes,1.6,Flat,0,'Reversible defect',Presence
+58,Male,Asymptomatic,150,FALSE,111,Yes,0.8,'Up sloping',0,'Reversible defect',Presence
+41,Male,'Non-anginal pain (pain without disease)',130,FALSE,168,No,2,Flat,0,Normal,Absence
+57,Male,Asymptomatic,110,FALSE,126,Yes,1.5,Flat,0,'Fixed defect',Absence
+42,Male,'Typical angina',148,FALSE,178,No,0.8,'Up sloping',2,Normal,Absence
+62,Male,'Atypical angina',128,TRUE,140,No,0,'Up sloping',0,Normal,Absence
+59,Male,'Typical angina',178,FALSE,145,No,4.2,'Down sloping',0,'Reversible defect',Absence
+41,Female,'Atypical angina',126,FALSE,163,No,0,'Up sloping',0,Normal,Absence
+50,Male,Asymptomatic,150,FALSE,128,No,2.6,Flat,0,'Reversible defect',Presence
+59,Male,'Atypical angina',140,FALSE,164,Yes,0,'Up sloping',0,Normal,Absence
+61,Female,Asymptomatic,130,FALSE,169,No,0,'Up sloping',0,Normal,Presence
+54,Male,Asymptomatic,124,FALSE,109,Yes,2.2,Flat,1,'Reversible defect',Presence
+54,Male,Asymptomatic,110,FALSE,108,Yes,0,Flat,1,Normal,Presence
+52,Male,Asymptomatic,125,FALSE,168,No,1,'Up sloping',2,'Reversible defect',Presence
+47,Male,Asymptomatic,110,FALSE,118,Yes,1,Flat,1,Normal,Presence
+66,Male,Asymptomatic,120,FALSE,151,No,0.4,Flat,0,Normal,Absence
+58,Male,Asymptomatic,100,FALSE,156,No,0.1,'Up sloping',1,'Reversible defect',Presence
+64,Female,'Non-anginal pain (pain without disease)',140,FALSE,133,No,0.2,'Up sloping',0,'Reversible defect',Absence
+50,Female,'Atypical angina',120,FALSE,162,No,1.1,'Up sloping',0,Normal,Absence
+44,Female,'Non-anginal pain (pain without disease)',108,FALSE,175,No,0.6,Flat,0,Normal,Absence
+67,Male,Asymptomatic,120,FALSE,71,No,1,Flat,0,Normal,Presence
+49,Female,Asymptomatic,130,FALSE,163,No,0,'Up sloping',0,Normal,Absence
+57,Male,Asymptomatic,165,TRUE,124,No,1,Flat,3,'Reversible defect',Presence
+63,Male,Asymptomatic,130,FALSE,147,No,1.4,Flat,1,'Reversible defect',Presence
+48,Male,Asymptomatic,124,FALSE,166,No,0.5,Flat,0,'Reversible defect',Presence
+51,Male,'Non-anginal pain (pain without disease)',100,FALSE,143,Yes,1.2,Flat,0,Normal,Absence
+60,Female,Asymptomatic,150,FALSE,157,No,2.6,Flat,2,'Reversible defect',Presence
+59,Male,Asymptomatic,140,FALSE,162,Yes,0,'Up sloping',1,'Reversible defect',Presence
+45,Female,'Atypical angina',112,FALSE,138,No,0,Flat,0,Normal,Absence
+55,Female,Asymptomatic,180,FALSE,117,Yes,3.4,Flat,0,Normal,Presence
+41,Male,'Atypical angina',110,FALSE,153,No,0,'Up sloping',0,Normal,Absence
+60,Female,Asymptomatic,158,FALSE,161,No,0,'Up sloping',0,Normal,Presence
+54,Female,'Non-anginal pain (pain without disease)',135,TRUE,170,No,0,'Up sloping',0,Normal,Absence
+42,Male,'Atypical angina',120,FALSE,162,No,0,'Up sloping',0,Normal,Absence
+49,Female,'Atypical angina',134,FALSE,162,No,0,Flat,0,Normal,Absence
+46,Male,Asymptomatic,120,FALSE,144,No,0.8,'Up sloping',0,'Reversible defect',Presence
+56,Female,Asymptomatic,200,TRUE,133,Yes,4,'Down sloping',2,'Reversible defect',Presence
+66,Female,'Typical angina',150,FALSE,114,No,2.6,'Down sloping',0,Normal,Absence
+56,Male,Asymptomatic,130,TRUE,103,Yes,1.6,'Down sloping',0,'Reversible defect',Presence
+49,Male,'Non-anginal pain (pain without disease)',120,FALSE,139,No,2,Flat,3,'Reversible defect',Presence
+54,Male,Asymptomatic,122,FALSE,116,Yes,3.2,Flat,2,Normal,Presence
+57,Male,Asymptomatic,152,FALSE,88,Yes,1.2,Flat,1,'Reversible defect',Presence
+65,Female,'Non-anginal pain (pain without disease)',160,FALSE,151,No,0.8,'Up sloping',0,Normal,Absence
+54,Male,'Non-anginal pain (pain without disease)',125,FALSE,152,No,0.5,'Down sloping',1,Normal,Absence
+54,Female,'Non-anginal pain (pain without disease)',160,FALSE,163,No,0,'Up sloping',1,Normal,Absence
+62,Male,Asymptomatic,120,FALSE,99,Yes,1.8,Flat,2,'Reversible defect',Presence
+52,Female,'Non-anginal pain (pain without disease)',136,FALSE,169,No,0.1,Flat,0,Normal,Absence
+52,Male,'Atypical angina',134,FALSE,158,No,0.8,'Up sloping',1,Normal,Absence
+60,Male,Asymptomatic,117,TRUE,160,Yes,1.4,'Up sloping',2,'Reversible defect',Presence
+63,Female,Asymptomatic,108,FALSE,169,Yes,1.8,Flat,2,Normal,Presence
+66,Male,Asymptomatic,112,FALSE,132,Yes,0.1,'Up sloping',1,Normal,Presence
+42,Male,Asymptomatic,140,FALSE,178,No,0,'Up sloping',0,Normal,Absence
+64,Male,Asymptomatic,120,FALSE,96,Yes,2.2,'Down sloping',1,Normal,Presence
+54,Male,'Non-anginal pain (pain without disease)',150,FALSE,165,No,1.6,'Up sloping',0,'Reversible defect',Absence
+46,Female,'Non-anginal pain (pain without disease)',142,FALSE,160,Yes,1.4,'Down sloping',0,Normal,Absence
+67,Female,'Non-anginal pain (pain without disease)',152,FALSE,172,No,0,'Up sloping',1,Normal,Absence
+56,Male,Asymptomatic,125,TRUE,144,Yes,1.2,Flat,1,Normal,Presence
+34,Female,'Atypical angina',118,FALSE,192,No,0.7,'Up sloping',0,Normal,Absence
+57,Male,Asymptomatic,132,FALSE,168,Yes,0,'Up sloping',0,'Reversible defect',Absence
+64,Male,Asymptomatic,145,FALSE,132,No,2,Flat,2,'Fixed defect',Presence
+59,Male,Asymptomatic,138,FALSE,182,No,0,'Up sloping',0,Normal,Absence
+50,Male,'Non-anginal pain (pain without disease)',140,FALSE,163,No,0.6,Flat,1,'Reversible defect',Presence
+51,Male,'Typical angina',125,FALSE,125,Yes,1.4,'Up sloping',1,Normal,Absence
+54,Male,'Atypical angina',192,FALSE,195,No,0,'Up sloping',1,'Reversible defect',Presence
+53,Male,Asymptomatic,123,FALSE,95,Yes,2,Flat,2,'Reversible defect',Presence
+52,Male,Asymptomatic,112,FALSE,160,No,0,'Up sloping',1,Normal,Presence
+40,Male,Asymptomatic,110,FALSE,114,Yes,2,Flat,0,'Reversible defect',Presence
+58,Male,'Non-anginal pain (pain without disease)',132,FALSE,173,No,3.2,'Up sloping',2,'Reversible defect',Presence
+41,Female,'Non-anginal pain (pain without disease)',112,FALSE,172,Yes,0,'Up sloping',0,Normal,Absence
+41,Male,'Non-anginal pain (pain without disease)',112,FALSE,179,No,0,'Up sloping',0,Normal,Absence
+50,Female,'Non-anginal pain (pain without disease)',120,FALSE,158,No,1.6,Flat,0,Normal,Absence
+54,Female,'Non-anginal pain (pain without disease)',108,FALSE,167,No,0,'Up sloping',0,Normal,Absence
+64,Female,Asymptomatic,130,FALSE,122,No,2,Flat,2,Normal,Absence
+51,Female,'Non-anginal pain (pain without disease)',130,FALSE,149,No,0.5,'Up sloping',0,Normal,Absence
+46,Female,'Atypical angina',105,FALSE,172,No,0,'Up sloping',0,Normal,Absence
+55,Male,Asymptomatic,140,FALSE,111,Yes,5.6,'Down sloping',0,'Reversible defect',Presence
+45,Male,'Atypical angina',128,FALSE,170,No,0,'Up sloping',0,Normal,Absence
+56,Male,'Typical angina',120,FALSE,162,No,1.9,Flat,0,'Reversible defect',Absence
+66,Female,Asymptomatic,178,TRUE,165,Yes,1,Flat,2,'Reversible defect',Presence
+38,Male,'Typical angina',120,FALSE,182,Yes,3.8,Flat,0,'Reversible defect',Presence
+62,Female,Asymptomatic,150,FALSE,154,Yes,1.4,Flat,0,Normal,Presence
+55,Male,'Atypical angina',130,FALSE,155,No,0,'Up sloping',0,Normal,Absence
+58,Male,Asymptomatic,128,FALSE,130,Yes,3,Flat,2,'Reversible defect',Presence
+43,Male,Asymptomatic,110,FALSE,161,No,0,'Up sloping',0,'Reversible defect',Absence
+64,Female,Asymptomatic,180,FALSE,154,Yes,0,'Up sloping',0,Normal,Absence
+50,Female,Asymptomatic,110,FALSE,159,No,0,'Up sloping',0,Normal,Absence
+53,Male,'Non-anginal pain (pain without disease)',130,TRUE,152,No,1.2,'Down sloping',0,Normal,Absence
+45,Female,Asymptomatic,138,FALSE,152,Yes,0.2,Flat,0,Normal,Absence
+65,Male,'Typical angina',138,TRUE,174,No,1.4,Flat,1,Normal,Presence
+69,Male,'Typical angina',160,TRUE,131,No,0.1,Flat,1,Normal,Absence
+69,Male,'Non-anginal pain (pain without disease)',140,FALSE,146,No,2,Flat,3,'Reversible defect',Presence
+67,Male,Asymptomatic,100,FALSE,125,Yes,0.9,Flat,2,Normal,Presence
+68,Female,'Non-anginal pain (pain without disease)',120,FALSE,115,No,1.5,Flat,0,Normal,Absence
+34,Male,'Typical angina',118,FALSE,174,No,0,'Up sloping',0,Normal,Absence
+62,Female,Asymptomatic,138,TRUE,106,No,1.9,Flat,3,Normal,Presence
+51,Male,Asymptomatic,140,FALSE,122,Yes,4.2,Flat,3,'Reversible defect',Presence
+46,Male,'Non-anginal pain (pain without disease)',150,FALSE,147,No,3.6,Flat,0,Normal,Presence
+67,Male,Asymptomatic,125,TRUE,163,No,0.2,Flat,2,'Reversible defect',Presence
+50,Male,'Non-anginal pain (pain without disease)',129,FALSE,163,No,0,'Up sloping',0,Normal,Absence
+42,Male,'Non-anginal pain (pain without disease)',120,TRUE,194,No,0.8,'Down sloping',0,'Reversible defect',Absence
+56,Female,Asymptomatic,134,FALSE,150,Yes,1.9,Flat,2,'Reversible defect',Presence
+41,Male,Asymptomatic,110,FALSE,158,No,0,'Up sloping',0,'Reversible defect',Presence
+42,Female,Asymptomatic,102,FALSE,122,No,0.6,Flat,0,Normal,Absence
+53,Male,'Non-anginal pain (pain without disease)',130,TRUE,173,No,0,'Up sloping',3,Normal,Absence
+43,Male,'Non-anginal pain (pain without disease)',130,FALSE,162,No,1.9,'Up sloping',1,Normal,Absence
+56,Male,Asymptomatic,132,FALSE,105,Yes,2.1,Flat,1,'Fixed defect',Presence
+52,Male,Asymptomatic,108,TRUE,147,No,0.1,'Up sloping',3,'Reversible defect',Absence
+62,Female,Asymptomatic,140,FALSE,157,No,1.2,Flat,0,Normal,Absence
+70,Male,'Non-anginal pain (pain without disease)',160,FALSE,112,Yes,2.9,Flat,1,'Reversible defect',Presence
+54,Male,Asymptomatic,140,FALSE,160,No,1.2,'Up sloping',0,Normal,Absence
+70,Male,Asymptomatic,145,FALSE,125,Yes,2.6,'Down sloping',0,'Reversible defect',Presence
+54,Male,'Atypical angina',108,FALSE,156,No,0,'Up sloping',0,'Reversible defect',Absence
+35,Male,Asymptomatic,126,FALSE,156,Yes,0,'Up sloping',0,'Reversible defect',Presence
+48,Male,'Non-anginal pain (pain without disease)',124,TRUE,175,No,0,'Up sloping',2,Normal,Absence
+55,Female,'Atypical angina',135,FALSE,161,No,1.4,Flat,0,Normal,Absence
+58,Female,Asymptomatic,100,FALSE,122,No,1,Flat,0,Normal,Absence
+54,Female,'Non-anginal pain (pain without disease)',110,FALSE,158,No,1.6,Flat,0,Normal,Absence
+69,Female,'Typical angina',140,FALSE,151,No,1.8,'Up sloping',2,Normal,Absence
+77,Male,Asymptomatic,125,FALSE,162,Yes,0,'Up sloping',3,Normal,Presence
+68,Male,'Non-anginal pain (pain without disease)',118,FALSE,151,No,1,'Up sloping',1,'Reversible defect',Absence
+58,Male,Asymptomatic,125,FALSE,171,No,0,'Up sloping',2,'Reversible defect',Presence
+60,Male,Asymptomatic,125,FALSE,141,Yes,2.8,Flat,1,'Reversible defect',Presence
+51,Male,Asymptomatic,140,FALSE,173,Yes,1.6,'Up sloping',0,'Reversible defect',Presence
+55,Male,Asymptomatic,160,FALSE,145,Yes,0.8,Flat,1,'Reversible defect',Presence
+52,Male,'Typical angina',152,TRUE,178,No,1.2,Flat,0,'Reversible defect',Absence
+60,Female,'Non-anginal pain (pain without disease)',102,FALSE,160,No,0,'Up sloping',1,Normal,Absence
+58,Male,'Non-anginal pain (pain without disease)',105,FALSE,154,Yes,0.6,Flat,0,'Reversible defect',Absence
+64,Male,'Non-anginal pain (pain without disease)',125,FALSE,131,Yes,1.8,Flat,0,'Reversible defect',Presence
+37,Male,'Non-anginal pain (pain without disease)',130,FALSE,187,No,3.5,'Down sloping',0,Normal,Absence
+59,Male,'Typical angina',170,FALSE,159,No,0.2,Flat,0,'Reversible defect',Presence
+51,Male,'Non-anginal pain (pain without disease)',125,TRUE,166,No,2.4,Flat,0,Normal,Absence
+43,Female,'Non-anginal pain (pain without disease)',122,FALSE,165,No,0.2,Flat,0,Normal,Absence
+58,Male,Asymptomatic,128,FALSE,131,Yes,2.2,Flat,3,'Reversible defect',Presence
+29,Male,'Atypical angina',130,FALSE,202,No,0,'Up sloping',0,Normal,Absence
+41,Female,'Atypical angina',130,FALSE,172,No,1.4,'Up sloping',0,Normal,Absence
+63,Female,'Non-anginal pain (pain without disease)',135,FALSE,172,No,0,'Up sloping',0,Normal,Absence
+51,Male,'Non-anginal pain (pain without disease)',94,FALSE,154,Yes,0,'Up sloping',1,'Reversible defect',Absence
+54,Male,'Non-anginal pain (pain without disease)',120,FALSE,147,No,0.4,Flat,0,'Reversible defect',Absence
+44,Male,'Atypical angina',120,FALSE,170,No,0,'Up sloping',0,Normal,Absence
+54,Male,Asymptomatic,110,FALSE,126,Yes,2.8,Flat,1,'Reversible defect',Presence
+65,Male,Asymptomatic,135,FALSE,127,No,2.8,Flat,1,'Reversible defect',Presence
+57,Male,'Non-anginal pain (pain without disease)',150,FALSE,174,No,1.6,'Up sloping',0,Normal,Absence
+63,Male,Asymptomatic,130,TRUE,132,Yes,1.8,'Up sloping',3,'Reversible defect',Presence
+35,Female,Asymptomatic,138,FALSE,182,No,1.4,'Up sloping',0,Normal,Absence
+41,Male,'Atypical angina',135,FALSE,132,No,0,Flat,0,'Fixed defect',Absence
+62,Female,'Non-anginal pain (pain without disease)',130,FALSE,97,No,1.2,Flat,1,'Reversible defect',Presence
+43,Female,Asymptomatic,132,TRUE,136,Yes,3,Flat,0,'Reversible defect',Presence
+58,Female,'Typical angina',150,TRUE,162,No,1,'Up sloping',0,Normal,Absence
+52,Male,'Typical angina',118,FALSE,190,No,0,Flat,0,'Fixed defect',Absence
+61,Female,Asymptomatic,145,FALSE,146,Yes,1,Flat,0,'Reversible defect',Presence
+39,Male,Asymptomatic,118,FALSE,140,No,1.2,Flat,0,'Reversible defect',Presence
+45,Male,Asymptomatic,115,FALSE,185,No,0,'Up sloping',0,Normal,Absence
+52,Male,Asymptomatic,128,FALSE,161,Yes,0,'Up sloping',1,'Reversible defect',Presence
+62,Male,'Non-anginal pain (pain without disease)',130,FALSE,146,No,1.8,Flat,3,'Reversible defect',Absence
+62,Female,Asymptomatic,160,FALSE,145,No,6.2,'Down sloping',3,'Reversible defect',Presence
+53,Female,Asymptomatic,138,FALSE,160,No,0,'Up sloping',0,Normal,Absence
+43,Male,Asymptomatic,120,FALSE,120,Yes,2.5,Flat,0,'Reversible defect',Presence
+47,Male,'Non-anginal pain (pain without disease)',138,FALSE,156,No,0,'Up sloping',0,Normal,Absence
+52,Male,'Atypical angina',120,FALSE,172,No,0.2,'Up sloping',0,Normal,Absence
+68,Male,'Non-anginal pain (pain without disease)',180,TRUE,150,Yes,1.6,Flat,0,'Reversible defect',Presence
+39,Male,'Non-anginal pain (pain without disease)',140,FALSE,182,No,0,'Up sloping',0,Normal,Absence
+53,Female,Asymptomatic,130,FALSE,143,No,0.4,Flat,0,Normal,Absence
+62,Female,Asymptomatic,140,FALSE,160,No,3.6,'Down sloping',2,Normal,Presence
+51,Female,'Non-anginal pain (pain without disease)',140,FALSE,142,No,1.5,'Up sloping',1,Normal,Absence
+60,Male,Asymptomatic,130,FALSE,144,Yes,1.4,'Up sloping',1,'Reversible defect',Presence
+65,Male,Asymptomatic,110,FALSE,158,No,0.6,'Up sloping',2,'Fixed defect',Presence
+65,Female,'Non-anginal pain (pain without disease)',155,FALSE,148,No,0.8,'Up sloping',0,Normal,Absence
+60,Male,'Non-anginal pain (pain without disease)',140,FALSE,155,No,3,Flat,0,Normal,Presence
+60,Male,Asymptomatic,145,FALSE,142,Yes,2.8,Flat,2,'Reversible defect',Presence
+54,Male,Asymptomatic,120,FALSE,113,No,1.4,Flat,1,'Reversible defect',Presence
+44,Male,'Atypical angina',130,FALSE,188,No,0,'Up sloping',0,Normal,Absence
+44,Male,Asymptomatic,112,FALSE,153,No,0,'Up sloping',1,Normal,Presence
+51,Male,'Non-anginal pain (pain without disease)',110,FALSE,123,No,0.6,'Up sloping',0,Normal,Absence
+59,Male,'Non-anginal pain (pain without disease)',150,TRUE,157,No,1.6,'Up sloping',0,Normal,Absence
+71,Female,'Atypical angina',160,FALSE,162,No,0.4,'Up sloping',2,Normal,Absence
+61,Male,'Non-anginal pain (pain without disease)',150,TRUE,137,Yes,1,Flat,0,Normal,Absence
+55,Male,Asymptomatic,132,FALSE,132,Yes,1.2,Flat,1,'Reversible defect',Presence
+64,Male,'Non-anginal pain (pain without disease)',140,FALSE,158,No,0,'Up sloping',0,Normal,Presence
+43,Male,Asymptomatic,150,FALSE,171,No,1.5,'Up sloping',0,Normal,Absence
+58,Female,'Non-anginal pain (pain without disease)',120,FALSE,172,No,0,'Up sloping',0,Normal,Absence
+60,Male,Asymptomatic,130,FALSE,132,Yes,2.4,Flat,2,'Reversible defect',Presence
+58,Male,'Atypical angina',120,FALSE,160,No,1.8,Flat,0,Normal,Presence
+49,Male,'Atypical angina',130,FALSE,171,No,0.6,'Up sloping',0,Normal,Absence
+48,Male,'Atypical angina',110,FALSE,168,No,1,'Down sloping',0,'Reversible defect',Presence
+52,Male,'Non-anginal pain (pain without disease)',172,TRUE,162,No,0.5,'Up sloping',0,'Reversible defect',Absence
+44,Male,'Atypical angina',120,FALSE,173,No,0,'Up sloping',0,'Reversible defect',Absence
+56,Female,'Atypical angina',140,FALSE,153,No,1.3,Flat,0,Normal,Absence
+57,Male,Asymptomatic,140,FALSE,148,No,0.4,Flat,0,'Fixed defect',Absence
+67,Male,Asymptomatic,160,FALSE,108,Yes,1.5,Flat,3,Normal,Presence
