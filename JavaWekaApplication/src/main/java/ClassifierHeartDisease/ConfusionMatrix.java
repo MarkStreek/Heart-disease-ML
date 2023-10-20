@@ -13,13 +13,9 @@ public class CalculateScores {
         double classified;
         double actual;
         for (int i = 0; i < data.numInstances(); i++) {
-            // 0 Presence
-            // 1 Absence
             classified = predictions.instance(i).classValue();
             actual = data.instance(i).classValue();
             if (classified == 0.0) {
-                // Classified as Presence
-                // Check Actual
                 if (actual == 0.0) {
                     TN++;
                 } else {FN++;}
@@ -28,7 +24,9 @@ public class CalculateScores {
             } else {TP++;}
         }
         System.out.println(
-                String.format("Classified as: \nPresence | Absence \n---------|--------\n\t%d  | %d \n\t%d   | %d", TN, FP, FN, TP)
+                String.format("\nClassified as: \nPresence | " +
+                        "Absence \n---------|--------\n\t%d  | %d " +
+                        "\n\t%d   | %d", TN, FP, FN, TP)
         );
     }
 }

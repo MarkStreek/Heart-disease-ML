@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class LoadingModelData {
 
-    private final String MODELNAME = "Stacking_Heart_Disease_Model.model";
+    private static final String MODELNAME = "Stacking_Heart_Disease_Model.model";
 
     public Classifier loadClassifier() {
         try {
