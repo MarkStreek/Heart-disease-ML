@@ -4,18 +4,15 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
-import weka.gui.beans.CrossValidationFoldMaker;
-
 import java.io.File;
-import java.util.Arrays;
 
-import static weka.clusterers.ClusterEvaluation.crossValidateModel;
 
 public class Controling {
     private CommandLineParsing starter;
     private Classifier model;
     private Instances data;
     private Instances predictions;
+    private boolean labelsGiven;
 
     public Controling(CommandLineParsing starter) {
         this.starter = starter;
@@ -27,8 +24,13 @@ public class Controling {
     private void loading() {
         // laad model
         this.model = new LoadingModelData().loadClassifier();
-        // laad data
-        this.data = new LoadingUserData().loadData(this.starter.getFilename());
+
+        // Loading data
+        LoadingUserData userData = new LoadingUserData();
+        this.data = userData.loadData(this.starter.getFilename(), this.starter);
+
+        // Getting boolean if labels were in the original data
+        this.labelsGiven = userData.isLabelsGiven();
     }
 
     private void predicting(){
@@ -37,11 +39,9 @@ public class Controling {
     }
 
     private void userScore() {
-        if (this.starter.isConfusionMatrix()) {
-            ConfusionMatrix matrix = new ConfusionMatrix();
-            String print = matrix.getFeedback(this.predictions, this.data);
-            System.out.println(print);
-        } else if (this.starter.isAreaUnderAOC()) {
+        if (this.starter.isConfusionMatrix() & this.labelsGiven) {
+            System.out.println(new ConfusionMatrix().getFeedback(this.predictions, this.data));}
+        if (this.starter.isAreaUnderAOC() & this.labelsGiven) {
             // get the area under aoc
             try {
                 Evaluation eval = new Evaluation(predictions);
@@ -49,10 +49,11 @@ public class Controling {
                 System.out.println(eval.areaUnderROC(0));
             } catch (Exception e) {
                 throw new RuntimeException(e);
-            }
-        } else if (this.starter.isWritingOut()) {
+            }}
+        if (this.starter.isWritingOut()) {
             // writing output to a new file
             try {
+                System.out.println("writing output!");
                 ArffSaver arff = new ArffSaver();
                 arff.setInstances(this.predictions);
                 arff.setFile(new File(String.format("Predictions" + starter.getFilename())));

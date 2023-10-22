@@ -1,7 +1,6 @@
 package ClassifierHeartDisease;
 
 import org.apache.commons.cli.*;
-import weka.core.pmml.jaxbbindings.True;
 
 public class CommandLineParsing {
     private CommandLine commandLine;

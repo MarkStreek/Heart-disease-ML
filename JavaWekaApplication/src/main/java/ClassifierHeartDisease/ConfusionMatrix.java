@@ -1,15 +1,21 @@
 package ClassifierHeartDisease;
 
+import weka.core.Instance;
 import weka.core.Instances;
 
-public class CalculateScores {
+public class ConfusionMatrix implements UserFeedback{
 
     private int TP = 0;
     private int FN = 0;
     private int FP = 0;
     private int TN = 0;
 
-    public void calculation(Instances predictions, Instances data) {
+    @Override
+    public String getFeedback(Instances data, Instances predictions) {
+        return calculation(data, predictions);
+    }
+
+    public String calculation(Instances predictions, Instances data) {
         double classified;
         double actual;
         for (int i = 0; i < data.numInstances(); i++) {
@@ -23,10 +29,8 @@ public class CalculateScores {
                 FP++;
             } else {TP++;}
         }
-        System.out.println(
-                String.format("\nClassified as: \nPresence | " +
+        return String.format("\nClassified as: \nPresence | " +
                         "Absence \n---------|--------\n\t%d  | %d " +
-                        "\n\t%d   | %d", TN, FP, FN, TP)
-        );
+                        "\n\t%d   | %d", TN, FP, FN, TP);
     }
 }
