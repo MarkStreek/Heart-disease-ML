@@ -25,7 +25,7 @@ public class CommandLineParsing {
         areaUnderAOC.setRequired(false);
         options.addOption(areaUnderAOC);
 
-        Option writingOut = new Option("w", "writingOut", false, "Writing the output to a file");
+        Option writingOut = new Option("w", "writingOut", true, "Writing the output to a file");
         writingOut.setRequired(false);
         options.addOption(writingOut);
     }
@@ -35,8 +35,9 @@ public class CommandLineParsing {
             CommandLineParser parser = new DefaultParser();
             this.commandLine = parser.parse(this.options, this.arg);
         } catch (ParseException e) {
-            System.out.println(e.getMessage());
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(String.format("(Line %d) %s: %s",
+                    e.getStackTrace()[0].getLineNumber(),
+                    e.getClass().getSimpleName(), e.getMessage()));
         }
     }
 
@@ -62,5 +63,9 @@ public class CommandLineParsing {
 
     public boolean isWritingOut() {
         return this.commandLine.hasOption("writingOut");
+    }
+
+    public String getOutputFilename() {
+        return new String(this.commandLine.getOptionValue("writingOut"));
     }
 }

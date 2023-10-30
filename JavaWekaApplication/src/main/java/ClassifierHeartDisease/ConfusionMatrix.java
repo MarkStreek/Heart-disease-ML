@@ -1,6 +1,5 @@
 package ClassifierHeartDisease;
 
-import weka.core.Instance;
 import weka.core.Instances;
 
 public class ConfusionMatrix implements UserFeedback{
@@ -28,8 +27,7 @@ public class ConfusionMatrix implements UserFeedback{
             } else if (actual == 0.0) {
                 FP++;
             } else {TP++;}
-        }
-        return String.format("\nClassified as: \nPresence | " +
+        } return String.format("\nClassified as: \nPresence | " +
                         "Absence \n---------|--------\n\t%d  | %d " +
                         "\n\t%d   | %d", TN, FP, FN, TP);
     }

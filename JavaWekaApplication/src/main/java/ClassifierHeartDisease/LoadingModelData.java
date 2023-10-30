@@ -3,8 +3,6 @@ package ClassifierHeartDisease;
 import weka.classifiers.Classifier;
 import weka.core.SerializationHelper;
 
-import java.io.IOException;
-
 public class LoadingModelData {
 
     private static final String MODELNAME = "Stacking_Heart_Disease_Model.model";

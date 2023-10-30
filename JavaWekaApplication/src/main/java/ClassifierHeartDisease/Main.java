@@ -7,8 +7,11 @@ public class Main {
         try {
             starter.initialize(args);
             System.out.println("Starting Classifier Application...");
-            Controling controling = new Controling(starter);
+            Controlling controlling = new Controlling(starter);
         } catch (Exception e) {
+            System.out.println((String.format("(Line %d) %s: %s",
+                    e.getStackTrace()[0].getLineNumber(),
+                    e.getClass().getSimpleName(), e.getMessage())));
             starter.help();
         }
     }
