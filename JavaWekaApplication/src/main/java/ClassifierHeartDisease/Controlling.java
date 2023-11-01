@@ -1,12 +1,7 @@
 package ClassifierHeartDisease;
 
-import org.apache.commons.cli.CommandLine;
 import weka.classifiers.Classifier;
-import weka.classifiers.Evaluation;
 import weka.core.Instances;
-import weka.core.converters.ArffSaver;
-import java.io.File;
-
 
 public class Controlling {
     private final CommandLineParsing starter;
@@ -45,25 +40,20 @@ public class Controlling {
     private void userScore() {
         // Confusion matrix option
         if (this.starter.isConfusionMatrix()) {
-            // Only when the user provided class labels with the input
-            // This checking is done when reading the input data
+            // Only when the class labels are given, the confusion matrix can be constructed
             if (!this.labelsGiven) {
                 System.out.println("User didn't provide labels at input");
             } else System.out.println(new ConfusionMatrix().getFeedback(this.predictions, this.data));}
-
-        if (this.starter.isAreaUnderAOC() & this.labelsGiven) {
-            // TODO: Maybe move AREA Under AOC to another class
-            try {
-                Evaluation eval = new Evaluation(predictions);
-                eval.evaluateModel(this.model, this.data);
-                System.out.println(eval.areaUnderROC(0));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+        if (this.starter.isAreaUnderAOC()) {
+            if (!this.labelsGiven) {
+                System.out.println("User didn't provide labels at input");
+            } else System.out.println(new AreaUnderAOC(this.model).getFeedback(this.data, this.predictions));}
         if (this.starter.isWritingOut()) {
             WritingOutput writingOutput = new WritingOutput(this.starter);
-            System.out.println(writingOutput.getFeedback(this.data, this.predictions));
+            System.out.println(writingOutput.getFeedback(this.data, this.predictions));}
+        // If the user didn't provide any feedback, the predictions are being printed in terminal
+        if (!this.starter.isConfusionMatrix() & !this.starter.isAreaUnderAOC() & !this.starter.isWritingOut()) {
+            System.out.println("\nPredictions:" + "\n" + this.predictions + "\n");
         }
     }
 }

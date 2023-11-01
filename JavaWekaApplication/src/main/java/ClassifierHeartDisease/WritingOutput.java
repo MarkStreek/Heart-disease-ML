@@ -4,6 +4,7 @@ import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 
 import java.io.File;
+import java.io.FileWriter;
 
 public class WritingOutput implements UserFeedback{
 
@@ -22,12 +23,13 @@ public class WritingOutput implements UserFeedback{
     private void writeOutput(Instances predictions) {
         try {
             System.out.println("writing output!");
-            ArffSaver arff = new ArffSaver();
-            arff.setInstances(predictions);
             String filename = this.starter.getOutputFilename();
             filename += ".arff";
-            arff.setFile(new File(String.format(filename)));
-            arff.writeBatch();
+            FileWriter myWriter = new FileWriter(filename);
+            myWriter.write(String.valueOf(predictions));
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
