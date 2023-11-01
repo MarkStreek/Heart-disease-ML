@@ -83,8 +83,13 @@ home, for example. So the deviation will not be very large
 
 ## What is heart disease?
 
-What is a heart disease and how many people have one. Why is this
-research important?
+Many people have heart disease. Heart disease can vary considerably. A heart condition is defined as \cite{disease} *(Heart disease - symptoms and causes - Mayo Clinic, 2022)*:
+
+1. Blood vessel disease
+2. Irregular heartbeats
+3. Congenital heart defects
+4. Disease of the heart muscle
+5. Heart valve disease
 
 \newpage
 
@@ -843,6 +848,8 @@ the "setup" tab. A path and file name can be selected under the heading
 The next section looks at the experimenter's results with the above
 datasets and algorithms.
 
+\newpage
+
 ## Experimenter analysis
 
 ```{r}
@@ -948,6 +955,8 @@ NaiveBayes is at top followed by K-nearest neighbours.
 -   K-neares neighbours (-K 35, EuclideanDistance)
 -   RandomTree
 
+\newpage
+
 ### False negative rate and False positive rate
 
 We want a concept with a low false negative rate and a low false
@@ -1030,15 +1039,18 @@ Overall findings:
 -   Logitisc
 -   NaiveBayes
 
+\newpage
+
 ### UserCPU_CPU_Time_Training.
 
 The UserCPU_CPU_Time_Training for each model is very fast. ZeroR scores
 the fastest here. But this model will not not be used eventually.
 
+\newpage
+
 ### F messure
 
-The F-score indicates the accuracy of a concept. Let's look at the
-F-scores.
+F-score is quite similar to accuracy, but it is calculated in a different way. For that reason we also look at the F-score.
 
 ```{r}
 # Dataset                   (1) 01-Clea | (2) 02-t (3) 03-N (4) 04-S
@@ -1075,6 +1087,8 @@ Overall:
 -   Logistic
 -   SMO
 
+\newpage
+
 ### Cost sensitive classifier
 
 There is also a model where the cost can be adjusted. We will take a closer look. 'Cost' means that more errors are charged for instances that are done wrong, which are punished more severely. The cost can be customized.
@@ -1096,6 +1110,10 @@ Let's run Logistic again, but then with default cost. The folowing scoring matri
    a   b   <-- classified as
   97  23 |   a = Presence
   15 135 |   b = Absence
+  
+TODO  
+  
+\newpage
 
 ### Conclusions on best concepts
 
@@ -1149,7 +1167,7 @@ unchanged en press start. You now see a list of attributes with
 percentages. We will combine the results in table below.
 
 | Attribute               | Accuracy (oneR) | Correlation | Gain ratio | Information Gain |
-|-------------------------|---------------|---------------|------------|------------------|
+|-------------------------|-----------------|-------------|------------|------------------|
 | Thallium                | 76.2963         | 0.4888      | 0.171204   | 0.208556         |
 | Chest.pain.type         | 75.1852         | 0.3724      | 0.111511   | 0.192202         |
 | Number.of.vessels.fluro | 74.0741         | 0.4553      | 0.17015    | 0.165916         |
@@ -1203,6 +1221,8 @@ same subsets appear and in the attribute subset evaluation, there is
 only a difference in 1 attribute between Wrapr(NaiveBayes) and
 Wrapr(logistic).
 
+\newpage
+
 ### Subset Experimenter
 
 We will now make the subsets that are defined above. These subsets will
@@ -1241,6 +1261,8 @@ table.
 The highest accuracy is achieved in the 4th set by Logistic. The Area under ROC is almost identical, but looking at average, set 4 scores the best. In false positive rate, set 4 scores best again with Logitic. False negative rate is again, on average done best in set 4.
 
 It's difficult to choose a concept and say, this is the best. But looking at the results, logistic seems to be the best here in combination with set 4. This is because the highest accuracy is achieved, on average the highest area_under_ROC, the lowest false positive rate and on average the lowest false negative rate.
+
+\newpage
 
 ## Meta learners
 
@@ -1302,6 +1324,10 @@ ggplot(ROC.data, aes(x = False_Positive_Rate, y = True_Positive_Rate)) +
 
 The curve has a high deflection to the upper left, which is good for a roc curve. The area under the curve is 0.8983.
 
+# Java Wrapper
+
+We have now discovered the best concept with the best attributes. We are now going to make our model public by building a Java application around it. This will be done in another repo.
+
 \newpage
 
 ```{=tex}
@@ -1309,6 +1335,9 @@ The curve has a high deflection to the upper left, which is good for a roc curve
 
 \bibitem{dataset}
 (2023, 12 januari).: \textit{Predicting heart disease using clinical variables}. <https://www.kaggle.com/datasets/thedevastator/predicting-heart-disease-risk-using-clinical-var>
+
+\bibitem{disease}
+(2022, 25 augustus).: \textit{Heart disease - symptoms and causes - Mayo Clinic}. Mayo Clinic. <https://www.mayoclinic.org/diseases-conditions/heart-disease/symptoms-causes/syc-20353118>
 
 \bibitem{angina_chol}
 Harvard Health. (2021, 21 september).: \textit{Angina: Symptoms, diagnosis and Treatments}. 

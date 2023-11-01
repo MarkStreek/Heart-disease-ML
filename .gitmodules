@@ -1,0 +1,3 @@
+[submodule "PredictingHeartDiseaseJavaWrapper"]
+	path = PredictingHeartDiseaseJavaWrapper
+	url = https://github.com/MarkStreek/PredictingHeartDiseaseJavaWrapper
