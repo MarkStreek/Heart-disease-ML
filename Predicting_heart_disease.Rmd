@@ -1326,7 +1326,7 @@ The curve has a high deflection to the upper left, which is good for a roc curve
 
 # Java Wrapper
 
-We have now discovered the best concept with the best attributes. We are now going to make our model public by building a Java application around it. This will be done in another repo.
+We have now discovered the best concept with the best attributes. We are now going to make our model public by building a Java application around it. This will be done in another repository.
 
 \newpage
 
