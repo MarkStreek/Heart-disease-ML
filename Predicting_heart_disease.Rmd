@@ -1095,23 +1095,35 @@ There is also a model where the cost can be adjusted. We will take a closer look
 
 Imagine a concept where 50 people are classified as absence but are presence in fact. This means that people with presence are being overlooked. Therefore, we want a concept with a low False positive. 
 
-In the Weka explorer, under functions there is a classifier "CostSensitiveClassifier". After selecting this classifier, open the options and resize the scoring matrix. After resizing, select a score of 4 for the false positives. Select Logistic as classifier and press start.
+In the Weka explorer, under functions there is a classifier "CostSensitiveClassifier". After selecting this classifier, open the options and resize the scoring matrix. After resizing, select a score of 100 for the false positives and 10 for the false negative. Select Logistic as classifier and press start (use cross-validations fold 10).
+
+First, let's look at Logistic with default cost:
+
+| a   | b   | <-- classified as |
+|-----|---- |-------------------|
+| 95  | 25  |   a = Presence    |
+| 16  | 134 |   b = Absence     |
+: Confusion matrix of default logistic
+
+And now, with the costSensitiveClassifier:
 
 | a   | b  | <-- classified as |
 |-----|----|-------------------|
-| 109 | 11 |   a = Presence    |
-| 51  | 99 |   b = Absence     |
+| 114 | 6  |   a = Presence    |
+| 76  | 74 |   b = Absence     |
 : Confusion matrix of CostSensitiveClassifier with Logistic
 
-There are 11 instances that are classified as Absence but are Presence in fact.
+The above accuracy is 69.6296%. That is significantly lower. The number of false positives is a lot less, but the false negatives are a lot higher. Due to the low accuracy and mistakes, we will not consider this for further research.
 
-Let's run Logistic again, but then with default cost. The folowing scoring matrix appears
-
-   a   b   <-- classified as
-  97  23 |   a = Presence
-  15 135 |   b = Absence
+Let's run again, but than with NaiveBayes as classifier. Add the same costst as above.
   
-TODO  
+| a   | b  | <-- classified as |
+|-----|----|-------------------|
+| 106 | 14 |   a = Presence    |
+| 46  | 04 |   b = Absence     |
+: Confusion matrix of CostSensitiveClassifier with NaiveBayes
+
+Again, same story as above. The false positives are lower, but the false negatives are higher. The accuracy is actually a bit higher with 77.7778%, but it's still far from the 85+ we achieved earlier.
   
 \newpage
 
