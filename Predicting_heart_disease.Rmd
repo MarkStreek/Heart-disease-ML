@@ -415,18 +415,19 @@ these occur. This is to be able to see whether all classes are
 represented.
 
 ```{r}
-p1 <- ggplot(data, aes(x = Sex, fill = Sex)) + geom_bar()
-p2 <- ggplot(data, aes(x = Chest.pain.type, fill = Chest.pain.type)) + geom_bar()
-p3 <- ggplot(data, aes(x = FBS.over.120, fill = FBS.over.120)) + geom_bar()
-p4 <- ggplot(data, aes(x = EKG.results, fill = EKG.results)) + geom_bar()
-p5 <- ggplot(data, aes(x = Exercise.angina, fill = Exercise.angina)) + geom_bar()
-p6 <- ggplot(data, aes(x = Slope.of.ST, fill = Slope.of.ST)) + geom_bar()
-p7 <- ggplot(data, aes(x = Number.of.vessels.fluro)) + geom_bar()
-p8 <- ggplot(data, aes(x = Thallium, fill = Thallium)) + geom_bar()
-p9 <- ggplot(data, aes(x = Heart.Disease, fill = Heart.Disease)) + geom_bar()
+levels(data$Sex) <- c("Man", "Vrouw")
+p1 <- ggplot(data, aes(x = Sex, fill = Sex)) + geom_bar() + xlab("Geslacht") + ylab("") 
+p2 <- ggplot(data, aes(x = Chest.pain.type, fill = Chest.pain.type)) + geom_bar() + xlab("Pijn op de borst") + ylab("")
+p3 <- ggplot(data, aes(x = FBS.over.120, fill = FBS.over.120)) + geom_bar() + xlab("Bloedsuiker boven 120") + ylab("")
+p4 <- ggplot(data, aes(x = EKG.results, fill = EKG.results)) + geom_bar() + xlab("Resultaten ECG") + ylab("")
+p5 <- ggplot(data, aes(x = Exercise.angina, fill = Exercise.angina)) + geom_bar() + xlab("Exercise Angina") + ylab("")
+p6 <- ggplot(data, aes(x = Slope.of.ST, fill = Slope.of.ST)) + geom_bar() + xlab("Helling ST-segment") + ylab("")
+p7 <- ggplot(data, aes(x = Number.of.vessels.fluro)) + geom_bar() + xlab("Aantal aders zichtbaar") + ylab("")
+p8 <- ggplot(data, aes(x = Thallium, fill = Thallium)) + geom_bar() + ylab("")
+p9 <- ggplot(data, aes(x = Heart.Disease, fill = Heart.Disease)) + geom_bar() + xlab("Haartaandoening") + ylab("")
 
 grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9, ncol = 3, 
-             top = "Barplots of all the nominal/ordinal valus")
+             top = "Hoeveelheden van alle nominale/ordinale waardes")
 ```
 
 The dataset contains more man than women. Most values lean towards
@@ -699,7 +700,7 @@ colMA <- function(n = 3) {
 # plotting corr heatmap
 ggcorrplot(cor(data[numeric.columns]), colors = colMA(), 
            lab = T, lab_col = "white", lab_size = 3) +
-  labs(title = "Correlation Heatmap of the numeric attributes") + 
+  labs(title = "Correlatie van de numerieke attributen") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20)) 
 ```
 
@@ -1304,7 +1305,7 @@ Stacking with NaiveBayes as a meta classifier is therefore a lot better!
 
 This last method uses multiple classifiers that are exactly the same. The data that comes in, is being changed. Again, under meta you can find bagging. Choose logistic.
 
-This method achieves an accuracy of 85.1852% with Logistic as classifer and 83.7037% with NaiveBayes.
+This method achieves an accuracy of 85.1852% with Logistic as classifer and 83.7037% with NaiveBayes. Area under AOC is 0.90 for both runs.
 
 We have now looked at three meta-learners. In the experimenter we also looked at randomForest, which is also a form of a meta learner.
 
@@ -1331,7 +1332,7 @@ ggplot(ROC.data, aes(x = False_Positive_Rate, y = True_Positive_Rate)) +
        subtitle = "Logistic was run on Set 4 (See above)") + 
   theme(legend.position = "bottom", plot.title = element_text(face = "bold", 
       size = 15, hjust = 0.5), plot.subtitle = element_text(hjust = 0.5)) + 
-  annotate("text", x=0.50, y=0.55, label= "Area_Under_AOC: 0.8983.", color = "orange")
+  annotate("text", x=0.50, y=0.55, label= "Area_Under_AOC: 0.90.", color = "orange")
 ```
 
 The curve has a high deflection to the upper left, which is good for a roc curve. The area under the curve is 0.8983.
