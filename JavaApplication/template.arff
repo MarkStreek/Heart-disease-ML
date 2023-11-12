@@ -1,0 +1,25 @@
+% TEMPLATE FILE FOR CLASSIFYING INSTANCES
+@relation HEARTDISEASE
+
+@attribute Age numeric
+@attribute Sex {Male,Female}
+@attribute Chest.pain.type {Asymptomatic,'Non-anginal pain (pain without disease)','Atypical angina','Typical angina'}
+@attribute BP numeric
+@attribute FBS.over.120 {FALSE,TRUE}
+@attribute Max.HR numeric
+@attribute Exercise.angina {No,Yes}
+@attribute ST.depression numeric
+@attribute Slope.of.ST {Flat,'Up sloping','Down sloping'}
+@attribute Number.of.vessels.fluro numeric
+@attribute Thallium {Normal,'Reversible defect','Fixed defect'}
+
+@data
+
+% YOU CAN INSERT YOUR INSTANCE(S) BLOW HERE
+% DO NOT ADD A % BEFORE DELCARING THE INSTACNE
+% PUT 1 INSTANCE ON A SINGLE LINE
+% SEPERATE THE INSTANCES ONLY WITH A COMMA ,
+% EXAMPLE:
+% 67,Male,Asymptomatic,160,FALSE,108,Yes,1.5,Flat,3,Normal
+
+57,Male,Asymptomatic,140,FALSE,148,No,0.4,Flat,0,'Fixed defect'
