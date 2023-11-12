@@ -59,7 +59,7 @@ condition/abnormality?
 
 ## Details of the data
 
-The dataset contains data from 270 patients. There are 13 independent
+The dataset contains data from 270 patients. There are 14 independent
 predictive variables for each patient. These variables are described in
 further detail in the codebook.
 
@@ -378,22 +378,26 @@ numeric.frame <- data.frame(
 
 p1 <- ggplot(numeric.frame, aes(x=Age, y=Age.value, colour = Age)) + 
   theme(legend.position = "top") + coord_flip() + 
-  geom_violin(trim = F, alpha = 1, color = "#FF5733") + geom_jitter(alpha = 0.35, color = "#FF5733") +
+  geom_violin(trim = F, alpha = 1, color = "#FF5733") + 
+  geom_jitter(alpha = 0.35, color = "#FF5733") +
   ylab("Age (in years)") + xlab("Attribute")
 
 p2 <- ggplot(numeric.frame, aes(x=BP, y=BP.value)) + 
   theme(legend.position = "top") + coord_flip() +
-  geom_violin(trim = F, alpha = 1, color = "#A7FF33") + geom_jitter(alpha = 0.35, color = "#A7FF33") +
+  geom_violin(trim = F, alpha = 1, color = "#A7FF33") + 
+  geom_jitter(alpha = 0.35, color = "#A7FF33") +
   ylab("BP (in mm/Hg)") + xlab("Attribute")
 
 p3 <- ggplot(numeric.frame, aes(x=Max.HR, y=Max.HR.value)) + 
   theme(legend.position = "top") + coord_flip() +
-  geom_violin(trim = F, alpha = 1, color = "#33E6FF") + geom_jitter(alpha = 0.35, color = "#33E6FF") +
+  geom_violin(trim = F, alpha = 1, color = "#33E6FF") + 
+  geom_jitter(alpha = 0.35, color = "#33E6FF") +
   ylab("Max.HR (in beats/minute)") + xlab("Attribute")
 
 p4 <- ggplot(numeric.frame, aes(x=Cholesterol, y=Cholesterol.value)) + 
   theme(legend.position = "top") + coord_flip() +
-  geom_violin(trim = F, alpha = 1, color = "#DC67B2") + geom_jitter(alpha = 0.35, color = "#DC67B2") +
+  geom_violin(trim = F, alpha = 1, color = "#DC67B2") + 
+  geom_jitter(alpha = 0.35, color = "#DC67B2") +
   ylab("Cholesterol (in mg/dl)") + xlab("Attribute")
 
 grid.arrange(p1,p2,p3,p4, ncol = 2)
@@ -415,19 +419,19 @@ these occur. This is to be able to see whether all classes are
 represented.
 
 ```{r}
-levels(data$Sex) <- c("Man", "Vrouw")
-p1 <- ggplot(data, aes(x = Sex, fill = Sex)) + geom_bar() + xlab("Geslacht") + ylab("") 
-p2 <- ggplot(data, aes(x = Chest.pain.type, fill = Chest.pain.type)) + geom_bar() + xlab("Pijn op de borst") + ylab("")
-p3 <- ggplot(data, aes(x = FBS.over.120, fill = FBS.over.120)) + geom_bar() + xlab("Bloedsuiker boven 120") + ylab("")
-p4 <- ggplot(data, aes(x = EKG.results, fill = EKG.results)) + geom_bar() + xlab("Resultaten ECG") + ylab("")
-p5 <- ggplot(data, aes(x = Exercise.angina, fill = Exercise.angina)) + geom_bar() + xlab("Exercise Angina") + ylab("")
-p6 <- ggplot(data, aes(x = Slope.of.ST, fill = Slope.of.ST)) + geom_bar() + xlab("Helling ST-segment") + ylab("")
-p7 <- ggplot(data, aes(x = Number.of.vessels.fluro)) + geom_bar() + xlab("Aantal aders zichtbaar") + ylab("")
-p8 <- ggplot(data, aes(x = Thallium, fill = Thallium)) + geom_bar() + ylab("")
-p9 <- ggplot(data, aes(x = Heart.Disease, fill = Heart.Disease)) + geom_bar() + xlab("Haartaandoening") + ylab("")
+levels(data$Sex) <- c("Male", "Female")
+p1 <- ggplot(data, aes(x = Sex, fill = Sex)) + geom_bar()
+p2 <- ggplot(data, aes(x = Chest.pain.type, fill = Chest.pain.type)) + geom_bar()
+p3 <- ggplot(data, aes(x = FBS.over.120, fill = FBS.over.120)) + geom_bar()
+p4 <- ggplot(data, aes(x = EKG.results, fill = EKG.results)) + geom_bar()
+p5 <- ggplot(data, aes(x = Exercise.angina, fill = Exercise.angina)) + geom_bar()
+p6 <- ggplot(data, aes(x = Slope.of.ST, fill = Slope.of.ST)) + geom_bar()
+p7 <- ggplot(data, aes(x = Number.of.vessels.fluro)) + geom_bar()
+p8 <- ggplot(data, aes(x = Thallium, fill = Thallium)) + geom_bar() 
+p9 <- ggplot(data, aes(x = Heart.Disease, fill = Heart.Disease)) + geom_bar()
 
 grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9, ncol = 3, 
-             top = "Hoeveelheden van alle nominale/ordinale waardes")
+             top = "Representation of the ordinal values")
 ```
 
 The dataset contains more man than women. Most values lean towards
@@ -501,19 +505,22 @@ b1 <- ggplot(age.frame, aes(x = Patient, y = Age, fill=Patient)) +
   geom_boxplot() + labs(title = "Boxplot from patients age", 
                         subtitle = "Ages between presence and Absence") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 10), 
-        plot.subtitle = element_text(hjust = 0.5, size = 7)) + ylab("Age (in years)")
+        plot.subtitle = element_text(hjust = 0.5, size = 7)) + 
+  ylab("Age (in years)")
 
 b2 <- ggplot(age.frame, aes(x = Patient, y = BP, fill=Patient)) + 
   geom_boxplot() + labs(title = "Boxplot from patients BP", 
                         subtitle = "BP between presence and Absence") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 10), 
-        plot.subtitle = element_text(hjust = 0.5, size = 7)) + ylab("BP (in mm/Hg)")
+        plot.subtitle = element_text(hjust = 0.5, size = 7)) + 
+  ylab("BP (in mm/Hg)")
 
 b3 <- ggplot(age.frame, aes(x = Patient, y = Cholesterol, fill=Patient)) + 
   geom_boxplot() + labs(title = "Boxplot from patients Cholesterol", 
                         subtitle = "Cholesterol between presence and Absence") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 10), 
-        plot.subtitle = element_text(hjust = 0.5, size = 7)) + ylab("Cholesterol (in mg/dl)")
+        plot.subtitle = element_text(hjust = 0.5, size = 7)) + 
+  ylab("Cholesterol (in mg/dl)")
 
 b4 <- ggplot(age.frame, aes(x = Patient, y = Max.HR, fill=Patient)) + 
   geom_boxplot() + labs(title = "Boxplot from patients Max.HR", 
@@ -543,14 +550,18 @@ We can confirm the differneces with statistical tests.
 ```{r}
 age.test <- t.test(data$Age[data$Heart.Disease == "Presence"], 
        data$Age[data$Heart.Disease == "Absence"])$p.value
+
 bp.test <- t.test(data$BP[data$Heart.Disease == "Presence"], 
                   data$BP[data$Heart.Disease == "Absence"])$p.value
+
 cholesterol.test <- t.test(data$Cholesterol[data$Heart.Disease == "Presence"], 
-                           data$Cholesterol[data$Heart.Disease == "Absence"])$p.value
+                  data$Cholesterol[data$Heart.Disease == "Absence"])$p.value
+
 max.hr.test <- t.test(data$Max.HR[data$Heart.Disease == "Presence"], 
                       data$Max.HR[data$Heart.Disease == "Absence"])$p.value
+
 st.depression.test <- t.test(data$ST.depression[data$Heart.Disease == "Presence"], 
-                             data$ST.depression[data$Heart.Disease == "Absence"])$p.value
+                  data$ST.depression[data$Heart.Disease == "Absence"])$p.value
 
 t.test.results <- data.frame(
   Attributes = c("Age", "BP", "Cholesterol", "Max.HR", "ST depression"),
@@ -634,14 +645,27 @@ and no condition. Thallium 7 is most common in people with a condition.
 Let's do statistical tests for this as well.
 
 ```{r}
-sex.test <- chisq.test(data$Sex, data$Heart.Disease, correct = FALSE)$p.value
-chest.pain.type.test <- chisq.test(data$Chest.pain.type, data$Heart.Disease, correct = FALSE)$p.value
-FBS.test <- chisq.test(data$FBS.over.120, data$Heart.Disease, correct = FALSE)$p.value 
-EKG.test <- chisq.test(data$EKG.results, data$Heart.Disease, correct = FALSE)$p.value
-Exercise.test <- chisq.test(data$Exercise.angina, data$Heart.Disease, correct = FALSE)$p.value
-Slope.test <- chisq.test(data$Slope.of.ST, data$Heart.Disease, correct = FALSE)$p.value
-Number.test <- chisq.test(data$Number.of.vessels.fluro, data$Heart.Disease, correct = FALSE)$p.value
-Thallium.test <- chisq.test(data$Thallium, data$Heart.Disease, correct = FALSE)$p.value
+sex.test <- chisq.test(data$Sex, data$Heart.Disease, 
+                       correct = FALSE)$p.value
+
+chest.pain.type.test <- chisq.test(data$Chest.pain.type, data$Heart.Disease, 
+                                   correct = FALSE)$p.value
+
+FBS.test <- chisq.test(data$FBS.over.120, data$Heart.Disease, 
+                       correct = FALSE)$p.value 
+
+EKG.test <- chisq.test(data$EKG.results, data$Heart.Disease, 
+                       correct = FALSE)$p.value
+
+Exercise.test <- chisq.test(data$Exercise.angina, data$Heart.Disease, 
+                            correct = FALSE)$p.value
+
+Slope.test <- chisq.test(data$Slope.of.ST, 
+                         data$Heart.Disease, correct = FALSE)$p.value
+Number.test <- chisq.test(data$Number.of.vessels.fluro, 
+                          data$Heart.Disease, correct = FALSE)$p.value
+Thallium.test <- chisq.test(data$Thallium, 
+                            data$Heart.Disease, correct = FALSE)$p.value
 
 chisq.results <- data.frame(
   Attributes = c(
@@ -675,7 +699,8 @@ they are to each other.
 ggpairs( data[numeric.columns], ggplot2::aes(colour=data$Heart.Disease), 
          progress = F, upper = "blank", legend = 1) + 
   labs(title = "Pairplot of the numeric attributes") + 
-  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), axis.text.y = element_blank(), legend.position = "bottom")
+  theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), 
+        axis.text.y = element_blank(), legend.position = "bottom")
 ```
 
 The figure above shows a number of things. It shows the similarities
@@ -700,7 +725,7 @@ colMA <- function(n = 3) {
 # plotting corr heatmap
 ggcorrplot(cor(data[numeric.columns]), colors = colMA(), 
            lab = T, lab_col = "white", lab_size = 3) +
-  labs(title = "Correlatie van de numerieke attributen") + 
+  labs(title = "Correlation of the numeric attributes") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20)) 
 ```
 
@@ -786,7 +811,8 @@ so that we can use it in Weka.
 ```{r}
 write.csv(data, "ExperimenterTestSets/01-Clean_dataset.csv", row.names = F)
 write.csv(data.top5, "ExperimenterTestSets/02-top5_p_values.csv", row.names = F)
-write.csv(data.allTransformed, "ExperimenterTestSets/03-Numeric_transformed.csv", row.names = F)
+write.csv(data.allTransformed, "ExperimenterTestSets/03-Numeric_transformed.csv", 
+          row.names = F)
 write.csv(data.simple, "ExperimenterTestSets/04-Simple.csv", row.names = F)
 ```
 
@@ -822,7 +848,7 @@ are described below.
     2.  KNN: 35 (35 was the best result from CVParamaterSelection)
     3.  KNN: 35, Manhattan distance
 7.  SMO - standard settings
-8.  Logistic regression - standard settings
+8.  Logistic - standard settings
 9.  NaieveBayes
 10. ClassificationViaClustering - standard settings
 
@@ -899,7 +925,7 @@ Let's look at the accuracy first.
 #                                (v/ /*) |  (2/15/0)  (0/17/0)  (0/1/16)
 ```
 
-NaiveBates has the highest accuracy in the "clean" dataset. Logistic
+NaiveBayes has the highest accuracy in the "clean" dataset. Logistic
 scores the highest in the "top5" dataset.
 
 We can also look at mean accuracy in the four datasets.
@@ -995,7 +1021,7 @@ positive rate. Below we first show a table with the false negative rate.
 
 NaieveBayes has the lowest false negative rate. This score has been
 achieved in the clean dataset. K-nearest neighbours (IBK) has a solid
-score as well. It has the lowest FNR rate in the second (top5) and third
+score as well. It has the lowest FNR in the second (top5) and third
 (numeric transformed) dataset.
 
 -   NaieveBayes scores the best
@@ -1046,8 +1072,6 @@ Overall findings:
 
 The UserCPU_CPU_Time_Training for each model is very fast. ZeroR scores
 the fastest here. But this model will not not be used eventually.
-
-\newpage
 
 ### F messure
 
@@ -1175,7 +1199,7 @@ when selecting a specific Attribute Evaluator, a warning message
 appears. This is because some evaluators only work with a specific
 search method. therefore press yes.
 
-after selecting a Attribute Evaluator, leave the rest of the settings
+After selecting a Attribute Evaluator, leave the rest of the settings
 unchanged en press start. You now see a list of attributes with
 percentages. We will combine the results in table below.
 
@@ -1297,7 +1321,7 @@ This method achieves an accuracy of 86.2963%. This is higher than our original L
 
 This methods "stacks" the concepts and creates a deciding attribute. Again, this method can be found under "meta". Add the best concepts. You can choose a meta Classifier that decides. We will run twice, with Logistic as meta Classiefier and NaieveBayes.
 
-Stacking with Logistic as meta classifier achieves an accuracy of 86.6667%, which again is higher. Stacking with NaiveBayes achieves an accuracy of 87.037%! The False Positve rate is also lower, 0.16 vs 0.19. Fals negative rate is the same. The Area under ROC is 0.8983. That is a small fraction lower, but certainly not a lot lower.
+Stacking with Logistic as meta classifier achieves an accuracy of 86.6667%, which again is higher. Stacking with NaiveBayes achieves an accuracy of 87.037%! The False Positve rate is also lower, 0.16 vs 0.19. False negative rate is the same. The Area under ROC is 0.8983. That is a small fraction lower, but certainly not a lot lower.
 
 Stacking with NaiveBayes as a meta classifier is therefore a lot better!
 
@@ -1339,7 +1363,7 @@ The curve has a high deflection to the upper left, which is good for a roc curve
 
 # Java Wrapper
 
-We have now discovered the best concept with the best attributes. We are now going to make our model public by building a Java application around it. This will be done in another repository.
+We have now discovered the best concept with the best attributes. We are now going to make our model public by building a Java application around it. This will be done in another repository: https://github.com/MarkStreek/PredictingHeartDiseaseJavaWrapper
 
 \newpage
 
