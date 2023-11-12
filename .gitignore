@@ -6,6 +6,8 @@
 .RData
 .RDataTmp
 
+*.Rproj
+
 # User-specific files
 .Ruserdata
 
@@ -47,3 +49,9 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+*.html
+*.pdf
+*.csv
+*.docx
+*.arff
+*.arff
