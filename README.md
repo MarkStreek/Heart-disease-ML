@@ -23,4 +23,4 @@ Project Structure:
 └── Verslag.pdf: Full report about this project
 </pre>
 
-The file **verslag.pdf** contains a full report (in Dutch) about this project. The folder **PredictingHeartDiseaseJavaWrapper** is a submodule that contains the Java application. By clicking at this folder, the page automatically redirects to the Java application project.
+The file **verslag.pdf** contains a full report (in Dutch) about this project. The folder **PredictingHeartDiseaseJavaWrapper** is a submodule that contains the Java application
