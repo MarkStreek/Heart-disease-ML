@@ -19,6 +19,7 @@ Project Structure:
 ├── Heart_Disease_Prediction.csv: The original dataset for this project
 ├── Predicting_heart_disease.Rmd: Full log about this project
 ├── README.md
+├── JavaApplicaion: directory with the builded java application
 ├── gpl.md: license file
 └── Verslag.pdf: Full report about this project
 </pre>
