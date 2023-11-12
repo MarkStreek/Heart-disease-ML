@@ -20,7 +20,7 @@ Project Structure:
 ├── PredictingHeartDiseaseJavaWrapper: Java application
 ├── Predicting_heart_disease.Rmd: Full log about this project
 ├── README.md
-└── Verslag.Rmd: Full report about this project
+└── Verslag.pdf: Full report about this project
 </pre>
 
-The file **verslag.Rmd** contains a full report (in Dutch) about this project. The folder **PredictingHeartDiseaseJavaWrapper** is a submodule that contains the Java application. By clicking at this folder, the page automatically redirects to the Java application project.
+The file **verslag.pdf** contains a full report (in Dutch) about this project. The folder **PredictingHeartDiseaseJavaWrapper** is a submodule that contains the Java application. By clicking at this folder, the page automatically redirects to the Java application project.
